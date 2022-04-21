@@ -5,6 +5,9 @@ import Signin from "./views/Signin";
 import Signup from "./views/Signup";
 import Signout from "./views/signout";
 import AddCar from "./components/AddCar";
+import InvalidPage from "./views/InvalidPage";
+import AdminHome from "./views/AdminHome";
+import CarHome from "./views/CarHome";
 
 function App() {
   return (
@@ -13,11 +16,13 @@ function App() {
         <Navigator />
         <Routes>
           <Route path="/home" exact element={<Home />}></Route>
+          <Route path="/adminHome" exact element={<AdminHome />}></Route>
+          <Route path="/carOwnerHome" exact element={<CarHome />}></Route>
           <Route path="/signin" exact element={<Signin />}></Route>
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>
           <Route path="/addcar" exact element={<AddCar />}></Route>
-          <Route path="*" element={<Home />}></Route>
+          <Route path="*" element={<InvalidPage />}></Route>
         </Routes>
       </Router>
     </div>
