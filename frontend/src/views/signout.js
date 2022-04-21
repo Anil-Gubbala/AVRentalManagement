@@ -12,7 +12,7 @@ const Signout = () => {
 
   Axios.defaults.withCredentials = true;
   const [loggedOut, setLoggedout] = useState(false);
-  useEffect(async () => {
+  useEffect(() => {
     get(`/signout`).then((response) => {
       localStorage.clear();
       logout();

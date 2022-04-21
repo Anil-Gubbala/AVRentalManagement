@@ -9,14 +9,15 @@ import { REDUCER } from "../utils/consts";
 import { Form } from "react-bootstrap";
 
 function Signin() {
-  const [emailid, setEmailId] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("0");
   const [isCustomer, setIsCustomer] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isCarOwner, setIsCarOwner] = useState(false);
 
   const dispatch = useDispatch();
-  const { adminLogin, customerLogin } = bindActionCreators(
+  const { adminLogin, customerLogin, carOwnerLogin } = bindActionCreators(
     actionCreators,
     dispatch
   );
@@ -25,7 +26,7 @@ function Signin() {
   const login = (event) => {
     event.preventDefault();
     const data = {
-      emailid,
+      email,
       password,
       role,
     };
@@ -33,14 +34,16 @@ function Signin() {
       .then((response) => {
         localStorage.setItem(REDUCER.TOKEN, response.token);
         localStorage.setItem(REDUCER.SIGNEDIN, true);
-        if (response.user.isAdmin) {
-          localStorage.setItem(REDUCER.ISADMIN, true);
+        localStorage.setItem(REDUCER.ROLE, response.user.role);
+        if (response.user.role === "0") {
           adminLogin();
-          setIsAdmin(true);
-        } else {
-          localStorage.setItem(REDUCER.ISADMIN, false);
-          customerLogin();
           setIsCustomer(true);
+        } else if (response.user.role === "1") {
+          adminLogin();
+          setIsCarOwner(true);
+        } else {
+          customerLogin();
+          setIsAdmin(true);
         }
       })
       .catch(() => {});
@@ -51,6 +54,9 @@ function Signin() {
   }
   if (isAdmin) {
     return <Navigate to="/adminHome" />;
+  }
+  if (isCarOwner) {
+    return <Navigate to="/carOwnerHome" />;
   }
 
   return (
@@ -63,7 +69,7 @@ function Signin() {
             className="form-control"
             placeholder="Email"
             onChange={(e) => {
-              setEmailId(e.target.value);
+              setemail(e.target.value);
             }}
           />
           <br />

@@ -14,13 +14,13 @@ function Signup() {
     password: false,
     firstName: false,
     lastName: false,
-    emailid: false,
+    email: false,
     phone: false,
     address: false,
     city: false,
     state: false,
     country: false,
-    zip_code: false,
+    zipcode: false,
     gender: false,
     role: false,
   });
@@ -28,12 +28,12 @@ function Signup() {
     password: "",
     firstName: "",
     lastName: "",
-    emailid: "",
+    email: "",
     address: "",
     city: "",
     state: "",
     country: "",
-    zip_code: "",
+    zipcode: "",
     phone: "",
     gender: "0",
     role: "0",
@@ -50,27 +50,25 @@ function Signup() {
       userDetails.lastName.trim() === "" ||
       userDetails.city.trim() === "" ||
       userDetails.address.trim() === "" ||
-      userDetails.emailid.trim() === "" ||
-      userDetails.zip_code.length < 5
+      userDetails.email.trim() === "" ||
+      userDetails.zipcode.length < 5
     ) {
       alert("Please fill all fields");
       setMessage("Please fill all fields");
     } else if (
-      userDetails.emailid.includes(" ") ||
-      userDetails.zip_code.includes(" ") ||
+      userDetails.email.includes(" ") ||
+      userDetails.zipcode.includes(" ") ||
       userDetails.password.includes(" ")
     ) {
-      alert("Space character not allowed in zip_code, password, email_id");
-      setMessage("Space character not allowed in zip_code, password, email_id");
+      alert("Space character not allowed in zipcode, password, email_id");
+      setMessage("Space character not allowed in zipcode, password, email_id");
     } else {
       post(`/register`, {
         userDetails,
       })
         .then((response) => {
           console.log(response);
-          setMessage(
-            `Your User ID is "${response.emailid}" \n Mileage account: "${response.mileage_number}"`
-          );
+          setMessage(`Registration Successful`);
           setRegisterd(true);
         })
         .catch((error) => {
@@ -170,11 +168,11 @@ function Signup() {
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 required
-                helpertext={invalid.emailid ? "1-25 characters" : ""}
+                helpertext={invalid.email ? "1-25 characters" : ""}
                 id="register-email-id"
                 label="Email ID"
                 type="text"
-                isInvalid={invalid.emailid}
+                isInvalid={invalid.email}
                 onChange={(e) => {
                   const validation = !!(
                     e.target.value.length > 25 ||
@@ -182,8 +180,8 @@ function Signup() {
                     e.target.value.includes(" ") ||
                     e.target.value.indexOf("@") === -1
                   );
-                  setInvalid({ ...invalid, emailid: validation });
-                  setUserDetails({ ...userDetails, emailid: e.target.value });
+                  setInvalid({ ...invalid, email: validation });
+                  setUserDetails({ ...userDetails, email: e.target.value });
                 }}
               />
             </Form.Group>
@@ -288,15 +286,15 @@ function Signup() {
                 id="register-zip-code"
                 label="ZIP Code"
                 type="number"
-                isInvalid={invalid.zip_code}
+                isInvalid={invalid.zipcode}
                 onChange={(e) => {
                   const validation = !!(
                     e.target.value.length !== 5 || e.target.value === ""
                   );
-                  setInvalid({ ...invalid, zip_code: validation });
+                  setInvalid({ ...invalid, zipcode: validation });
                   setUserDetails({
                     ...userDetails,
-                    zip_code: e.target.value,
+                    zipcode: e.target.value,
                   });
                 }}
               />

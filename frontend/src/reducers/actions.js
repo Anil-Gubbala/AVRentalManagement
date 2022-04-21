@@ -4,6 +4,10 @@ export const customerLogin = (payload) => (dispatch) => {
   dispatch({ type: ACTION.CUSTOMER_SIGIN, payload });
 };
 
+export const carOwnerLogin = (payload) => (dispatch) => {
+  dispatch({ type: ACTION.CAR_OWNER_SIGNIN, payload });
+};
+
 export const adminLogin = (payload) => (dispatch) => {
   dispatch({ type: ACTION.ADMIN_SIGIN, payload });
 };

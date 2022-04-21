@@ -3,9 +3,7 @@ const CONFIG = {
   BACKEND_PORT: 4000,
 };
 
-const SECRET = {
-  secret: "281Project",
-};
+const SECRET = "group13";
 
 const MYSQL = {
   HOST: "sjsu281-13db.c0ibq89ybwlj.us-east-1.rds.amazonaws.com",

@@ -12,21 +12,20 @@ const getLogin = (req, res) => {
   }
 };
 const signin = (req, res) => {
-  console.log("Entered");
-  const emailid = req.body.emailid;
+  const email = req.body.email;
   const password = req.body.password;
+  const role = req.body.role;
   conn.query(
-    "SELECT * FROM Customer WHERE emailid = ?;",
-    emailid,
+    "SELECT password FROM User WHERE email = ? and role=?;",
+    [email, role],
     (err, result) => {
       if (err) return;
       else if (result.length > 0) {
         bcrypt.compare(password, result[0].password, (error, response) => {
           if (response) {
             const userInfo = {
-              email_id: emailid,
-              customer_id: result[0].customer_id,
-              isAdmin: result[0].role === "admin",
+              email: email,
+              role: role,
             };
             const token = jwt.sign(userInfo, SECRET, {
               expiresIn: 1008000,
@@ -53,11 +52,12 @@ const registerUser = (req, res) => {
     address,
     city,
     state,
-    zip_code,
+    country,
+    zipcode,
     phone,
     gender,
     password,
-    emailid,
+    email,
     role,
   } = req.body.userDetails;
 
@@ -67,7 +67,7 @@ const registerUser = (req, res) => {
       return;
     } else {
       var sql =
-        "INSERT INTO Customer ( firstName, lastName, address,city,state,zip_code,phone,gender, password,emailid,role) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        "INSERT INTO User ( firstName, lastName, address,city,state,country,zipcode,phone,gender, password,email,role) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
       conn.query(
         sql,
         [
@@ -76,11 +76,12 @@ const registerUser = (req, res) => {
           address,
           city,
           state,
-          zip_code,
+          country,
+          zipcode,
           phone,
           gender,
           hash,
-          emailid,
+          email,
           role,
         ],
         (err, result) => {
