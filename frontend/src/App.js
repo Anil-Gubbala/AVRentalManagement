@@ -4,6 +4,7 @@ import Home from "./views/Home";
 import Signin from "./views/Signin";
 import Signup from "./views/Signup";
 import Signout from "./views/signout";
+import AddCar from "./components/AddCar";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/signin" exact element={<Signin />}></Route>
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>
+          <Route path="/addcar" exact element={<AddCar />}></Route>
           <Route path="*" element={<Home />}></Route>
         </Routes>
       </Router>
