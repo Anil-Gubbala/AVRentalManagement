@@ -1,7 +1,7 @@
 const conn = require("../utils/dbConnector");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const config = require("../utils/const");
+const { SECRET } = require("../../configuration");
 const saltRounds = 10;
 
 const getLogin = (req, res) => {
@@ -28,7 +28,7 @@ const signin = (req, res) => {
               customer_id: result[0].customer_id,
               isAdmin: result[0].role === "admin",
             };
-            const token = jwt.sign(userInfo, config.secret, {
+            const token = jwt.sign(userInfo, SECRET, {
               expiresIn: 1008000,
             });
             res.status(200).send({ token: `JWT ${token}`, user: userInfo });

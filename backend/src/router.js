@@ -3,6 +3,12 @@ const { checkAuth } = require("./utils/auth");
 
 //import controller.
 const { demoCall } = require("./controllers/demoController");
+const {
+  signin,
+  registerUser,
+  getLogin,
+  signout,
+} = require("./controllers/accountController");
 
 const router = express.Router();
 
