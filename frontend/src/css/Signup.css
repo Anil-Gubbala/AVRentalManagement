@@ -1,0 +1,29 @@
+.App {
+    text-align: center;
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+  }
+  .margin8{
+    display: flex;
+    margin: 8px;
+  }
+  
+  .margin10 {
+    margin: 10px;
+  }
+  
+  .displayFlex{
+    display: flex;
+  }
+  .alignCenter{
+    align-items: center;
+  }
+  .marginAuto{
+    margin:auto;
+  }
+  .width100{
+    width:100%;
+  }
