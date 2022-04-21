@@ -48,19 +48,17 @@ const signin = (req, res) => {
 
 const registerUser = (req, res) => {
   const {
-    customer_first_name,
-    customer_last_name,
+    firstName,
+    lastName,
     address,
     city,
     state,
     zip_code,
-    passportid,
+    phone,
     gender,
     password,
     emailid,
     role,
-    sec_ques,
-    sec_ans,
   } = req.body.userDetails;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -68,40 +66,32 @@ const registerUser = (req, res) => {
       console.log(err);
       return;
     } else {
-      var mileage_number = `${passportid}` + "T62954";
       var sql =
-        "INSERT INTO Customer ( customer_first_name, customer_last_name, address,city,state,zip_code,passportid,gender, password,emailid,role,sec_ques,sec_ans,mileage_plus_number) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        "INSERT INTO Customer ( firstName, lastName, address,city,state,zip_code,phone,gender, password,emailid,role) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
       conn.query(
         sql,
         [
-          customer_first_name,
-          customer_last_name,
+          firstName,
+          lastName,
           address,
           city,
           state,
           zip_code,
-          passportid,
+          phone,
           gender,
           hash,
           emailid,
           role,
-          sec_ques,
-          sec_ans,
-          mileage_number,
         ],
         (err, result) => {
           if (err) {
             console.log(err);
             throw err;
           }
-          const data = {
-            emailid: emailid,
-            mileage_number: mileage_number,
-          };
           res.writeHead(200, {
             "Content-Type": "text/plain",
           });
-          res.end(JSON.stringify(data));
+          res.send();
         }
       );
     }

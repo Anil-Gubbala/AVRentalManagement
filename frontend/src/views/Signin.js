@@ -1,24 +1,19 @@
-import React, { useState, Component } from "react";
-import { Link, Navigate } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
-import Form from "react-bootstrap/Form";
-import classnames from "classnames";
+import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import Axios from "axios";
-import cookie from "react-cookies";
 import { bindActionCreators } from "redux";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { post } from "../utils/serverCall";
 import { actionCreators } from "../reducers/actionCreators";
 import { REDUCER } from "../utils/consts";
+import { Form } from "react-bootstrap";
 
 function Signin() {
   const [emailid, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("0");
   const [isCustomer, setIsCustomer] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [failMsg, setFailMsg] = useState("");
 
   const dispatch = useDispatch();
   const { adminLogin, customerLogin } = bindActionCreators(
@@ -32,6 +27,7 @@ function Signin() {
     const data = {
       emailid,
       password,
+      role,
     };
     post("/signinData", data)
       .then((response) => {
@@ -48,19 +44,6 @@ function Signin() {
         }
       })
       .catch(() => {});
-    // try {
-    //   await post(`${backendServer}/signinData`, data).then((response) => {
-    //     if (response.status === 200) {
-    //       localStorage.setItem(REDUCER.SIGNEDIN, true);
-    //       customerLogin();
-    //       setLoginStatus(true);
-    //     } else {
-    //       console.log('error in serverside');
-    //     }
-    //   });
-    // } catch (error) {
-    //   setLoginStatus(false);
-    // }
   };
 
   if (isCustomer) {
@@ -72,14 +55,13 @@ function Signin() {
 
   return (
     <form className="flight-book-form">
-      <div className="login-form-box">
-        <div className="login-form" style={{ color: "white" }}>
+      <div className="login-form-box" style={{ maxWidth: 400, margin: "auto" }}>
+        <div className="login-form">
           <h2 className="heading-section text-center">Sign In</h2>
-          <h3 className="mb-4 text-center">Have an account?</h3>
           <input
             type="text"
             className="form-control"
-            placeholder="Username"
+            placeholder="Email"
             onChange={(e) => {
               setEmailId(e.target.value);
             }}
@@ -94,6 +76,23 @@ function Signin() {
             }}
           />
           <br />
+          <Form.Group className="col">
+            <Form.Label>Role</Form.Label>
+            <Form.Control
+              as="select"
+              default="0"
+              value="0"
+              onChange={(e) => {
+                setRole(e.target.value);
+              }}
+            >
+              <option value="0" defaultChecked>
+                Customer
+              </option>
+              <option value="1">Car Owner</option>
+            </Form.Control>
+          </Form.Group>
+          <br />
           <button type="submit" className="form-control" onClick={login}>
             <h4>Sign In</h4>
           </button>
@@ -102,7 +101,7 @@ function Signin() {
             &mdash; Haven't registered yet &mdash;
           </p>
           <a href="Signup">
-            <h4 style={{ color: "white", textAlign: "center" }}>SignUp</h4>
+            <h4 style={{ textAlign: "center" }}>SignUp</h4>
           </a>
         </div>
       </div>

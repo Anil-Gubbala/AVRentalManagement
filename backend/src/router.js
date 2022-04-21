@@ -17,5 +17,6 @@ router.route("/demoCall").post(checkAuth, demoCall);
 
 // demo for without auth calls
 router.route("/signinData").post(signin);
+router.route("/register").post(registerUser);
 
 module.exports = router;

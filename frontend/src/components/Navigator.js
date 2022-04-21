@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Alert } from 'react-bootstrap';
-import { REDUCER } from '../utils/consts';
-import { get } from '../utils/serverCall';
-import { isAdmin, isSignedIn } from '../utils/checkSignin';
+import React, { useEffect, useState } from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Alert } from "react-bootstrap";
+import { REDUCER } from "../utils/consts";
+import { get } from "../utils/serverCall";
+import { isAdmin, isSignedIn } from "../utils/checkSignin";
 
 function Navigator() {
   const loginState = useSelector((state) => state.loginReducer);
@@ -17,7 +17,7 @@ function Navigator() {
   const [signedIn, setSignedIn] = useState(isSignedIn());
   const [admin, setAdmin] = useState(isAdmin());
   const [showAlert, setShowAlert] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (signedIn) {
@@ -35,7 +35,7 @@ function Navigator() {
   useEffect(() => {
     setSignedIn(isSignedIn());
     setAdmin(isAdmin());
-    console.log('entered change login state');
+    console.log("entered change login state");
   }, [loginState]);
 
   const hideAlert = () => {
@@ -45,7 +45,7 @@ function Navigator() {
   };
 
   useEffect(() => {
-    if (errorState[REDUCER.ERR_MSG] !== '') {
+    if (errorState[REDUCER.ERR_MSG] !== "") {
       setErrorMsg(errorState[REDUCER.ERR_MSG]);
       setShowAlert(true);
       hideAlert();
@@ -58,7 +58,7 @@ function Navigator() {
         <Row>
           <Navbar bg="dark" variant="dark">
             <Container>
-              <Navbar.Brand>MY-AIRLINE</Navbar.Brand>
+              <Navbar.Brand>Group13</Navbar.Brand>
               {!admin && (
                 <Nav className="me-auto">
                   <Link to="/home" className="nav-link">
@@ -102,7 +102,7 @@ function Navigator() {
           </Navbar>
         </Row>
         {showAlert && (
-          <div style={{ position: 'fixed', bottom: '10px', zIndex: '2' }}>
+          <div style={{ position: "fixed", bottom: "10px", zIndex: "2" }}>
             <Alert variant="danger">{errorMsg}</Alert>
           </div>
         )}

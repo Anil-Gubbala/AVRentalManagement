@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useState } from "react";
 import Navigator from "./components/Navigator";
 import Home from "./views/Home";
 import Signin from "./views/Signin";
