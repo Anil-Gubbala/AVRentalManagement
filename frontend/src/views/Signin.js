@@ -1,5 +1,5 @@
 import React, { useState, Component } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
@@ -15,7 +15,6 @@ import { REDUCER } from "../utils/consts";
 
 function Signin() {
   const [emailid, setEmailId] = useState("");
-  const history = useHistory();
   const [password, setPassword] = useState("");
   const [isCustomer, setIsCustomer] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -36,7 +35,7 @@ function Signin() {
     };
     post("/signinData", data)
       .then((response) => {
-        localStorage.setItem(REDUCER.TOKEN, response.token)
+        localStorage.setItem(REDUCER.TOKEN, response.token);
         localStorage.setItem(REDUCER.SIGNEDIN, true);
         if (response.user.isAdmin) {
           localStorage.setItem(REDUCER.ISADMIN, true);
@@ -65,10 +64,10 @@ function Signin() {
   };
 
   if (isCustomer) {
-    return <Redirect to="/home" />;
+    return <Navigate to="/home" />;
   }
   if (isAdmin) {
-    return <Redirect to="/adminHome" />;
+    return <Navigate to="/adminHome" />;
   }
 
   return (

@@ -13,7 +13,7 @@ import {
   MenuItem,
   Select,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import { post } from "../utils/serverCall";
 
 function Signup() {
@@ -55,7 +55,6 @@ function Signup() {
   };
 
   const [userDetails, setUserDetails] = useState(defaultValues);
-  const history = useHistory();
   const register = (event) => {
     event.preventDefault();
 
