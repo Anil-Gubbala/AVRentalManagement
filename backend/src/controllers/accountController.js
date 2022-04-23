@@ -99,6 +99,71 @@ const registerUser = (req, res) => {
   });
 };
 
+const updateProfile = (req, res) => {
+  const {
+    firstName,
+    lastName,
+    address,
+    city,
+    state,
+    country,
+    zipcode,
+    phone,
+    gender,
+    password,
+    email,
+    role,
+  } = req.body.userDetails;
+
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      var sql =
+        "INSERT INTO User ( firstName, lastName, address,city,state,country,zipcode,phone,gender, password,email,role) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+      conn.query(
+        sql,
+        [
+          firstName,
+          lastName,
+          address,
+          city,
+          state,
+          country,
+          zipcode,
+          phone,
+          gender,
+          hash,
+          email,
+          role,
+        ],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+          res.writeHead(200, {
+            "Content-Type": "text/plain",
+          });
+          res.send();
+        }
+      );
+    }
+  });
+};
+
+const getProfile = (req, res) => {
+  const email = req.user.email;
+  conn.query("select * from User where email = ?", [email], (err, result) => {
+    if (err) {
+      response.error(res, 500, err.code);
+      return;
+    }
+    res.send(result[0]);
+  });
+};
+
 const signout = (req, res) => {
   if (req.user) {
     req.logout();
@@ -108,4 +173,11 @@ const signout = (req, res) => {
   }
 };
 
-module.exports = { signin, registerUser, signout, getLogin };
+module.exports = {
+  signin,
+  registerUser,
+  signout,
+  getLogin,
+  getProfile,
+  updateProfile,
+};

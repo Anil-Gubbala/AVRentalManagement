@@ -3,11 +3,12 @@ import Navigator from "./components/Navigator";
 import Home from "./views/Home";
 import Signin from "./views/Signin";
 import Signup from "./views/Signup";
-import Signout from "./views/signout";
+import Signout from "./views/Signout";
 import AddCar from "./views/AddCar";
 import InvalidPage from "./views/InvalidPage";
 import AdminHome from "./views/AdminHome";
 import CarOwnerHome from "./views/CarOwnerHome";
+import UserProfile from "./views/UserProfile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>
           <Route path="/addcar" exact element={<AddCar />}></Route>
+          <Route path="/userProfile" exact element={<UserProfile />}></Route>
           <Route path="*" element={<InvalidPage />}></Route>
         </Routes>
       </Router>
