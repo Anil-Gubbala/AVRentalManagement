@@ -16,25 +16,18 @@ function AdminHome() {
   const role = localStorage.getItem(REDUCER.ROLE);
 
   const [pieData, setPieData] = useState({
-    labels: ["Red", "Blue", "Yellow"],
+    labels: ["Newly Added", "Edited", "Deleted"].map(
+      (label, index) => `${label}: ${[9, 5, 3][index]}`
+    ),
     datasets: [
       {
-        label: "My First Dataset",
-        data: [300, 50, 100],
-        backgroundColor: [
-          "rgb(255, 99, 132)",
-          "rgb(54, 162, 235)",
-          "rgb(255, 205, 86)",
-        ],
-        hoverOffset: 4,
+        label: "Markets Monitored",
+        backgroundColor: ["#83ce83", "#959595", "#f96a5d"],
+        data: [9, 5, 3],
       },
     ],
   });
 
-  const config = {
-    type: "pie",
-    data: pieData,
-  };
   // if (role !== "2") {
   //   return <Navigate to={redirectHome()} />;
   // }
@@ -45,7 +38,20 @@ function AdminHome() {
         <h2 className="mb-4 text-center">Admin Home</h2>
         <div style={{ margin: "20px", height: "400px", width: "400px" }}>
           <MDBContainer>
-            <Pie data={config.data} options={{ responsive: true }} />
+            <Pie
+              data={pieData}
+              options={{
+                legend: { display: true, position: "right" },
+
+                datalabels: {
+                  display: true,
+                  color: "white",
+                },
+                tooltips: {
+                  backgroundColor: "#5a6e7f",
+                },
+              }}
+            />
           </MDBContainer>
         </div>
       </Container>
