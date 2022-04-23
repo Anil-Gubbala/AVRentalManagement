@@ -3,7 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
-import { Pie } from "react-chartjs-2";
+import { Pie, Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 import Container from "react-bootstrap/esm/Container";
 import { Chart, ArcElement } from "chart.js";
