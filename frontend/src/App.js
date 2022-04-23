@@ -16,7 +16,7 @@ function App() {
         <Navigator />
         <Routes>
           <Route path="/home" exact element={<Home />}></Route>
-          <Route path="/adminHome" exact element={<AdminHome />}></Route>
+          <Route path="/adminhome" exact element={<AdminHome />}></Route>
           <Route path="/carownerhome" exact element={<CarOwnerHome />}></Route>
           <Route path="/signin" exact element={<Signin />}></Route>
           <Route path="/signup" exact element={<Signup />}></Route>
