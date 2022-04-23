@@ -7,7 +7,7 @@ import Signout from "./views/signout";
 import AddCar from "./views/AddCar";
 import InvalidPage from "./views/InvalidPage";
 import AdminHome from "./views/AdminHome";
-import CarHome from "./views/CarHome";
+import CarOwnerHome from "./views/CarOwnerHome";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/home" exact element={<Home />}></Route>
           <Route path="/adminHome" exact element={<AdminHome />}></Route>
-          <Route path="/carOwnerHome" exact element={<CarHome />}></Route>
+          <Route path="/carownerhome" exact element={<CarOwnerHome />}></Route>
           <Route path="/signin" exact element={<Signin />}></Route>
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>

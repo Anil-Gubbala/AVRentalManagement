@@ -14,6 +14,7 @@ const AddCar = () => {
   const role = localStorage.getItem(REDUCER.ROLE);
 
   const [message, setMessage] = useState("");
+  const [redirToCarHome, setRedirToCarHome] = useState(false);
   const [invalid, setInvalid] = useState({
     number: false,
     make: false,
@@ -43,9 +44,13 @@ const AddCar = () => {
   };
   const Cancel = (event) => {
     event.preventDefault();
+    setRedirToCarHome(true);
   };
+  let ad = null;
+  if (redirToCarHome) ad = <Navigate to="/carownerhome" />;
   return (
     <div>
+      {ad}
       <Container>
         <h2 className="mb-4 text-center">Add Car</h2>
 
@@ -173,7 +178,7 @@ const AddCar = () => {
           </div>
           <div style={{ marginTop: "20px" }}>
             <button type="submit" onClick={Submit}>
-              <h4>Signup</h4>
+              <h4>Add Car</h4>
             </button>
             <button style={{ marginLeft: "20px" }} onClick={Cancel}>
               <h4>Cancel</h4>
