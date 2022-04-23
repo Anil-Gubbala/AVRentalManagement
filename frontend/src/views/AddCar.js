@@ -31,7 +31,7 @@ const AddCar = () => {
     color: "",
     build: "SUV",
     status: "Active",
-    capacity: 0,
+    capacity: "",
   };
 
   const [carDetails, setCarDetails] = useState(defaultValues);
@@ -41,6 +41,30 @@ const AddCar = () => {
   //   }
   const Submit = (event) => {
     event.preventDefault();
+
+    if (
+      carDetails.number.includes(" ") ||
+      carDetails.make.includes(" ") ||
+      carDetails.model.includes(" ") ||
+      carDetails.color.includes(" ")
+    ) {
+      alert("Space character not allowed in number, make, model and color");
+      setMessage(
+        "Space character not allowed in number, make, model and color"
+      );
+    } else {
+      // post(`/addcar`, {
+      //   carDetails,
+      // })
+      //   .then((response) => {
+      //     console.log(response);
+      //     setMessage(`Car Added Successfully`);
+      //   })
+      //   .catch((error) => {
+      //     setMessage(error.response.err);
+      //   });
+      console.log(carDetails);
+    }
   };
   const Cancel = (event) => {
     event.preventDefault();
@@ -174,6 +198,28 @@ const AddCar = () => {
                 <option value="InActive">InActive</option>
                 <option value="Busy">Busy</option>
               </Form.Control>
+            </Form.Group>
+          </div>
+          <div>
+            <Form.Group className="col">
+              <Form.Label>Capacity</Form.Label>
+              <Form.Control
+                type="number"
+                helpertext={invalid.capacity ? "Greater than 0" : ""}
+                id="carCapacity"
+                label="Capacity"
+                isInvalid={invalid.capacity}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value < 1 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, capacity: validation });
+                  setCarDetails({
+                    ...carDetails,
+                    capacity: e.target.value,
+                  });
+                }}
+              />
             </Form.Group>
           </div>
           <div style={{ marginTop: "20px" }}>
