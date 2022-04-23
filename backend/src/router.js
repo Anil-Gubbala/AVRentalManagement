@@ -9,6 +9,7 @@ const {
   getLogin,
   signout,
   getProfile,
+  updateProfile,
 } = require("./controllers/accountController");
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.route("/register").post(registerUser);
 router.route("/getLogin").get(checkAuth, getLogin);
 router.route("/signout").get(checkAuth, signout);
 
-router.route("/getProfile").get(checkAuth, getProfile);
+router.route("/profile").get(checkAuth, getProfile);
+router.route("/profile").put(checkAuth, updateProfile);
 
 module.exports = router;

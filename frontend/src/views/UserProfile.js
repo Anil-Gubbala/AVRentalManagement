@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { REDUCER } from "../utils/consts";
-import { get } from "../utils/serverCall";
-import { post } from "../utils/serverCall";
+import { get, put } from "../utils/serverCall";
 
 function UserProfile() {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
@@ -43,7 +42,7 @@ function UserProfile() {
   }
 
   const getUserDetails = () => {
-    get(`/getProfile`)
+    get(`/profile`)
       .then((response) => {
         setUserDetails(response);
       })
@@ -52,8 +51,13 @@ function UserProfile() {
       });
   };
 
-  const updateProfile = () => {
-    post("/updateProfile");
+  const updateProfile = (e) => {
+    e.preventDefault();
+    put("/profile", { userDetails }).then(() => {
+      //setEditMode(false);
+      // setViewMode(true);
+      //localStorage.removeItem(CONSTANTS.STATUS);
+    });
   };
 
   useEffect(() => {
@@ -65,186 +69,196 @@ function UserProfile() {
       <Form style={{ maxWidth: "600px", margin: "auto" }}>
         <div className="row">
           <Form.Group className="col">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              helpertext={invalid.firstName ? "1-25 characters" : ""}
-              id="register-first-name"
-              label="First Name"
-              isInvalid={invalid.first_name}
-              value={userDetails.firstName}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, firstName: validation });
-                setUserDetails({
-                  ...userDetails,
-                  firstName: e.target.value,
-                });
-              }}
-            />
+            {/* <Form.Label>First Name</Form.Label> */}
+            <FloatingLabel label="First Name">
+              <Form.Control
+                type="text"
+                helpertext={invalid.firstName ? "1-25 characters" : ""}
+                id="register-first-name"
+                label="First Name"
+                isInvalid={invalid.first_name}
+                value={userDetails.firstName}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, firstName: validation });
+                  setUserDetails({
+                    ...userDetails,
+                    firstName: e.target.value,
+                  });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
           <Form.Group className="col">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              required
-              helpertext={invalid.lastName ? "1-25 characters" : ""}
-              id="register-last-name"
-              label="Last Name"
-              value={userDetails.lastName}
-              type="text"
-              isInvalid={invalid.lastName}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, lastName: validation });
-                setUserDetails({
-                  ...userDetails,
-                  lastName: e.target.value,
-                });
-              }}
-            />
+            <FloatingLabel label="Last Name">
+              <Form.Control
+                required
+                helpertext={invalid.lastName ? "1-25 characters" : ""}
+                id="register-last-name"
+                label="Last Name"
+                value={userDetails.lastName}
+                type="text"
+                isInvalid={invalid.lastName}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, lastName: validation });
+                  setUserDetails({
+                    ...userDetails,
+                    lastName: e.target.value,
+                  });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
         </div>
         <div className="row">
           <Form.Group className="col">
-            <Form.Label>Phone Number</Form.Label>
-            <Form.Control
-              required
-              id="register-phone"
-              type="number"
-              isInvalid={invalid.phone}
-              value={userDetails.phone}
-              onChange={(e) => {
-                const validation = e.target.value.length !== 10;
-                setInvalid({ ...invalid, phone: validation });
-                setUserDetails({
-                  ...userDetails,
-                  phone: e.target.value,
-                });
-              }}
-            />
+            <FloatingLabel label="Phone Number">
+              <Form.Control
+                required
+                id="register-phone"
+                type="number"
+                isInvalid={invalid.phone}
+                value={userDetails.phone}
+                onChange={(e) => {
+                  const validation = e.target.value.length !== 10;
+                  setInvalid({ ...invalid, phone: validation });
+                  setUserDetails({
+                    ...userDetails,
+                    phone: e.target.value,
+                  });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
         </div>
         <Form.Group>
-          <Form.Label>Address</Form.Label>
-          <Form.Control
-            required
-            helpertext={invalid.address ? "1-25 characters" : ""}
-            id="register-street"
-            label="Street"
-            type="text"
-            isInvalid={invalid.street}
-            value={userDetails.address}
-            onChange={(e) => {
-              const validation = !!(
-                e.target.value.length > 25 || e.target.value === ""
-              );
-              setInvalid({ ...invalid, address: validation });
-              setUserDetails({ ...userDetails, address: e.target.value });
-            }}
-          />
+          <FloatingLabel label="Address">
+            <Form.Control
+              required
+              helpertext={invalid.address ? "1-25 characters" : ""}
+              id="register-street"
+              label="Street"
+              type="text"
+              isInvalid={invalid.street}
+              value={userDetails.address}
+              onChange={(e) => {
+                const validation = !!(
+                  e.target.value.length > 25 || e.target.value === ""
+                );
+                setInvalid({ ...invalid, address: validation });
+                setUserDetails({ ...userDetails, address: e.target.value });
+              }}
+            />
+          </FloatingLabel>
         </Form.Group>
         <div className="row">
           <Form.Group className="col">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              required
-              helpertext={invalid.city ? "1-25 characters" : ""}
-              id="register-city"
-              label="City"
-              type="text"
-              isInvalid={invalid.city}
-              value={userDetails.city}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, city: validation });
-                setUserDetails({ ...userDetails, city: e.target.value });
-              }}
-            />
+            <FloatingLabel label="City">
+              <Form.Control
+                required
+                helpertext={invalid.city ? "1-25 characters" : ""}
+                id="register-city"
+                label="City"
+                type="text"
+                isInvalid={invalid.city}
+                value={userDetails.city}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, city: validation });
+                  setUserDetails({ ...userDetails, city: e.target.value });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
           <Form.Group className="col">
-            <Form.Label>State</Form.Label>
-            <Form.Control
-              required
-              helpertext={invalid.state ? "1-25 characters" : ""}
-              id="register-state"
-              label="state"
-              type="text"
-              isInvalid={invalid.state}
-              value={userDetails.state}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, state: validation });
-                setUserDetails({ ...userDetails, state: e.target.value });
-              }}
-            />
+            <FloatingLabel label="State">
+              <Form.Control
+                required
+                helpertext={invalid.state ? "1-25 characters" : ""}
+                id="register-state"
+                label="state"
+                type="text"
+                isInvalid={invalid.state}
+                value={userDetails.state}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, state: validation });
+                  setUserDetails({ ...userDetails, state: e.target.value });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
           <Form.Group className="col">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              required
-              helpertext={invalid.country ? "1-25 characters" : ""}
-              id="register-country"
-              label="Country"
-              type="text"
-              isInvalid={invalid.country}
-              value={userDetails.country}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, country: validation });
-                setUserDetails({ ...userDetails, country: e.target.value });
-              }}
-            />
+            <FloatingLabel label="Country">
+              <Form.Control
+                required
+                helpertext={invalid.country ? "1-25 characters" : ""}
+                id="register-country"
+                label="Country"
+                type="text"
+                isInvalid={invalid.country}
+                value={userDetails.country}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, country: validation });
+                  setUserDetails({ ...userDetails, country: e.target.value });
+                }}
+              />
+            </FloatingLabel>
           </Form.Group>
         </div>
         <div className="row">
           <Form.Group className="col">
-            <Form.Label>Zipcode</Form.Label>
-            <Form.Control
-              required
-              helpertext="5 digit zip code"
-              id="register-zip-code"
-              label="ZIP Code"
-              type="number"
-              isInvalid={invalid.zipcode}
-              value={userDetails.zipcode}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length !== 5 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, zipcode: validation });
-                setUserDetails({
-                  ...userDetails,
-                  zipcode: e.target.value,
-                });
-              }}
-            />
+            <FloatingLabel label="Zip code">
+              <Form.Control
+                required
+                helpertext="5 digit zip code"
+                id="register-zip-code"
+                label="ZIP Code"
+                type="number"
+                isInvalid={invalid.zipcode}
+                value={userDetails.zipcode}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length !== 5 || e.target.value === ""
+                  );
+                  setInvalid({ ...invalid, zipcode: validation });
+                  setUserDetails({
+                    ...userDetails,
+                    zipcode: e.target.value,
+                  });
+                }}
+              />{" "}
+            </FloatingLabel>
           </Form.Group>
 
           <Form.Group className="col">
-            <Form.Label>Gender</Form.Label>
-            <Form.Control
-              as="select"
-              default="0"
-              value={userDetails.gender}
-              onChange={(e) => {
-                setUserDetails({ ...userDetails, gender: e.target.value });
-              }}
-            >
-              <option value="0" defaultChecked>
-                Male
-              </option>
-              <option value="1">Female</option>
-            </Form.Control>
+            <FloatingLabel label="Gender">
+              <Form.Control
+                as="select"
+                default="0"
+                value={userDetails.gender}
+                onChange={(e) => {
+                  setUserDetails({ ...userDetails, gender: e.target.value });
+                }}
+              >
+                <option value="0" defaultChecked>
+                  Male
+                </option>
+                <option value="1">Female</option>
+              </Form.Control>
+            </FloatingLabel>
           </Form.Group>
         </div>
         <br />

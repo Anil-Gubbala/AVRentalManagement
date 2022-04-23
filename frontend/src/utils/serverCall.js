@@ -36,4 +36,21 @@ const post = (path, data) => {
       }
     });
 };
-export { get, post };
+
+const put = (path, data) => {
+  Axios.defaults.headers.common.authorization = localStorage.getItem(
+    REDUCER.TOKEN
+  );
+  return Axios.put(SERVER.URL + path, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response && error.response.data.err) {
+        store.dispatch(showError(error.response.data.err));
+        throw error.response.data.err;
+      } else {
+        store.dispatch(showError("Server Side Error Occured"));
+        throw "Server Side Error Occured";
+      }
+    });
+};
+export { get, post, put };

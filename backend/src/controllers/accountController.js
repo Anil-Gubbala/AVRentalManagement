@@ -110,47 +110,32 @@ const updateProfile = (req, res) => {
     zipcode,
     phone,
     gender,
-    password,
-    email,
-    role,
   } = req.body.userDetails;
-
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    if (err) {
-      console.log(err);
-      return;
-    } else {
-      var sql =
-        "INSERT INTO User ( firstName, lastName, address,city,state,country,zipcode,phone,gender, password,email,role) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-      conn.query(
-        sql,
-        [
-          firstName,
-          lastName,
-          address,
-          city,
-          state,
-          country,
-          zipcode,
-          phone,
-          gender,
-          hash,
-          email,
-          role,
-        ],
-        (err, result) => {
-          if (err) {
-            console.log(err);
-            throw err;
-          }
-          res.writeHead(200, {
-            "Content-Type": "text/plain",
-          });
-          res.send();
-        }
-      );
+  const email = req.user.email;
+  var sql =
+    "UPDATE User SET firstName = ?, lastName = ?,address =? ,city =? , state =? ,country=?, zipcode =?, phone =?, gender =? WHERE email = ?;";
+  conn.query(
+    sql,
+    [
+      firstName,
+      lastName,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      phone,
+      gender,
+      email,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+      res.send();
     }
-  });
+  );
 };
 
 const getProfile = (req, res) => {
