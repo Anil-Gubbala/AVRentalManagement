@@ -96,6 +96,7 @@ function Signin() {
                 Customer
               </option>
               <option value="1">Car Owner</option>
+              <option value="2">Admin</option>
             </Form.Control>
           </Form.Group>
           <br />

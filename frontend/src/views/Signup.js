@@ -3,7 +3,6 @@ import Axios from "axios";
 import { Link } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 import Form from "react-bootstrap/Form";
-
 import { post } from "../utils/serverCall";
 
 function Signup() {
@@ -330,6 +329,7 @@ function Signup() {
                   Customer
                 </option>
                 <option value="1">Car Owner</option>
+                <option value="2">Admin</option>
               </Form.Control>
             </Form.Group>
           </div>

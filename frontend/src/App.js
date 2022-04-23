@@ -4,7 +4,7 @@ import Home from "./views/Home";
 import Signin from "./views/Signin";
 import Signup from "./views/Signup";
 import Signout from "./views/signout";
-import AddCar from "./components/AddCar";
+import AddCar from "./views/AddCar";
 import InvalidPage from "./views/InvalidPage";
 import AdminHome from "./views/AdminHome";
 import CarHome from "./views/CarHome";
