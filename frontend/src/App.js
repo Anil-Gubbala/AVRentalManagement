@@ -8,6 +8,8 @@ import AddCar from "./views/AddCar";
 import InvalidPage from "./views/InvalidPage";
 import AdminHome from "./views/AdminHome";
 import CarOwnerHome from "./views/CarOwnerHome";
+import RideHistory from "./views/RideHistory";
+import RideDetails from "./views/RideDetails";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>
           <Route path="/addcar" exact element={<AddCar />}></Route>
+          <Route path="/ridehistory" exact element={<RideHistory />}></Route>
+          <Route path="/ridedetails" exact element={<RideDetails />}></Route>
           <Route path="*" element={<InvalidPage />}></Route>
         </Routes>
       </Router>
