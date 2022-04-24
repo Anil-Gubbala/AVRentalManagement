@@ -6,6 +6,7 @@ import { Container, Nav } from 'react-bootstrap'
 // import { AdminCars } from '../admin/AdminCars'
 // import { AdminTrips } from '../admin/AdminTrips'
 import Adminusers  from '../Admin/AdminUsers'
+import Admincars  from '../Admin/AdminCars'
 
 export function HomeAdmin () {
   const [ subPage, setSubPage ] = useState('users')
@@ -42,7 +43,7 @@ export function HomeAdmin () {
       case 'trips':
         // return <AdminTrips />
       case 'cars':
-        // return <AdminCars />
+         return <Admincars />
       case 'billings':
         // return <AdminBillings />
       case 'users':

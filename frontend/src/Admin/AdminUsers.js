@@ -3,6 +3,7 @@ import Axios from "axios";
 import Table from 'react-bootstrap/Table'
 import { get, post } from "../utils/serverCall";
 import { MdModeEditOutline } from "react-icons/md";
+import { FloatingLabel, Form } from "react-bootstrap";
 import {
     Box,
     Button,
@@ -24,6 +25,21 @@ function Adminusers(){
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [invalid, setInvalid] = useState({
+        password: false,
+        firstName: false,
+        lastName: false,
+        email: false,
+        phone: false,
+        address: false,
+        city: false,
+        state: false,
+        country: false,
+        zipcode: false,
+        gender: false,
+        role: false,
+      });
        
     useEffect(() => {
         get(`/getUsersAdmin`).then((response) => {
@@ -72,42 +88,161 @@ function Adminusers(){
                            <Modal
           open={open}
           // onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
         >
           <Box >
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Add miles
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <InputLabel id="demo-simple-select-label">
-                Select Miles
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={""}
-                label="Country"
+          <Form style={{ maxWidth: "600px", margin: "auto" }}>
+       
+          <Form.Group>
+            {/* <Form.Label>First Name</Form.Label> */}
+            <FloatingLabel label="First Name">
+              <Form.Control
+                type="text"
+                helpertext={invalid.firstName ? "1-25 characters" : ""}
+                id="register-first-name"
+                label="First Name"
+                isInvalid={invalid.first_name}
+                value={data.firstName}
                 onChange={(e) => {
-                  console.log(e.target.value);
-                  // setUserUpdated({
-                  //   ...userUpdated,
-                  //   details: {
-                  //     ...userUpdated.details,
-                  //     country: e.target.value,
-                  //   },
-                  // });
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                //   setInvalid({ ...invalid, firstName: validation });
+                //   setUserDetails({
+                //     ...userDetails,
+                //     firstName: e.target.value,
+                //   });
                 }}
-              >
-              </Select>
-            </Typography>
+              />
+            </FloatingLabel>
+          </Form.Group>
+    
+          <Form.Group >
+            <FloatingLabel label="Last Name">
+              <Form.Control
+                required
+                helpertext={invalid.lastName ? "1-25 characters" : ""}
+                id="register-last-name"
+                label="Last Name"
+                value={data.lastName}
+                type="text"
+                isInvalid={invalid.lastName}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                //   setInvalid({ ...invalid, lastName: validation });
+                //   setUserDetails({
+                //     ...userDetails,
+                //     lastName: e.target.value,
+                //   });
+                }}
+              />
+            </FloatingLabel>
+          </Form.Group>
+
+          <Form.Group >
+            <FloatingLabel label="email">
+              <Form.Control
+                required
+                helpertext={invalid.email ? "1-25 characters" : ""}
+                id="register-last-name"
+                label="Last Name"
+                value={data.email}
+                type="text"
+                isInvalid={invalid.lastName}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                //   setInvalid({ ...invalid, lastName: validation });
+                //   setUserDetails({
+                //     ...userDetails,
+                //     lastName: e.target.value,
+                //   });
+                }}
+              />
+            </FloatingLabel>
+          </Form.Group>
+
+          <Form.Group >
+            <FloatingLabel label="Role">
+              <Form.Control
+                required
+                helpertext={invalid.role}
+                id="register-role"
+                label="Last Name"
+                value={data.role}
+                type="number"
+                isInvalid={invalid.role}
+                onChange={(e) => {
+                  const validation = !!(
+                    e.target.value.length > 25 || e.target.value === ""
+                  );
+                //   setInvalid({ ...invalid, lastName: validation });
+                //   setUserDetails({
+                //     ...userDetails,
+                //     lastName: e.target.value,
+                //   });
+                }}
+              />
+            </FloatingLabel>
+          </Form.Group>
+    
+          <Form.Group>
+            <FloatingLabel label="Phone Number">
+              <Form.Control
+                required
+                id="register-phone"
+                type="number"
+                isInvalid={invalid.phone}
+                value={data.phone}
+                onChange={(e) => {
+                  const validation = e.target.value.length !== 10;
+                //   setInvalid({ ...invalid, phone: validation });
+                //   setUserDetails({
+                //     ...userDetails,
+                //     phone: e.target.value,
+                //   });
+                }}
+              />
+            </FloatingLabel>
+          </Form.Group>
+        <Form.Group>
+          <FloatingLabel label="Address">
+            <Form.Control
+              required
+              helpertext={invalid.address ? "1-25 characters" : ""}
+              id="register-street"
+              label="Street"
+              type="text"
+              isInvalid={invalid.street}
+              value={data.address}
+              onChange={(e) => {
+                const validation = !!(
+                  e.target.value.length > 25 || e.target.value === ""
+                );
+                // setInvalid({ ...invalid, address: validation });
+                // setUserDetails({ ...userDetails, address: e.target.value });
+              }}
+            />
+          </FloatingLabel>
+          </Form.Group>
+
+        <br />
+
+        <div>
+          <Button type="submit" variant="dark">
+            Update Profile
+          </Button>
+        </div>
+      </Form>
             <Button
               style={{
                 color: "#ffff",
                 backgroundColor: "#0d9cdf",
                 margin: "5px",
               }}
-              type="submit"
+              type="Save"
             >
               <h6>Add</h6>
             </Button>
@@ -117,7 +252,7 @@ function Adminusers(){
                 backgroundColor: "#0d9cdf",
                 margin: "5px",
               }}
-              type="submit"
+              type="Close"
               onClick={handleClose}
             >
               <h6>Close</h6>
