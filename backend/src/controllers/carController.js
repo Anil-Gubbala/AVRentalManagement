@@ -78,22 +78,4 @@ const getCarRides = (req, res) => {
   });
 };
 
-const getUserRides = (req, res) => {
-  console.log(req.query[0]);
-  let sql = `Select * from RideHistory  r
-  inner join User u on r.userid = u.email
-  inner join Cars c on r.carid = c.id
-  inner join Bill b on r.id=b.rideId
-  where r.userId=?
-  `;
-  conn.query(sql, [req.user.email], (err, result) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    console.log(result);
-    res.send(result[0]);
-  });
-};
-
-module.exports = { addCar, getOwnerCars, getCar, getCarRides, getUserRides };
+module.exports = { addCar, getOwnerCars, getCar, getCarRides };

@@ -15,7 +15,29 @@ const RideDetails = () => {
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCar, setRedirToCar] = useState(false);
 
-  if (role !== "1") {
+  // if (role !== "0") {
+  //   return <Navigate to={redirectHome()} />;
+  // }
+
+  const windowUrl = window.location.search;
+  const params = new URLSearchParams(windowUrl);
+  console.log(params.get("id"));
+
+  const getRideDetails = () => {
+    get(`/getRideDetails`)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getRideDetails();
+  }, []);
+
+  if (params.get("id") === null) {
     return <Navigate to={redirectHome()} />;
   }
 

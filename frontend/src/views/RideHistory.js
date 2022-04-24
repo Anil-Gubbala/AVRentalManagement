@@ -18,27 +18,23 @@ const RideHistory = () => {
   const [redirToCar, setRedirToCar] = useState(false);
   const [userRideDetails, setuserRideDetails] = useState([]);
 
-  // if (role !== "1") {
-  //   return <Navigate to={redirectHome()} />;
-  // }
+  const [selectedRide, setSelectedRide] = useState("");
+  const [redirectToDetails, setRedirectToDetails] = useState(false);
 
   const downloadData = () => {
     const pdf = new jsPDF("portrait", "px", "a4", "false");
 
     pdf.text(30, 110, "Name");
-    // pdf.setFont("Helvetica", "bold");
-    // pdf.text(60, 60, "Name");
-    // pdf.text(80, 60, "sai teja");
 
     pdf.autoTable({ html: "#table" });
     pdf.save("data.pdf");
   };
 
-  const getCarDetails = () => {
-    get(`/getuserrides`, "ts07et9443")
+  const getUserRides = () => {
+    get(`/getuserrides`)
       .then((response) => {
         console.log(response);
-        // setuserRideDetails(response);
+        setuserRideDetails(response);
       })
       .catch((err) => {
         console.log(err);
@@ -46,8 +42,21 @@ const RideHistory = () => {
   };
 
   useEffect(() => {
-    getCarDetails();
+    getUserRides();
   }, []);
+
+  const viewRideDetails = (e) => {
+    setSelectedRide(e.target.getAttribute("data"));
+    setRedirectToDetails(true);
+  };
+
+  if (role !== "0") {
+    return <Navigate to={redirectHome()} />;
+  }
+
+  if (redirectToDetails) {
+    return <Navigate to={"/ridedetails?id=" + selectedRide} />;
+  }
 
   return (
     <div>
@@ -73,37 +82,48 @@ const RideHistory = () => {
         <Table striped bordered hover id="table">
           <thead style={{ background: "#000000", color: "white" }}>
             <tr>
-              <th>Customer Name</th>
+              <th>Ride ID</th>
               <th>Date</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Car Reg Number</th>
               <th>Status</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
             {userRideDetails.map((ride) => {
               return (
-                <>
-                  <tr>
-                    <td>{ride.customerName}</td>
-                    <td>{ride.date}</td>
-                    <td>{ride.status}</td>
-                    <td>
-                      <div
-                        style={{
-                          background:
-                            ride.status == "Normal"
-                              ? "#9fd5a5"
-                              : "rgb(212 100 121)",
-                          borderRadius: "15px",
-                          textAlign: "center",
-                          display: "inherit",
-                          padding: "10px",
-                          paddingLeft: "20px",
-                          paddingRight: "20px",
-                        }}
-                      ></div>
-                    </td>
-                  </tr>
-                </>
+                <tr key={ride.id}>
+                  <td>{ride.id}</td>
+                  <td>{ride.startTime}</td>
+                  <td>{ride.source}</td>
+                  <td>{ride.destination}</td>
+                  <td>{ride.carId}</td>
+                  <td>
+                    <div
+                      style={{
+                        background:
+                          ride.status == "0" ? "#9fd5a5" : "rgb(212 100 121)",
+                        borderRadius: "15px",
+                        textAlign: "center",
+                        display: "inherit",
+                        padding: "10px",
+                        paddingLeft: "20px",
+                        paddingRight: "20px",
+                      }}
+                    ></div>
+                  </td>
+                  <td>
+                    <Button
+                      data={ride.id}
+                      variant="dark"
+                      onClick={viewRideDetails}
+                    >
+                      Book Ride
+                    </Button>
+                  </td>
+                </tr>
               );
             })}
           </tbody>
