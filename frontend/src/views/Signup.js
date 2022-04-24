@@ -108,9 +108,24 @@ function Signup() {
         }}
       >
         <div className="col-md-5">
-          <Container>
-            <div style={{ marginBottom: "50px" }}>
-              <h2 className="mb-4 text-center"> Account Registration</h2>
+          <div
+            style={{
+              fontFamily: "unset",
+              fontSize: "45px",
+              fontWeight: "300",
+            }}
+          >
+            AV Cloud
+          </div>
+          <div style={{ width: "75%" }}>
+            <div
+              style={{
+                marginBottom: "30px",
+                marginTop: "20px",
+                fontSize: "25px",
+              }}
+            >
+              Register an account
             </div>
 
             <Form style={{ maxWidth: "600px", margin: "auto" }}>
@@ -376,7 +391,7 @@ function Signup() {
                 </Button>
               </div>
             </Form>
-          </Container>
+          </div>
         </div>
         <div className="col-md-5">
           <img
