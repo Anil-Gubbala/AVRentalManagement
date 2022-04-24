@@ -8,6 +8,7 @@ import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
 import Table from "react-bootstrap/Table";
+import { Col, Row } from "react-bootstrap";
 
 const RideDetails = () => {
   const dispatch = useDispatch();
@@ -47,54 +48,77 @@ const RideDetails = () => {
       <Container>
         <h2 className="mb-4 text-center">Details</h2>
       </Container>
-      <div style={{ display: "flex", margin: "15px", padding: "10px" }}>
-        <div className="col-md-6">
-          <div style={{ alignContent: "center" }}>
-            <h2>Ride Details</h2>
-          </div>
-          <div>Customer Name: </div>
-          <div>Origin: </div>
-          <div>Destination: </div>
-          <div>Date: </div>
-          <div>Fare: </div>
-          <div>Ride Status: </div>
-        </div>
-        <div className="col-md-5">
-          <div>
-            <h2>Invoice</h2>
-          </div>
-          <div>
-            <Table striped bordered hover>
-              <thead style={{ background: "#4B76B6", color: "white" }}>
-                <tr>
-                  <th>Charges</th>
-                  <th>Distance</th>
-                  <th>Price</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>@mdo</td>
-                  <td>@mdo</td>
-                  <td>Normal</td>
-                  <td>14.3</td>
-                </tr>
-                <tr>
-                  <td
-                    colSpan={3}
-                    style={{ textAlign: "right", fontWeight: "bold" }}
-                  >
-                    Total Amount
-                  </td>
 
-                  <td>$14.3</td>
-                </tr>
-              </tbody>
-            </Table>
-          </div>
-        </div>
-      </div>
+      <Container style={{ marginTop: "32px" }}>
+        <Row>
+          <Col>
+            <Row>
+              <h2>Ride Details</h2>
+            </Row>
+            <Row>
+              <Col>
+                <h6>Ride ID:</h6>
+              </Col>
+              <Col>{rideDetails.id}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6>Origin:</h6>
+              </Col>
+              <Col>{rideDetails.source}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6>Destination:</h6>
+              </Col>
+              <Col>{rideDetails.destination}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6>Car Reg Number:</h6>
+              </Col>
+              <Col>{rideDetails.carId}</Col>
+            </Row>
+          </Col>
+          <Col>
+            <div className="col-md-5">
+              <div>
+                <h2>Invoice</h2>
+              </div>
+              <div>
+                <Table striped bordered hover>
+                  <thead style={{ background: "#4B76B6", color: "white" }}>
+                    <tr>
+                      <th>Charges</th>
+                      <th>Distance</th>
+                      <th>Price</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>@mdo</td>
+                      <td>@mdo</td>
+                      <td>Normal</td>
+                      <td>14.3</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={3}
+                        style={{ textAlign: "right", fontWeight: "bold" }}
+                      >
+                        Total Amount
+                      </td>
+
+                      <td>$14.3</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
