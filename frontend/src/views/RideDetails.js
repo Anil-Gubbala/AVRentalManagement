@@ -93,6 +93,7 @@ const RideDetails = () => {
                       <th>Distance</th>
                       <th>Price</th>
                       <th>Amount</th>
+                      <th>Tax</th>
                     </tr>
                   </thead>
                   <tbody>
