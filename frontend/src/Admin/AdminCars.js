@@ -4,7 +4,6 @@ import Table from 'react-bootstrap/Table'
 import { get, post } from "../utils/serverCall";
 import { MdModeEditOutline } from "react-icons/md";
 import { Link, Navigate } from "react-router-dom";
-
 import {
     Box,
     Button,
@@ -26,6 +25,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Admincars(){
 
+
     const [cars, setCars] = useState([]);
     const [active,setActive] = useState(0);
     const [repair, setRepair] = useState(0);
@@ -34,13 +34,12 @@ function Admincars(){
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [redirToCar, setRedirToCar] = useState(false);
-
    
     useEffect(() => {
         get(`/getCarsAdmin`).then((response) => {
           setCars(response);
         });
-       setActive(cars.filter(item => item.status === "Active").length);
+       setActive(cars.filter(item => item.status == "Active").length);
        setRepair(cars.filter(item => item.status === "Repair").length);
       }, []);
       
@@ -62,7 +61,6 @@ function Admincars(){
         event.preventDefault();
         setRedirToCar(true);
       };
-
       let ad = null;
       console.log(redirToCar);
       if (redirToCar) ad = <Navigate to="/addcar" />;
