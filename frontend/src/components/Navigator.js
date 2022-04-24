@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
 import { REDUCER } from "../utils/consts";
 import { get } from "../utils/serverCall";
-import { isAdmin, isSignedIn } from "../utils/checkSignin";
+import { getRole, isSignedIn } from "../utils/checkSignin";
+import { redirectHome } from "../utils/redirector";
 
 function Navigator() {
   const loginState = useSelector((state) => state.loginReducer);
@@ -16,7 +17,8 @@ function Navigator() {
   const messageState = useSelector((state) => state.messageReducer);
 
   const [signedIn, setSignedIn] = useState(isSignedIn());
-  const [admin, setAdmin] = useState(isAdmin());
+  const [role, setRole] = useState("0");
+  // const [admin, setAdmin] = useState(isAdmin());
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [message, setMessage] = useState("");
@@ -26,9 +28,9 @@ function Navigator() {
     if (signedIn) {
       get(`/getLogin`).then((response) => {
         if (response.loggedIn === true) {
+          setRole(getRole());
         } else {
           setSignedIn(false);
-          setAdmin(false);
           localStorage.clear();
         }
       });
@@ -37,7 +39,7 @@ function Navigator() {
 
   useEffect(() => {
     setSignedIn(isSignedIn());
-    setAdmin(isAdmin());
+    setRole(getRole());
     console.log("entered change login state");
   }, [loginState]);
 
@@ -76,42 +78,51 @@ function Navigator() {
           <Navbar bg="dark" variant="dark">
             <Container>
               <Navbar.Brand>Group13</Navbar.Brand>
-              {!admin && (
+              {/* {!admin && (
                 <Nav className="me-auto">
                   <Link to="/home" className="nav-link">
-                    HOME
-                  </Link>
-                </Nav>
-              )}
-              {signedIn && admin && (
-                <Nav className="me-auto">
-                  <Link to="/adminHome" className="nav-link">
-                    HOME
-                  </Link>
-                </Nav>
-              )}
-              {signedIn && admin && (
-                <Nav className="me-auto">
-                  <Link to="/adminNewFlight" className="nav-link">
-                    Add Flight
+                    Home
                   </Link>
                 </Nav>
               )}
 
+              {signedIn && admin && (
+                <Nav className="me-auto">
+                  <Link to="/adminHome" className="nav-link">
+                    Home
+                  </Link>
+                </Nav>
+              )} */}
+
+              <Nav className="me-auto">
+                <Link to={redirectHome()} className="nav-link">
+                  Home
+                </Link>
+              </Nav>
+
               {!signedIn && (
                 <Nav>
                   <Link to="/signin" className="nav-link">
-                    SIGN IN
+                    Sign In
                   </Link>
                 </Nav>
               )}
+
+              {signedIn && role === "0" && (
+                <Nav>
+                  <Link to="/ridehistory" className="nav-link">
+                    My Bookings
+                  </Link>
+                </Nav>
+              )}
+
               {signedIn && (
                 <Nav>
                   <Link to="/userProfile" className="nav-link">
-                    PROFILE
+                    Profile
                   </Link>
                   <Link to="/signout" className="nav-link">
-                    SIGN OUT
+                    Sign Out
                   </Link>
                 </Nav>
               )}
