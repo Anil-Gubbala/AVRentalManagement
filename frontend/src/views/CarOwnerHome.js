@@ -5,26 +5,58 @@ import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import Container from "react-bootstrap/esm/Container";
 import Table from "react-bootstrap/Table";
+import { get } from "../utils/serverCall";
 
 function CarOwnerHome() {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCar, setRedirToCar] = useState(false);
+  const [redirToCarHistory, setRedirToCarHistory] = useState(false);
+  const [carDetails, setCarDetails] = useState([]);
 
   // if (role !== "1") {
   //   return <Navigate to={redirectHome()} />;
   // }
 
+  const getCarDetails = () => {
+    get(`/getownercars`)
+      .then((response) => {
+        console.log(response);
+        setCarDetails(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getCarDetails();
+  }, []);
+
   const AddCar = (event) => {
     event.preventDefault();
     setRedirToCar(true);
   };
-  let ad = null;
-  if (redirToCar) ad = <Navigate to="/addcar" />;
+
+  const EditCar = (event) => {
+    event.preventDefault();
+    setRedirToCar(true);
+  };
+
+  const RideHistory = (event) => {
+    event.preventDefault();
+    setRedirToCarHistory(true);
+  };
+
+  let addCarPage = null;
+  if (redirToCar) addCarPage = <Navigate to="/addcar" />;
+  let rideDetailPage = null;
+  if (redirToCarHistory) rideDetailPage = <Navigate to="/carridehistory" />;
   return (
     <div>
-      {ad}
+      {addCarPage}
+      {rideDetailPage}
       <Container>
         <h2 className="mb-4 text-center">Car Owner Home</h2>
         <div style={{ margin: "20px", textAlign: "right" }}>
@@ -40,39 +72,31 @@ function CarOwnerHome() {
                 <th>Make</th>
                 <th>Model</th>
                 <th>Capacity</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-              </tr>
+              {carDetails.map((car) => {
+                return (
+                  <>
+                    <tr key={car.regNumber}>
+                      <td>{car.regNumber}</td>
+                      <td>{car.make}</td>
+                      <td>{car.model}</td>
+                      <td>{car.capacity}</td>
+                      <td>
+                        <button onClick={EditCar}>Edit</button>
+                        <button
+                          style={{ marginLeft: "20px" }}
+                          onClick={RideHistory}
+                        >
+                          Ride History
+                        </button>
+                      </td>
+                    </tr>
+                  </>
+                );
+              })}
             </tbody>
           </Table>
         </div>

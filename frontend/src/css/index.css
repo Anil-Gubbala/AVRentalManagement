@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -6,6 +8,28 @@
 
 .form-control {
   input-color: black;
+}
+
+.admin-container {
+  display: flex;
+  min-height:1200px;
+}
+
+.admin-nav-bar {
+  padding: 40px 16px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid black;
+  height: 100%
+}
+
+.admin-navigation-item:hover {
+  background-color: rgb(13, 202, 240);
+}
+
+
+.admin-main-page {
+  padding: 40px 16px;
 }
 
 .form-floating{

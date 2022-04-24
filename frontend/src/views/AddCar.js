@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
-import { post } from "../utils/serverCall";
+import { post, get } from "../utils/serverCall";
 
 const AddCar = () => {
   const dispatch = useDispatch();
@@ -36,6 +36,30 @@ const AddCar = () => {
   };
 
   const [carDetails, setCarDetails] = useState(defaultValues);
+
+  const getCarDetails = () => {
+    get(`/getCar`, "ts07et9443")
+      .then((response) => {
+        console.log(response);
+        let details = {
+          number: response.regNumber,
+          make: response.make,
+          model: response.model,
+          color: response.color,
+          build: response.build,
+          status: response.status,
+          capacity: response.capacity,
+        };
+        setCarDetails(details);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getCarDetails();
+  }, []);
 
   //   if (role !== "1") {
   //     return <Navigate to={redirectHome()} />;
@@ -90,6 +114,7 @@ const AddCar = () => {
                 helpertext={invalid.number ? "1-10 characters" : ""}
                 id="carNumber"
                 label="Number"
+                value={carDetails.number}
                 isInvalid={invalid.number}
                 onChange={(e) => {
                   const validation = !!(
@@ -108,6 +133,7 @@ const AddCar = () => {
               <Form.Label>Make</Form.Label>
               <Form.Control
                 type="text"
+                value={carDetails.make}
                 helpertext={invalid.make ? "1-10 characters" : ""}
                 id="carMake"
                 label="Make"
@@ -131,6 +157,7 @@ const AddCar = () => {
               <Form.Label>Model</Form.Label>
               <Form.Control
                 type="text"
+                value={carDetails.model}
                 helpertext={invalid.model ? "1-10 characters" : ""}
                 id="carModel"
                 label="Model"
@@ -152,6 +179,7 @@ const AddCar = () => {
               <Form.Label>Color</Form.Label>
               <Form.Control
                 type="text"
+                value={carDetails.color}
                 helpertext={invalid.color ? "1-10 characters" : ""}
                 id="carColor"
                 label="Color"
@@ -175,7 +203,6 @@ const AddCar = () => {
               <Form.Label>Build</Form.Label>
               <Form.Control
                 as="select"
-                default="SUV"
                 value={carDetails?.build}
                 onChange={(e) => {
                   setCarDetails({ ...carDetails, build: e.target.value });
@@ -208,6 +235,7 @@ const AddCar = () => {
               <Form.Label>Capacity</Form.Label>
               <Form.Control
                 type="number"
+                value={carDetails.capacity}
                 helpertext={invalid.capacity ? "Greater than 0" : ""}
                 id="carCapacity"
                 label="Capacity"
