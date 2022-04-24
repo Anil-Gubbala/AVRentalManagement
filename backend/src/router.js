@@ -12,6 +12,7 @@ const {
   updateProfile,
 } = require("./controllers/accountController");
 const { addCar } = require("./controllers/carController");
+const { startTrip, trackTrip } = require("./controllers/tripController");
 
 const router = express.Router();
 
@@ -27,5 +28,9 @@ router.route("/signout").get(checkAuth, signout);
 router.route("/profile").get(checkAuth, getProfile);
 router.route("/profile").put(checkAuth, updateProfile);
 router.route("/addcar").post(checkAuth, addCar);
+
+router.route("/starttrip").post(startTrip);
+
+router.route("/tracktrip/:id").get(trackTrip);
 
 module.exports = router;
