@@ -195,7 +195,7 @@ function Home() {
         >
           <thead>
             <tr>
-              <th>Model</th>
+              <th>Make & Model</th>
               <th>Type</th>
               <th>Capacity</th>
               <th>Arrival Time</th>
@@ -207,7 +207,7 @@ function Home() {
             {availableCars.map((each) => {
               return (
                 <tr key={each.id}>
-                  <td>{each.model}</td>
+                  <td>{each.brand} {each.model} or similar</td>
                   <td>{each.type}</td>
                   <td>{each.capacity}</td>
                   <td>{each.time}</td>

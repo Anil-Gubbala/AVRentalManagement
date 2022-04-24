@@ -56,7 +56,7 @@ const startRide = (req, res) => {
         let argTrip = '--trip_id=' + tripId;
         console.log(argFilter, pickup, dest, argTrip);
 
-        const pythonProcess = spawn('python', ['C:\\Users\\poona\\IdeaProjects\\AVRentalManagement\\carla\\av_rental_client.py', argFilter, pickup, dest, argTrip, "--write_to_db=True", "--recording=True"]);
+        const pythonProcess = spawn('python', ['C:\\Users\\poona\\IdeaProjects\\AVRentalManagement\\carla\\av_rental_client.py', argFilter, pickup, dest, argTrip, "--write_to_db=True", "--recording=True", "--recording_frequency=1"]);
 
         pythonProcess.stdout.on('data', (data) => {
             // insert contents of file into collection as JSON object
@@ -85,7 +85,7 @@ const trackRide = async function (req, res) {
         .sort({timestamp: -1})
         .limit(1)
         .map((item) => {
-            console.log("GNSS " + item);
+            // console.log("GNSS " + item);
             return {
                 trip_id: item.trip_id,
                 distance: item.distance_to_dest,
@@ -100,14 +100,13 @@ const trackRide = async function (req, res) {
             .sort({timestamp: -1})
             .limit(1)
             .map((item) => {
-                console.log(item)
+                // console.log(item)
                 return {camera_url: item.url || ''}
             }).next(),
         db.collection("connectionDetails").find(query)
             .sort({timestamp: -1})
             .limit(1)
             .map((item) => {
-                console.log(item)
                 return {
                     trip_status: item.connection_status || 'inactive'
                 }
