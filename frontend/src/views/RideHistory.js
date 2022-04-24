@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Axios from "axios";
 import Container from "react-bootstrap/esm/Container";
-import Form from "react-bootstrap/Form";
+
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
-import Table from "react-bootstrap/Table";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 
 const RideHistory = () => {
   const dispatch = useDispatch();
@@ -19,13 +21,40 @@ const RideHistory = () => {
   //   return <Navigate to={redirectHome()} />;
   // }
 
+  const downloadData = () => {
+    const pdf = new jsPDF("portrait", "px", "a4", "false");
+
+    pdf.text(30, 110, "Name");
+    // pdf.setFont("Helvetica", "bold");
+    // pdf.text(60, 60, "Name");
+    // pdf.text(80, 60, "sai teja");
+
+    pdf.autoTable({ html: "#table" });
+    pdf.save("data.pdf");
+  };
+
   return (
     <div>
       <Container>
         <h2 className="mb-4 text-center">Ride History</h2>
       </Container>
       <Container>
-        <Table striped bordered hover>
+        <div style={{ textAlign: "right" }}>
+          <Button
+            type="submit"
+            onClick={downloadData}
+            style={{
+              marginBottom: "8px",
+              padding: "10px",
+              background: "#000000",
+            }}
+          >
+            Download PDF
+          </Button>
+        </div>
+      </Container>
+      <Container>
+        <Table striped bordered hover id="table">
           <thead style={{ background: "#000000", color: "white" }}>
             <tr>
               <th>Customer Name</th>
