@@ -60,6 +60,10 @@ const registerUser = (req, res) => {
     password,
     email,
     role,
+    cardName,
+    cardNumber,
+    cvv,
+    expiry,
   } = req.body.userDetails;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -89,7 +93,23 @@ const registerUser = (req, res) => {
           if (err) {
             sendError(res, 404, err.code);
           } else {
-            res.status(200).send({ success: true });
+            if (role === "0") {
+              const cards =
+                "INSERT INTO Cards ( userId, cardName, cardNumber,cvv,expiry) VALUES (?,?,?,?,?)";
+              conn.query(
+                cards,
+                [email, cardName, cardNumber, cvv, expiry],
+                (err, result) => {
+                  if (err) {
+                    sendError(res, 404, err.code);
+                  } else {
+                    res.status(200).send({ success: true });
+                  }
+                }
+              );
+            } else {
+              res.status(200).send({ success: true });
+            }
           }
         }
       );
@@ -108,6 +128,10 @@ const updateProfile = (req, res) => {
     zipcode,
     phone,
     gender,
+    cardName,
+    cardNumber,
+    expiry,
+    cvv,
   } = req.body.userDetails;
   const email = req.user.email;
   var sql =
@@ -130,14 +154,37 @@ const updateProfile = (req, res) => {
       if (err) {
         sendError(res, 500, err.code);
       }
-      res.send();
+      if (req.user.role === "0") {
+        var sql =
+          "UPDATE Cards SET cardName = ?, cardNumber = ?,expiry =? ,cvv =? WHERE userId = ?;";
+        conn.query(
+          sql,
+          [cardName, cardNumber, expiry, cvv, email],
+          (err, result) => {
+            if (err) {
+              sendError(res, 500, err.code);
+            } else {
+              res.send();
+            }
+          }
+        );
+      } else {
+        res.send();
+      }
     }
   );
 };
 
 const getProfile = (req, res) => {
   const email = req.user.email;
-  conn.query("select * from User where email = ?", [email], (err, result) => {
+  var sql = "";
+  if (req.user.role === "0") {
+    sql =
+      "select * from User join Cards on User.email = Cards.userId where User.email = ?";
+  } else {
+    sql = "select * from User where email = ?";
+  }
+  conn.query(sql, [email], (err, result) => {
     if (err) {
       sendError(res, 500, err.code);
       return;

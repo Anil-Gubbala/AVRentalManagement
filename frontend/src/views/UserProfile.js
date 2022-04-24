@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { REDUCER } from "../utils/consts";
 import { get, put } from "../utils/serverCall";
-import { displayMessage } from "../utils/messages";
+import { displayError, displayMessage } from "../utils/messages";
 
 function UserProfile() {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
@@ -20,6 +20,10 @@ function UserProfile() {
     zipcode: false,
     gender: false,
     role: false,
+    cardName: false,
+    cardNumber: false,
+    expiry: false,
+    cvv: false,
   });
   const defaultValues = {
     password: "",
@@ -34,6 +38,10 @@ function UserProfile() {
     phone: "",
     gender: "0",
     role: "0",
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
   };
 
   const [userDetails, setUserDetails] = useState(defaultValues);
@@ -53,6 +61,12 @@ function UserProfile() {
   };
 
   const updateProfile = (e) => {
+    for (const property in invalid) {
+      if (invalid[property]) {
+        displayError("Fill valid details");
+        return;
+      }
+    }
     e.preventDefault();
     put("/profile", { userDetails }).then(() => {
       displayMessage("Profile details updated");
@@ -260,8 +274,96 @@ function UserProfile() {
             </FloatingLabel>
           </Form.Group>
         </div>
+        {/* -------------------CARD DETAILS------------------ */}
+        {userDetails.role === "0" && (
+          <div className="row" style={{ marginBottom: "8px" }}>
+            <Form.Group className="col">
+              <FloatingLabel label="Name on Card">
+                <Form.Control
+                  required
+                  helpertext={invalid.card ? "1-25 characters" : ""}
+                  id="register-cardname"
+                  label="Card Name"
+                  type="text"
+                  value={userDetails.cardName}
+                  isInvalid={invalid.cardName}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value.length > 25 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, cardName: validation });
+                    setUserDetails({
+                      ...userDetails,
+                      cardName: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="col">
+              <FloatingLabel label="Expiry">
+                <Form.Control
+                  required
+                  id="expiry month"
+                  type="month"
+                  value={userDetails.expiry}
+                  isInvalid={invalid.expiry}
+                  onChange={(e) => {
+                    setUserDetails({
+                      ...userDetails,
+                      expiry: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
+            </Form.Group>
+          </div>
+        )}
+        {userDetails.role === "0" && (
+          <div className="row" style={{ marginBottom: "8px" }}>
+            <Form.Group className="col">
+              <FloatingLabel label="Card Number">
+                <Form.Control
+                  required
+                  id="card-number"
+                  type="number"
+                  value={userDetails.cardNumber}
+                  isInvalid={invalid.cardNumber}
+                  onChange={(e) => {
+                    const validation = e.target.value.length !== 12;
+                    setInvalid({ ...invalid, cardNumber: validation });
+                    setUserDetails({
+                      ...userDetails,
+                      cardNumber: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="col">
+              <FloatingLabel label="CVV">
+                <Form.Control
+                  required
+                  id="cvv"
+                  type="number"
+                  value={userDetails.cvv}
+                  isInvalid={invalid.cvv}
+                  onChange={(e) => {
+                    const validation = !(
+                      e.target.value.length === 3 || e.target.value.length === 4
+                    );
+                    setInvalid({ ...invalid, cvv: validation });
+                    setUserDetails({
+                      ...userDetails,
+                      cvv: e.target.value,
+                    });
+                  }}
+                />{" "}
+              </FloatingLabel>
+            </Form.Group>
+          </div>
+        )}
         <br />
-
         <div>
           <Button type="submit" onClick={updateProfile} variant="dark">
             Update Profile

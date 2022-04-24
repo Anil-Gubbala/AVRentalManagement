@@ -5,11 +5,12 @@ import Container from "react-bootstrap/esm/Container";
 import { Form, Button } from "react-bootstrap";
 import { post } from "../utils/serverCall";
 import carLogin from "./../images/carLogin.jpeg";
+import { displayError } from "../utils/messages";
 
 function Signup() {
   Axios.defaults.withCredentials = true;
   const [registered, setRegisterd] = useState(false);
-  const [message, setMessage] = useState("");
+
   const [invalid, setInvalid] = useState({
     password: false,
     firstName: false,
@@ -23,6 +24,10 @@ function Signup() {
     zipcode: false,
     gender: false,
     role: false,
+    cardName: false,
+    cardNumber: false,
+    expiry: false,
+    cvv: false,
   });
   const defaultValues = {
     password: "",
@@ -37,6 +42,10 @@ function Signup() {
     phone: "",
     gender: "0",
     role: "0",
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
   };
 
   const [userDetails, setUserDetails] = useState(defaultValues);
@@ -54,25 +63,44 @@ function Signup() {
       userDetails.zipcode.length < 5
     ) {
       alert("Please fill all fields");
-      setMessage("Please fill all fields");
+      displayError("Please fill all fields");
     } else if (
       userDetails.email.includes(" ") ||
       userDetails.zipcode.includes(" ") ||
       userDetails.password.includes(" ")
     ) {
       alert("Space character not allowed in zipcode, password, email_id");
-      setMessage("Space character not allowed in zipcode, password, email_id");
+      displayError(
+        "Space character not allowed in zipcode, password, email_id"
+      );
     } else {
+      for (const property in invalid) {
+        if (invalid[property]) {
+          displayError("Fill valid details");
+          return;
+        }
+      }
+      if (userDetails.role === "0") {
+        if (
+          userDetails.cardName === "" ||
+          userDetails.cardNumber === "" ||
+          userDetails.expiry === "" ||
+          userDetails.cvv === ""
+        ) {
+          displayError("Fill valid card details");
+          return;
+        }
+      }
       post(`/register`, {
         userDetails,
       })
         .then((response) => {
           console.log(response);
-          setMessage(`Registration Successful`);
+          displayError(`Registration Successful`);
           setRegisterd(true);
         })
         .catch((error) => {
-          setMessage(error.response.err);
+          displayError(error.response.err);
           setRegisterd(false);
         });
     }
@@ -82,7 +110,7 @@ function Signup() {
     return (
       <form className="flight-book-form">
         <div className="main">
-          <h1 style={{ textAlign: "center" }}> {message}</h1>
+          {/* <h1 style={{ textAlign: "center" }}> {message}</h1> */}
           <br />
           <Link to="/signin" style={{ fontSize: 35, textAlign: "center" }}>
             <h1>Go to Login Page</h1>
@@ -108,7 +136,7 @@ function Signup() {
         }}
       >
         <div className="col-md-5">
-          <div
+          {/* <div
             style={{
               fontFamily: "unset",
               fontSize: "45px",
@@ -116,7 +144,7 @@ function Signup() {
             }}
           >
             AV Cloud
-          </div>
+          </div> */}
           <div style={{ width: "75%" }}>
             <div
               style={{
@@ -129,7 +157,7 @@ function Signup() {
             </div>
 
             <Form style={{ maxWidth: "600px", margin: "auto" }}>
-              <div className="row" style={{ marginBottom: "20px" }}>
+              <div className="row" style={{ marginBottom: "8px" }}>
                 <Form.Group className="col">
                   <Form.Label>First Name</Form.Label>
                   <Form.Control
@@ -195,7 +223,7 @@ function Signup() {
                   />
                 </Form.Group>
               </div>
-              <div className="row" style={{ marginBottom: "20px" }}>
+              <div className="row" style={{ marginBottom: "8px" }}>
                 <Form.Group className="col">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
@@ -235,7 +263,7 @@ function Signup() {
                   />
                 </Form.Group>
               </div>
-              <div className="row" style={{ marginBottom: "20px" }}>
+              <div className="row" style={{ marginBottom: "8px" }}>
                 <Form.Group>
                   <Form.Label>Address</Form.Label>
                   <Form.Control
@@ -259,7 +287,7 @@ function Signup() {
                 </Form.Group>
               </div>
 
-              <div className="row" style={{ marginBottom: "20px" }}>
+              <div className="row" style={{ marginBottom: "8px" }}>
                 <Form.Group className="col">
                   <Form.Label>City</Form.Label>
                   <Form.Control
@@ -318,7 +346,7 @@ function Signup() {
                   />
                 </Form.Group>
               </div>
-              <div className="row" style={{ marginBottom: "20px" }}>
+              <div className="row" style={{ marginBottom: "8px" }}>
                 <Form.Group className="col">
                   <Form.Label>Zipcode</Form.Label>
                   <Form.Control
@@ -365,7 +393,27 @@ function Signup() {
                     as="select"
                     default="0"
                     onChange={(e) => {
-                      setUserDetails({ ...userDetails, role: e.target.value });
+                      // if (e.target.value !== "0") {
+                      setInvalid({
+                        ...invalid,
+                        cardName: false,
+                        cardNumber: false,
+                        cvv: false,
+                        expiry: false,
+                      });
+                      setUserDetails({
+                        ...userDetails,
+                        cardName: "",
+                        cardNumber: "",
+                        cvv: "",
+                        expiry: "",
+                        role: e.target.value,
+                      });
+                      // }
+                      // setUserDetails({
+                      //   ...userDetails,
+                      //   role: e.target.value,
+                      // });
                     }}
                   >
                     <option value="0" defaultChecked>
@@ -376,6 +424,88 @@ function Signup() {
                   </Form.Control>
                 </Form.Group>
               </div>
+              {/* -------------------CARD DETAILS------------------ */}
+              {userDetails.role === "0" && (
+                <div className="row" style={{ marginBottom: "8px" }}>
+                  <Form.Group className="col">
+                    <Form.Label>Name on Card</Form.Label>
+                    <Form.Control
+                      required
+                      helpertext={invalid.card ? "1-25 characters" : ""}
+                      id="register-cardname"
+                      label="Card Name"
+                      type="text"
+                      isInvalid={invalid.cardName}
+                      onChange={(e) => {
+                        const validation = !!(
+                          e.target.value.length > 25 || e.target.value === ""
+                        );
+                        setInvalid({ ...invalid, cardName: validation });
+                        setUserDetails({
+                          ...userDetails,
+                          cardName: e.target.value,
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className="col">
+                    <Form.Label>Exiry Date</Form.Label>
+                    <Form.Control
+                      required
+                      id="expiry month"
+                      type="month"
+                      isInvalid={invalid.expiry}
+                      onChange={(e) => {
+                        setUserDetails({
+                          ...userDetails,
+                          expiry: e.target.value,
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                </div>
+              )}
+              {userDetails.role === "0" && (
+                <div className="row" style={{ marginBottom: "8px" }}>
+                  <Form.Group className="col">
+                    <Form.Label>Card Number</Form.Label>
+                    <Form.Control
+                      required
+                      id="card-number"
+                      type="number"
+                      isInvalid={invalid.cardNumber}
+                      onChange={(e) => {
+                        const validation = e.target.value.length !== 12;
+                        setInvalid({ ...invalid, cardNumber: validation });
+                        setUserDetails({
+                          ...userDetails,
+                          cardNumber: e.target.value,
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className="col">
+                    <Form.Label>CVV</Form.Label>
+                    <Form.Control
+                      required
+                      id="cvv"
+                      type="number"
+                      isInvalid={invalid.cvv}
+                      onChange={(e) => {
+                        const validation = !(
+                          e.target.value.length === 3 ||
+                          e.target.value.length === 4
+                        );
+                        setInvalid({ ...invalid, cvv: validation });
+                        setUserDetails({
+                          ...userDetails,
+                          cvv: e.target.value,
+                        });
+                      }}
+                    />
+                  </Form.Group>
+                </div>
+              )}
               <br />
               <div>
                 <Button
