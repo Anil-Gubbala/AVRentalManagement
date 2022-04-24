@@ -15,6 +15,7 @@ const AddCar = () => {
 
   const [message, setMessage] = useState("");
   const [redirToCarHome, setRedirToCarHome] = useState(false);
+
   const [invalid, setInvalid] = useState({
     number: false,
     make: false,
@@ -58,8 +59,10 @@ const AddCar = () => {
         carDetails,
       })
         .then((response) => {
+          console.log(`Car Added Successfully`);
           console.log(response);
           setMessage(`Car Added Successfully`);
+          setRedirToCarHome(true);
         })
         .catch((error) => {
           setMessage(error);
