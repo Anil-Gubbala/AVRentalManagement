@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
-import { get } from "../utils/serverCall";
+import { get, post } from "../utils/serverCall";
 import { displayError } from "../utils/messages";
 
 function Home() {
@@ -15,6 +15,10 @@ function Home() {
   const [rideDetails, setRideDetails] = useState(defaultValues);
 
   const [availableCars, setAvailableCars] = useState([]);
+
+  const [loadTrackingPage, setLoadTrackingPage] = useState(false);
+
+  const [trackId, setTrackId] = useState("");
 
   const dummyCars = [
     {
@@ -64,7 +68,10 @@ function Home() {
     if (!validate()) {
       return;
     }
+
+    //temp code
     setAvailableCars(dummyCars);
+
     // get(`/checkAvailability`, { rideDetails })
     //   .then((response) => {
     //     //display list of vehicles from db
@@ -74,8 +81,29 @@ function Home() {
     //   });
   };
 
+  const bookRide = (e) => {
+    // console.log(e.target.getAttribute("carId"));
+    const carId = e.target.getAttribute("carId");
+    // temp code
+    setTrackId(carId);
+    setLoadTrackingPage(true);
+
+    // post("/bookRide", {
+    //   ...rideDetails,
+    //   carId: e.target.getAttribute("carId"),
+    // }).then((response) => {
+    //   //create booking in db and return the booking ID for tracking
+    //   setTrackId(response.bookingId);
+    //   setLoadTrackingPage(true);
+    // });
+  };
+
   if (role !== "0") {
     return <Navigate to={redirectHome()} />;
+  }
+
+  if (loadTrackingPage) {
+    return <Navigate to={"/trackRide?id=" + trackId} />;
   }
   return (
     <div>
@@ -159,7 +187,9 @@ function Home() {
                   <td>{each.time}</td>
                   <td>{each.fare}</td>
                   <td>
-                    <Button variant="dark">Book Ride</Button>
+                    <Button carId={each.id} variant="dark" onClick={bookRide}>
+                      Book Ride
+                    </Button>
                   </td>
                 </tr>
               );
