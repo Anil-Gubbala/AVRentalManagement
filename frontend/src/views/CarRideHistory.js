@@ -24,7 +24,7 @@ const CarRideHistory = () => {
     get(`/getCarRides`, "ts07et9443")
       .then((response) => {
         console.log(response);
-        setCarRideDetails(response);
+        // setCarRideDetails(response);
       })
       .catch((err) => {
         console.log(err);
@@ -67,50 +67,35 @@ const CarRideHistory = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>
-                <div
-                  style={{
-                    background: "#9fd5a5",
-                    borderRadius: "15px",
-                    textAlign: "center",
-                    display: "inherit",
-                    padding: "10px",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
-                  }}
-                >
-                  Normal
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>
-                <div
-                  style={{
-                    background: "rgb(212 100 121)",
-                    borderRadius: "15px",
-                    textAlign: "center",
-                    display: "inherit",
-                    padding: "10px",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
-                  }}
-                >
-                  Collision
-                </div>
-              </td>
-            </tr>
+            {carRideDetails.map((ride) => {
+              return (
+                <>
+                  <tr>
+                    <td>{ride.origin}</td>
+                    <td>{ride.destination}</td>
+                    <td>{ride.customerName}</td>
+                    <td>{ride.date}</td>
+                    <td>{ride.fare}</td>
+                    <td>
+                      <div
+                        style={{
+                          background:
+                            ride.status == "Normal"
+                              ? "#9fd5a5"
+                              : "rgb(212 100 121)",
+                          borderRadius: "15px",
+                          textAlign: "center",
+                          display: "inherit",
+                          padding: "10px",
+                          paddingLeft: "20px",
+                          paddingRight: "20px",
+                        }}
+                      ></div>
+                    </td>
+                  </tr>
+                </>
+              );
+            })}
           </tbody>
         </Table>
       </Container>

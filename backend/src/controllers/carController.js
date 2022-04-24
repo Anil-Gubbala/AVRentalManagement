@@ -63,8 +63,12 @@ const getCar = (req, res) => {
 
 const getCarRides = (req, res) => {
   console.log(req.query[0]);
-  let sql = "Select * from Cars where Cars.ownerId=? and Cars.regNumber=?";
-  conn.query(sql, [req.user.email, req.query[0]], (err, result) => {
+  let sql = `Select * from RideHistory  r
+  inner join User u on r.userid = u.email
+  inner join Cars c on r.carid = c.id
+  inner join Bill b on r.id=b.rideId
+  where r.carId=?`;
+  conn.query(sql, [req.query[0]], (err, result) => {
     if (err) {
       console.log(err);
       return;
@@ -76,8 +80,13 @@ const getCarRides = (req, res) => {
 
 const getUserRides = (req, res) => {
   console.log(req.query[0]);
-  let sql = "Select * from Cars where Cars.ownerId=? and Cars.regNumber=?";
-  conn.query(sql, [req.user.email, req.query[0]], (err, result) => {
+  let sql = `Select * from RideHistory  r
+  inner join User u on r.userid = u.email
+  inner join Cars c on r.carid = c.id
+  inner join Bill b on r.id=b.rideId
+  where RideHistory.userId=?
+  `;
+  conn.query(sql, [req.user.email], (err, result) => {
     if (err) {
       console.log(err);
       return;
