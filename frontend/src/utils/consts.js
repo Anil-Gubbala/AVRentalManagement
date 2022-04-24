@@ -10,6 +10,7 @@ export const REDUCER = {
   ISADMIN: "isAdmin",
   ROLE: "role",
   ERR_MSG: "errMsg",
+  MESSAGE: "message",
   TOKEN: "token",
 };
 
@@ -19,6 +20,7 @@ export const ACTION = {
   ADMIN_SIGIN: "ADMIN",
   RESET: "RESET",
   SHOWERROR: "ERROR",
+  MESSAGE: "MESSAGE",
   BOOKING: "BOOKING",
   BOOKING_CLEAR: "BOOKING_CLEAR",
 };

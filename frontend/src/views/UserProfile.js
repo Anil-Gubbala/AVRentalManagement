@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { REDUCER } from "../utils/consts";
 import { get, put } from "../utils/serverCall";
+import { displayMessage } from "../utils/messages";
 
 function UserProfile() {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
@@ -54,9 +55,7 @@ function UserProfile() {
   const updateProfile = (e) => {
     e.preventDefault();
     put("/profile", { userDetails }).then(() => {
-      //setEditMode(false);
-      // setViewMode(true);
-      //localStorage.removeItem(CONSTANTS.STATUS);
+      displayMessage("Profile details updated");
     });
   };
 

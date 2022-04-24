@@ -13,11 +13,14 @@ import { isAdmin, isSignedIn } from "../utils/checkSignin";
 function Navigator() {
   const loginState = useSelector((state) => state.loginReducer);
   const errorState = useSelector((state) => state.errorReducer);
+  const messageState = useSelector((state) => state.messageReducer);
 
   const [signedIn, setSignedIn] = useState(isSignedIn());
   const [admin, setAdmin] = useState(isAdmin());
-  const [showAlert, setShowAlert] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (signedIn) {
@@ -38,19 +41,33 @@ function Navigator() {
     console.log("entered change login state");
   }, [loginState]);
 
-  const hideAlert = () => {
+  const hideError = () => {
     setTimeout(() => {
-      setShowAlert(false);
+      setShowError(false);
+    }, 3000);
+  };
+
+  const hideMessage = () => {
+    setTimeout(() => {
+      setShowMessage(false);
     }, 3000);
   };
 
   useEffect(() => {
     if (errorState[REDUCER.ERR_MSG] !== "") {
       setErrorMsg(errorState[REDUCER.ERR_MSG]);
-      setShowAlert(true);
-      hideAlert();
+      setShowError(true);
+      hideError();
     }
   }, [errorState]);
+
+  useEffect(() => {
+    if (messageState[REDUCER.MESSAGE] !== "") {
+      setMessage(messageState[REDUCER.MESSAGE]);
+      setShowMessage(true);
+      hideMessage();
+    }
+  }, [messageState]);
 
   return (
     <div>
@@ -101,9 +118,18 @@ function Navigator() {
             </Container>
           </Navbar>
         </Row>
-        {showAlert && (
+        {showError && (
           <div style={{ position: "fixed", bottom: "10px", zIndex: "2" }}>
-            <Alert variant="danger">{errorMsg}</Alert>
+            <Alert variant="danger" dismissible="true">
+              {errorMsg}
+            </Alert>
+          </div>
+        )}
+        {showMessage && (
+          <div style={{ position: "fixed", bottom: "10px", zIndex: "2" }}>
+            <Alert variant="success" dismissible="true">
+              {message}
+            </Alert>
           </div>
         )}
       </Container>
