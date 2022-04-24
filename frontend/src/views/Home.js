@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import axios from 'axios';
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
@@ -23,7 +24,8 @@ function Home() {
   const dummyCars = [
     {
       id: "1",
-      model: "1",
+      model: "Prius",
+      brand: "Toyota",
       type: "Economy",
       time: "2",
       fare: "20",
@@ -31,7 +33,8 @@ function Home() {
     },
     {
       id: "2",
-      model: "1",
+      model: "Mustang",
+      brand: "Ford",
       type: "Premium",
       time: "2",
       fare: "20",
@@ -39,10 +42,11 @@ function Home() {
     },
     {
       id: "3",
-      model: "1",
+      model: "Model3",
+      brand: "Tesla",
       type: "Ecofriendly",
       time: "2",
-      fare: "20",
+      fare: "18",
       capacity: 4,
     },
   ];
@@ -84,9 +88,27 @@ function Home() {
   const bookRide = (e) => {
     // console.log(e.target.getAttribute("carId"));
     const carId = e.target.getAttribute("carId");
-    // temp code
-    setTrackId(carId);
-    setLoadTrackingPage(true);
+    const car = dummyCars.filter((c)=> c.id === carId)[0];
+
+    axios
+        .post("startRide", {
+           ...rideDetails,
+          make: car.brand.toLowerCase(),
+          model: car.model.toLowerCase()
+        })
+        .then((result) => {
+          if (result.status == 200) {
+            console.log(
+                'Successfully started Trip id as ' + result.data,
+            )
+           setTrackId(result.data.tripId);
+            setLoadTrackingPage(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          displayError(error)
+        })
 
     // post("/bookRide", {
     //   ...rideDetails,
@@ -120,8 +142,10 @@ function Home() {
                   }}
                 >
                   <option value="-1">Select Source</option>
-                  <option value="0">San Jose</option>
-                  <option value="1">Santa Clara</option>
+                  <option value="San Jose">San Jose</option>
+                  <option value="Santa Clara">Santa Clara</option>
+                  <option value="Sacramento">Sacramento</option>
+                  <option value="San Francisco">San Francisco</option>
                 </Form.Control>
               </FloatingLabel>
             </Form.Group>
@@ -139,8 +163,10 @@ function Home() {
                   }}
                 >
                   <option value="-1">Select Destination</option>
-                  <option value="0">San Jose</option>
-                  <option value="1">Santa Clara</option>
+                  <option value="San Jose">San Jose</option>
+                  <option value="Santa Clara">Santa Clara</option>
+                  <option value="Sacramento">Sacramento</option>
+                  <option value="San Francisco">San Francisco</option>
                 </Form.Control>
               </FloatingLabel>
             </Form.Group>
@@ -169,7 +195,7 @@ function Home() {
         >
           <thead>
             <tr>
-              <th>Model</th>
+              <th>Make & Model</th>
               <th>Type</th>
               <th>Capacity</th>
               <th>Arrival Time</th>
@@ -181,7 +207,7 @@ function Home() {
             {availableCars.map((each) => {
               return (
                 <tr key={each.id}>
-                  <td>{each.model}</td>
+                  <td>{each.brand} {each.model} or similar</td>
                   <td>{each.type}</td>
                   <td>{each.capacity}</td>
                   <td>{each.time}</td>
