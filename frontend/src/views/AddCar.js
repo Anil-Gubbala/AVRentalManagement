@@ -53,17 +53,17 @@ const AddCar = () => {
         "Space character not allowed in number, make, model and color"
       );
     } else {
-      // post(`/addcar`, {
-      //   carDetails,
-      // })
-      //   .then((response) => {
-      //     console.log(response);
-      //     setMessage(`Car Added Successfully`);
-      //   })
-      //   .catch((error) => {
-      //     setMessage(error.response.err);
-      //   });
       console.log(carDetails);
+      post(`/addcar`, {
+        carDetails,
+      })
+        .then((response) => {
+          console.log(response);
+          setMessage(`Car Added Successfully`);
+        })
+        .catch((error) => {
+          setMessage(error);
+        });
     }
   };
   const Cancel = (event) => {

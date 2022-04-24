@@ -11,6 +11,7 @@ const {
   getProfile,
   updateProfile,
 } = require("./controllers/accountController");
+const { addCar } = require("./controllers/carController");
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.route("/signout").get(checkAuth, signout);
 
 router.route("/profile").get(checkAuth, getProfile);
 router.route("/profile").put(checkAuth, updateProfile);
+router.route("/addcar").post(addCar);
 
 module.exports = router;
