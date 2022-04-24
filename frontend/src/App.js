@@ -8,6 +8,7 @@ import AddCar from "./views/AddCar";
 import InvalidPage from "./views/InvalidPage";
 import AdminHome from "./views/AdminHome";
 import CarOwnerHome from "./views/CarOwnerHome";
+import { HomeAdmin } from "./views/AdminLanding";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Router>
         <Navigator />
         <Routes>
+        <Route path="/home-admin" exact element={<HomeAdmin />}></Route>
           <Route path="/home" exact element={<Home />}></Route>
           <Route path="/adminhome" exact element={<AdminHome />}></Route>
           <Route path="/carownerhome" exact element={<CarOwnerHome />}></Route>
