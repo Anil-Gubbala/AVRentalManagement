@@ -8,7 +8,9 @@ import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
 import Table from "react-bootstrap/Table";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Button } from "react-bootstrap";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const RideDetails = () => {
   const dispatch = useDispatch();
@@ -36,6 +38,15 @@ const RideDetails = () => {
       });
   };
 
+  const downloadData = () => {
+    const pdf = new jsPDF("portrait", "px", "a4", "false");
+
+    pdf.text(30, 110, "Name");
+
+    pdf.autoTable({ html: "#table" });
+    pdf.save("data.pdf");
+  };
+
   const getBillDetails = () => {
     get(`/bill`, { id: params.get("id") })
       .then((response) => {
@@ -58,12 +69,35 @@ const RideDetails = () => {
   return (
     <div>
       <Container>
-        <h2 className="mb-4 text-center">Details</h2>
+        <h2 className="mb-4 text-center">Ride Details</h2>
+      </Container>
+
+      <Container>
+        <div style={{ textAlign: "right" }}>
+          <Button
+            type="submit"
+            onClick={downloadData}
+            style={{
+              marginBottom: "8px",
+              padding: "10px",
+              background: "#000000",
+            }}
+          >
+            Download PDF
+          </Button>
+        </div>
       </Container>
 
       <Container style={{ marginTop: "32px" }}>
         <Row>
-          <Col>
+          <Col
+            style={{
+              boxShadow: "0 0 8px black",
+              padding: "25px",
+              borderRadius: "10px",
+              position: "relative",
+            }}
+          >
             <Row>
               <h2>Ride Details</h2>
             </Row>
@@ -93,28 +127,35 @@ const RideDetails = () => {
             </Row>
           </Col>
           <Col>
-            <div className="col-md-5">
+            <div>
               <div>
                 <h2>Invoice</h2>
               </div>
               <div>
-                <Table striped bordered hover>
-                  <thead style={{ background: "#4B76B6", color: "white" }}>
+                <Table striped bordered hover id="table">
+                  <thead style={{ background: "#000000", color: "white" }}>
                     <tr>
+                      <th style={{ width: "60% !important" }}>Charges</th>
+                      <th>Payment</th>
                       <th>Amount</th>
-                      <th>Tax</th>
-                      <th>Card</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{billDetails.amount}</td>
-                      <td>{billDetails.tax}</td>
+                      <td>Base Fare</td>
+
                       <td>{billDetails.card}</td>
+                      <td>{billDetails.amount}</td>
+                    </tr>
+                    <tr>
+                      <td>Tax</td>
+
+                      <td>-</td>
+                      <td>{billDetails.tax}</td>
                     </tr>
                     <tr>
                       <td
-                        colSpan={3}
+                        colSpan={2}
                         style={{ textAlign: "right", fontWeight: "bold" }}
                       >
                         Total Amount

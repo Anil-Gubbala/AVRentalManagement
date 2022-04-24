@@ -63,21 +63,7 @@ const RideHistory = () => {
       <Container>
         <h2 className="mb-4 text-center">Ride History</h2>
       </Container>
-      <Container>
-        <div style={{ textAlign: "right" }}>
-          <Button
-            type="submit"
-            onClick={downloadData}
-            style={{
-              marginBottom: "8px",
-              padding: "10px",
-              background: "#000000",
-            }}
-          >
-            Download PDF
-          </Button>
-        </div>
-      </Container>
+
       <Container>
         <Table striped bordered hover id="table">
           <thead style={{ background: "#000000", color: "white" }}>
