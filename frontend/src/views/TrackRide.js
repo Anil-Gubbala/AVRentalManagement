@@ -38,7 +38,7 @@ function TrackRide() {
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
     const tripId = params.get("id");
-    console.log(tripId);
+    // console.log(tripId);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -48,12 +48,16 @@ function TrackRide() {
     }, []);
 
     const trackRide = () => {
+        if(rideStatus > 3){
+            // console.log("Ride completed, hence not tracking");
+            return;
+        }
         axios
             .get("trackRide/" + tripId)
             .then((result) => {
                 if (result.status === 200) {
                     console.log(
-                        'Successfully started Trip Data as ' + result.data,
+                        'Successfully retrieved Trip Data as ' + result.data,
                     )
                     setRideDetails({...result.data});
                     setRideStatus(result.data.trip_status === "inactive" ? 4 : 3);
