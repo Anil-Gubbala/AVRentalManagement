@@ -2,8 +2,9 @@ import { useState } from "react";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
-import Form from "react-bootstrap/Form";
+import { Form, Button } from "react-bootstrap";
 import { post } from "../utils/serverCall";
+import carLogin from "./../images/carLogin.jpeg";
 
 function Signup() {
   Axios.defaults.withCredentials = true;
@@ -92,253 +93,304 @@ function Signup() {
   }
 
   return (
-    <div>
-      <Container>
-        <h2 className="mb-4 text-center">Account Registration</h2>
-        <Form style={{ maxWidth: "600px", margin: "auto" }}>
-          <div className="row">
-            <Form.Group className="col">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                helpertext={invalid.firstName ? "1-25 characters" : ""}
-                id="register-first-name"
-                label="First Name"
-                isInvalid={invalid.first_name}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, firstName: validation });
-                  setUserDetails({
-                    ...userDetails,
-                    firstName: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                required
-                helpertext={invalid.lastName ? "1-25 characters" : ""}
-                id="register-last-name"
-                label="Last Name"
-                type="text"
-                isInvalid={invalid.lastName}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, lastName: validation });
-                  setUserDetails({
-                    ...userDetails,
-                    lastName: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                required
-                helpertext="Minimum 5 & Maximum 25 characters"
-                id="register-password"
-                label="Password"
-                type="password"
-                isInvalid={invalid.password}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length < 5 ||
-                    e.target.value.length > 25 ||
-                    e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, password: validation });
-                  setUserDetails({
-                    ...userDetails,
-                    password: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-          </div>
-          <div className="row">
-            <Form.Group className="col">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                required
-                helpertext={invalid.email ? "1-25 characters" : ""}
-                id="register-email-id"
-                label="Email ID"
-                type="text"
-                isInvalid={invalid.email}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 ||
-                    e.target.value === "" ||
-                    e.target.value.includes(" ") ||
-                    e.target.value.indexOf("@") === -1
-                  );
-                  setInvalid({ ...invalid, email: validation });
-                  setUserDetails({ ...userDetails, email: e.target.value });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                required
-                id="register-phone"
-                type="number"
-                isInvalid={invalid.phone}
-                onChange={(e) => {
-                  const validation = e.target.value.length !== 10;
-                  setInvalid({ ...invalid, phone: validation });
-                  setUserDetails({
-                    ...userDetails,
-                    phone: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-          </div>
-          <Form.Group>
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              required
-              helpertext={invalid.address ? "1-25 characters" : ""}
-              id="register-street"
-              label="Street"
-              type="text"
-              isInvalid={invalid.street}
-              onChange={(e) => {
-                const validation = !!(
-                  e.target.value.length > 25 || e.target.value === ""
-                );
-                setInvalid({ ...invalid, address: validation });
-                setUserDetails({ ...userDetails, address: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <div className="row">
-            <Form.Group className="col">
-              <Form.Label>City</Form.Label>
-              <Form.Control
-                required
-                helpertext={invalid.city ? "1-25 characters" : ""}
-                id="register-city"
-                label="City"
-                type="text"
-                isInvalid={invalid.city}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, city: validation });
-                  setUserDetails({ ...userDetails, city: e.target.value });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>State</Form.Label>
-              <Form.Control
-                required
-                helpertext={invalid.state ? "1-25 characters" : ""}
-                id="register-state"
-                label="state"
-                type="text"
-                isInvalid={invalid.state}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, state: validation });
-                  setUserDetails({ ...userDetails, state: e.target.value });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>Country</Form.Label>
-              <Form.Control
-                required
-                helpertext={invalid.country ? "1-25 characters" : ""}
-                id="register-country"
-                label="Country"
-                type="text"
-                isInvalid={invalid.country}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 25 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, country: validation });
-                  setUserDetails({ ...userDetails, country: e.target.value });
-                }}
-              />
-            </Form.Group>
-          </div>
-          <div className="row">
-            <Form.Group className="col">
-              <Form.Label>Zipcode</Form.Label>
-              <Form.Control
-                required
-                helpertext="5 digit zip code"
-                id="register-zip-code"
-                label="ZIP Code"
-                type="number"
-                isInvalid={invalid.zipcode}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length !== 5 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, zipcode: validation });
-                  setUserDetails({
-                    ...userDetails,
-                    zipcode: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
+    <div
+      style={{
+        background: "linear-gradient(90deg, #FFFFFF 70%, #0A2FB6 30%)",
+        height: "100vh",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          height: "100vh",
+          alignItems: "center",
+        }}
+      >
+        <div className="col-md-5">
+          <Container>
+            <div style={{ marginBottom: "50px" }}>
+              <h2 className="mb-4 text-center"> Account Registration</h2>
+            </div>
 
-            <Form.Group className="col">
-              <Form.Label>Gender</Form.Label>
-              <Form.Control
-                as="select"
-                default="0"
-                onChange={(e) => {
-                  setUserDetails({ ...userDetails, gender: e.target.value });
-                }}
-              >
-                <option value="0" defaultChecked>
-                  Male
-                </option>
-                <option value="1">Female</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="col">
-              <Form.Label>Role</Form.Label>
-              <Form.Control
-                as="select"
-                default="0"
-                onChange={(e) => {
-                  setUserDetails({ ...userDetails, role: e.target.value });
-                }}
-              >
-                <option value="0" defaultChecked>
-                  Customer
-                </option>
-                <option value="1">Car Owner</option>
-                <option value="2">Admin</option>
-              </Form.Control>
-            </Form.Group>
-          </div>
-          <br />
-          <div>
-            <button type="submit" onClick={register}>
-              <h4>Signup</h4>
-            </button>
-          </div>
-        </Form>
-      </Container>
+            <Form style={{ maxWidth: "600px", margin: "auto" }}>
+              <div className="row" style={{ marginBottom: "20px" }}>
+                <Form.Group className="col">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    helpertext={invalid.firstName ? "1-25 characters" : ""}
+                    id="register-first-name"
+                    label="First Name"
+                    isInvalid={invalid.first_name}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, firstName: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        firstName: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.lastName ? "1-25 characters" : ""}
+                    id="register-last-name"
+                    label="Last Name"
+                    type="text"
+                    isInvalid={invalid.lastName}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, lastName: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        lastName: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext="Minimum 5 & Maximum 25 characters"
+                    id="register-password"
+                    label="Password"
+                    type="password"
+                    isInvalid={invalid.password}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length < 5 ||
+                        e.target.value.length > 25 ||
+                        e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, password: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        password: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+              </div>
+              <div className="row" style={{ marginBottom: "20px" }}>
+                <Form.Group className="col">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.email ? "1-25 characters" : ""}
+                    id="register-email-id"
+                    label="Email ID"
+                    type="text"
+                    isInvalid={invalid.email}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 ||
+                        e.target.value === "" ||
+                        e.target.value.includes(" ") ||
+                        e.target.value.indexOf("@") === -1
+                      );
+                      setInvalid({ ...invalid, email: validation });
+                      setUserDetails({ ...userDetails, email: e.target.value });
+                    }}
+                  />
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control
+                    required
+                    id="register-phone"
+                    type="number"
+                    isInvalid={invalid.phone}
+                    onChange={(e) => {
+                      const validation = e.target.value.length !== 10;
+                      setInvalid({ ...invalid, phone: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        phone: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+              </div>
+              <div className="row" style={{ marginBottom: "20px" }}>
+                <Form.Group>
+                  <Form.Label>Address</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.address ? "1-25 characters" : ""}
+                    id="register-street"
+                    label="Street"
+                    type="text"
+                    isInvalid={invalid.street}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, address: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        address: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+              </div>
+
+              <div className="row" style={{ marginBottom: "20px" }}>
+                <Form.Group className="col">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.city ? "1-25 characters" : ""}
+                    id="register-city"
+                    label="City"
+                    type="text"
+                    isInvalid={invalid.city}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, city: validation });
+                      setUserDetails({ ...userDetails, city: e.target.value });
+                    }}
+                  />
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.state ? "1-25 characters" : ""}
+                    id="register-state"
+                    label="state"
+                    type="text"
+                    isInvalid={invalid.state}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, state: validation });
+                      setUserDetails({ ...userDetails, state: e.target.value });
+                    }}
+                  />
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext={invalid.country ? "1-25 characters" : ""}
+                    id="register-country"
+                    label="Country"
+                    type="text"
+                    isInvalid={invalid.country}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length > 25 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, country: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        country: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+              </div>
+              <div className="row" style={{ marginBottom: "20px" }}>
+                <Form.Group className="col">
+                  <Form.Label>Zipcode</Form.Label>
+                  <Form.Control
+                    required
+                    helpertext="5 digit zip code"
+                    id="register-zip-code"
+                    label="ZIP Code"
+                    type="number"
+                    isInvalid={invalid.zipcode}
+                    onChange={(e) => {
+                      const validation = !!(
+                        e.target.value.length !== 5 || e.target.value === ""
+                      );
+                      setInvalid({ ...invalid, zipcode: validation });
+                      setUserDetails({
+                        ...userDetails,
+                        zipcode: e.target.value,
+                      });
+                    }}
+                  />
+                </Form.Group>
+
+                <Form.Group className="col">
+                  <Form.Label>Gender</Form.Label>
+                  <Form.Control
+                    as="select"
+                    default="0"
+                    onChange={(e) => {
+                      setUserDetails({
+                        ...userDetails,
+                        gender: e.target.value,
+                      });
+                    }}
+                  >
+                    <option value="0" defaultChecked>
+                      Male
+                    </option>
+                    <option value="1">Female</option>
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group className="col">
+                  <Form.Label>Role</Form.Label>
+                  <Form.Control
+                    as="select"
+                    default="0"
+                    onChange={(e) => {
+                      setUserDetails({ ...userDetails, role: e.target.value });
+                    }}
+                  >
+                    <option value="0" defaultChecked>
+                      Customer
+                    </option>
+                    <option value="1">Car Owner</option>
+                    <option value="2">Admin</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+              <br />
+              <div>
+                <Button
+                  type="submit"
+                  onClick={register}
+                  variant="dark"
+                  style={{
+                    marginBottom: "8px",
+                    padding: "10px",
+                  }}
+                >
+                  Signup
+                </Button>
+              </div>
+            </Form>
+          </Container>
+        </div>
+        <div className="col-md-5">
+          <img
+            src={carLogin}
+            style={{
+              width: "800px",
+              height: "500px",
+              marginTop: "20px",
+              borderRadius: "15px",
+              position: "relative",
+            }}
+          ></img>
+        </div>
+      </div>
     </div>
   );
 }

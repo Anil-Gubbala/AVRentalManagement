@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
+import { Button, FloatingLabel, Table } from "react-bootstrap";
 
 const AddCar = () => {
   const dispatch = useDispatch();
@@ -254,12 +255,23 @@ const AddCar = () => {
             </Form.Group>
           </div>
           <div style={{ marginTop: "20px" }}>
-            <button type="submit" onClick={Submit}>
-              <h4>Add Car</h4>
-            </button>
-            <button style={{ marginLeft: "20px" }} onClick={Cancel}>
-              <h4>Cancel</h4>
-            </button>
+            <Button
+              type="submit"
+              onClick={Submit}
+              variant="dark"
+              style={{ marginBottom: "8px" }}
+            >
+              Add Car
+            </Button>
+
+            <Button
+              type="submit"
+              onClick={Cancel}
+              variant="dark"
+              style={{ marginBottom: "8px", marginLeft: "20px" }}
+            >
+              Cancel
+            </Button>
           </div>
         </Form>
       </Container>

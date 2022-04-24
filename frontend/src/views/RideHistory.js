@@ -26,7 +26,7 @@ const RideHistory = () => {
       </Container>
       <Container>
         <Table striped bordered hover>
-          <thead>
+          <thead style={{ background: "#000000", color: "white" }}>
             <tr>
               <th>Customer Name</th>
               <th>Date</th>

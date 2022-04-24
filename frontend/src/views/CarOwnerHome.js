@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import Container from "react-bootstrap/esm/Container";
-import Table from "react-bootstrap/Table";
+
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 import { get } from "../utils/serverCall";
 
 function CarOwnerHome() {
@@ -60,13 +61,18 @@ function CarOwnerHome() {
       <Container>
         <h2 className="mb-4 text-center">Car Owner Home</h2>
         <div style={{ margin: "20px", textAlign: "right" }}>
-          <button type="submit" onClick={AddCar}>
-            <h4>Add Car</h4>
-          </button>
+          <Button
+            type="submit"
+            onClick={AddCar}
+            variant="dark"
+            style={{ marginBottom: "8px" }}
+          >
+            Add Car
+          </Button>
         </div>
         <div>
           <Table striped bordered hover>
-            <thead>
+            <thead style={{ background: "#000000", color: "white" }}>
               <tr>
                 <th>Number</th>
                 <th>Make</th>
@@ -85,13 +91,23 @@ function CarOwnerHome() {
                       <td>{car.model}</td>
                       <td>{car.capacity}</td>
                       <td>
-                        <button onClick={EditCar}>Edit</button>
-                        <button
-                          style={{ marginLeft: "20px" }}
+                        <Button
+                          type="submit"
+                          onClick={EditCar}
+                          variant="dark"
+                          style={{ marginBottom: "8px" }}
+                        >
+                          Edit
+                        </Button>
+
+                        <Button
+                          type="submit"
                           onClick={RideHistory}
+                          variant="dark"
+                          style={{ marginBottom: "8px", marginLeft: "20px" }}
                         >
                           Ride History
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   </>
