@@ -304,7 +304,6 @@ function Signup() {
               <Form.Control
                 as="select"
                 default="0"
-                value={userDetails?.gender}
                 onChange={(e) => {
                   setUserDetails({ ...userDetails, gender: e.target.value });
                 }}
@@ -320,7 +319,6 @@ function Signup() {
               <Form.Control
                 as="select"
                 default="0"
-                value={userDetails?.role}
                 onChange={(e) => {
                   setUserDetails({ ...userDetails, role: e.target.value });
                 }}

@@ -87,7 +87,6 @@ function Signin() {
             <Form.Control
               as="select"
               default="0"
-              value="0"
               onChange={(e) => {
                 setRole(e.target.value);
               }}
