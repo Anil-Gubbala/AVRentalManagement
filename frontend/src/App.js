@@ -14,6 +14,7 @@ import RideHistory from "./views/RideHistory";
 import RideDetails from "./views/RideDetails";
 import TrackRide from "./views/TrackRide";
 import CarRideHistory from "./views/CarRideHistory";
+import EditCar from "./views/EditCar";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/signup" exact element={<Signup />}></Route>
           <Route path="/signout" exact element={<Signout />}></Route>
           <Route path="/addcar" exact element={<AddCar />}></Route>
+          <Route path="/editcar" exact element={<EditCar />}></Route>
           <Route path="/userProfile" exact element={<UserProfile />}></Route>
           <Route path="/ridehistory" exact element={<RideHistory />}></Route>
           <Route path="/ridedetails" exact element={<RideDetails />}></Route>

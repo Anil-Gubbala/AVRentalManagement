@@ -9,13 +9,17 @@ import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
 import { Button, FloatingLabel, Table } from "react-bootstrap";
 
-const AddCar = () => {
+const EditCar = () => {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
 
   const [message, setMessage] = useState("");
   const [redirToCarHome, setRedirToCarHome] = useState(false);
+
+  const windowUrl = window.location.search;
+  const params = new URLSearchParams(windowUrl);
+  console.log(params.get("id"));
 
   const [invalid, setInvalid] = useState({
     number: false,
@@ -39,7 +43,7 @@ const AddCar = () => {
   const [carDetails, setCarDetails] = useState(defaultValues);
 
   const getCarDetails = () => {
-    get(`/getCar`, "ts07et9443")
+    get(`/getCar`, params.get("id"))
       .then((response) => {
         console.log(response);
         let details = {
@@ -99,12 +103,17 @@ const AddCar = () => {
     setRedirToCarHome(true);
   };
   let ad = null;
+
+  if (params.get("id") === null) {
+    return <Navigate to={redirectHome()} />;
+  }
+
   if (redirToCarHome) ad = <Navigate to="/carownerhome" />;
   return (
     <div>
       {ad}
       <Container>
-        <h2 className="mb-4 text-center">Add Car</h2>
+        <h2 className="mb-4 text-center">Update Car</h2>
 
         <Form>
           <div className="row">
@@ -261,7 +270,7 @@ const AddCar = () => {
               variant="dark"
               style={{ marginBottom: "8px" }}
             >
-              Add Car
+              Update Car
             </Button>
 
             <Button
@@ -279,4 +288,4 @@ const AddCar = () => {
   );
 };
 
-export default AddCar;
+export default EditCar;

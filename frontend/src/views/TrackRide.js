@@ -34,6 +34,10 @@ function TrackRide() {
   const defaultRideStatus = 1; // 0:On the way;  1:Ready for pickup;  2:Started Ride;  3:Completed
   const [rideStatus, setRideStatus] = useState(defaultRideStatus);
 
+  const windowUrl = window.location.search;
+  const params = new URLSearchParams(windowUrl);
+  console.log(params.get("id"));
+
   return (
     <div style={{ maxWidth: "800px", margin: "auto" }}>
       <Container>

@@ -2,22 +2,61 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Axios from "axios";
 import Container from "react-bootstrap/esm/Container";
-import Form from "react-bootstrap/Form";
+
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
-import Table from "react-bootstrap/Table";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 
 const RideHistory = () => {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCar, setRedirToCar] = useState(false);
+  const [userRideDetails, setuserRideDetails] = useState([]);
 
-  // if (role !== "1") {
+  const [selectedRide, setSelectedRide] = useState("");
+  const [redirectToDetails, setRedirectToDetails] = useState(false);
+
+  const downloadData = () => {
+    const pdf = new jsPDF("portrait", "px", "a4", "false");
+
+    pdf.text(30, 110, "Name");
+
+    pdf.autoTable({ html: "#table" });
+    pdf.save("data.pdf");
+  };
+
+  const getUserRides = () => {
+    get(`/getuserrides`)
+      .then((response) => {
+        console.log(response);
+        setuserRideDetails(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getUserRides();
+  }, []);
+
+  const viewRideDetails = (e) => {
+    setSelectedRide(e.target.getAttribute("data"));
+    setRedirectToDetails(true);
+  };
+
+  // if (role !== "0") {
   //   return <Navigate to={redirectHome()} />;
   // }
+
+  if (redirectToDetails) {
+    return <Navigate to={"/ridedetails?id=" + selectedRide} />;
+  }
 
   return (
     <div>
@@ -25,53 +64,68 @@ const RideHistory = () => {
         <h2 className="mb-4 text-center">Ride History</h2>
       </Container>
       <Container>
-        <Table striped bordered hover>
-          <thead>
+        <div style={{ textAlign: "right" }}>
+          <Button
+            type="submit"
+            onClick={downloadData}
+            style={{
+              marginBottom: "8px",
+              padding: "10px",
+              background: "#000000",
+            }}
+          >
+            Download PDF
+          </Button>
+        </div>
+      </Container>
+      <Container>
+        <Table striped bordered hover id="table">
+          <thead style={{ background: "#000000", color: "white" }}>
             <tr>
-              <th>Customer Name</th>
+              <th>Ride ID</th>
               <th>Date</th>
+              <th>Source</th>
+              <th>Destination</th>
+              <th>Car Reg Number</th>
               <th>Status</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>
-                <div
-                  style={{
-                    background: "#9fd5a5",
-                    borderRadius: "15px",
-                    textAlign: "center",
-                    display: "inherit",
-                    padding: "10px",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
-                  }}
-                >
-                  Normal
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>
-                <div
-                  style={{
-                    background: "rgb(212 100 121)",
-                    borderRadius: "15px",
-                    textAlign: "center",
-                    display: "inherit",
-                    padding: "10px",
-                    paddingLeft: "20px",
-                    paddingRight: "20px",
-                  }}
-                >
-                  Collision
-                </div>
-              </td>
-            </tr>
+            {userRideDetails.map((ride) => {
+              return (
+                <tr key={ride.id}>
+                  <td>{ride.id}</td>
+                  <td>{ride.startTime}</td>
+                  <td>{ride.source}</td>
+                  <td>{ride.destination}</td>
+                  <td>{ride.carId}</td>
+                  <td>
+                    <div
+                      style={{
+                        background:
+                          ride.status == "0" ? "#9fd5a5" : "rgb(212 100 121)",
+                        borderRadius: "15px",
+                        textAlign: "center",
+                        display: "inherit",
+                        padding: "10px",
+                        paddingLeft: "20px",
+                        paddingRight: "20px",
+                      }}
+                    ></div>
+                  </td>
+                  <td>
+                    <Button
+                      data={ride.id}
+                      variant="dark"
+                      onClick={viewRideDetails}
+                    >
+                      View Ride
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </Container>

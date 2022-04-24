@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import Container from "react-bootstrap/esm/Container";
-import Table from "react-bootstrap/Table";
+
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 import { get } from "../utils/serverCall";
 
 function CarOwnerHome() {
@@ -14,6 +15,8 @@ function CarOwnerHome() {
   const [redirToCar, setRedirToCar] = useState(false);
   const [redirToCarHistory, setRedirToCarHistory] = useState(false);
   const [carDetails, setCarDetails] = useState([]);
+
+  const [selectedCar, setSelectedCar] = useState([]);
 
   // if (role !== "1") {
   //   return <Navigate to={redirectHome()} />;
@@ -41,18 +44,21 @@ function CarOwnerHome() {
 
   const EditCar = (event) => {
     event.preventDefault();
+    setSelectedCar(event.target.getAttribute("data"));
     setRedirToCar(true);
   };
 
   const RideHistory = (event) => {
     event.preventDefault();
+    setSelectedCar(event.target.getAttribute("data"));
     setRedirToCarHistory(true);
   };
 
   let addCarPage = null;
-  if (redirToCar) addCarPage = <Navigate to="/addcar" />;
+  if (redirToCar) addCarPage = <Navigate to={"/editcar?id=" + selectedCar} />;
   let rideDetailPage = null;
-  if (redirToCarHistory) rideDetailPage = <Navigate to="/carridehistory" />;
+  if (redirToCarHistory)
+    rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCar} />;
   return (
     <div>
       {addCarPage}
@@ -60,13 +66,23 @@ function CarOwnerHome() {
       <Container>
         <h2 className="mb-4 text-center">Car Owner Home</h2>
         <div style={{ margin: "20px", textAlign: "right" }}>
-          <button type="submit" onClick={AddCar}>
-            <h4>Add Car</h4>
-          </button>
+          <Button
+            type="submit"
+            onClick={AddCar}
+            variant="dark"
+            style={{ marginBottom: "8px" }}
+          >
+            Add Car
+          </Button>
         </div>
         <div>
           <Table striped bordered hover>
-            <thead>
+            <thead
+              style={{
+                background: "#000000",
+                color: "white",
+              }}
+            >
               <tr>
                 <th>Number</th>
                 <th>Make</th>
@@ -78,23 +94,33 @@ function CarOwnerHome() {
             <tbody>
               {carDetails.map((car) => {
                 return (
-                  <>
-                    <tr key={car.regNumber}>
-                      <td>{car.regNumber}</td>
-                      <td>{car.make}</td>
-                      <td>{car.model}</td>
-                      <td>{car.capacity}</td>
-                      <td>
-                        <button onClick={EditCar}>Edit</button>
-                        <button
-                          style={{ marginLeft: "20px" }}
-                          onClick={RideHistory}
-                        >
-                          Ride History
-                        </button>
-                      </td>
-                    </tr>
-                  </>
+                  <tr key={car.regNumber}>
+                    <td>{car.regNumber}</td>
+                    <td>{car.make}</td>
+                    <td>{car.model}</td>
+                    <td>{car.capacity}</td>
+                    <td>
+                      <Button
+                        type="submit"
+                        onClick={EditCar}
+                        variant="dark"
+                        style={{ marginBottom: "8px" }}
+                        data={car.regNumber}
+                      >
+                        Edit
+                      </Button>
+
+                      <Button
+                        type="submit"
+                        onClick={RideHistory}
+                        variant="dark"
+                        style={{ marginBottom: "8px", marginLeft: "20px" }}
+                        data={car.regNumber}
+                      >
+                        Ride History
+                      </Button>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>

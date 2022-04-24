@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Axios from "axios";
 import Container from "react-bootstrap/esm/Container";
-import Form from "react-bootstrap/Form";
+
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { post, get } from "../utils/serverCall";
-import Table from "react-bootstrap/Table";
+
+import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
 
 const CarRideHistory = () => {
   const dispatch = useDispatch();
@@ -49,14 +50,19 @@ const CarRideHistory = () => {
       <Container>
         <h2 className="mb-4 text-center">Car Ride History</h2>
         <div style={{ margin: "20px", textAlign: "right" }}>
-          <button type="submit" onClick={Back}>
-            <h4>Go Back</h4>
-          </button>
+          <Button
+            type="submit"
+            onClick={Back}
+            variant="dark"
+            style={{ marginBottom: "8px", marginLeft: "20px" }}
+          >
+            Go Back
+          </Button>
         </div>
       </Container>
       <Container>
         <Table striped bordered hover>
-          <thead>
+          <thead style={{ background: "#000000", color: "white" }}>
             <tr>
               <th>Origin</th>
               <th>Destination</th>
