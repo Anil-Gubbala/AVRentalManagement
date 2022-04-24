@@ -1,31 +1,31 @@
 const express = require("express");
-const { checkAuth } = require("./utils/auth");
+const {checkAuth} = require("./utils/auth");
 
 //import controller.
-const { demoCall } = require("./controllers/demoController");
+const {demoCall} = require("./controllers/demoController");
 const {
-  signin,
-  registerUser,
-  getLogin,
-  signout,
-  getProfile,
-  updateProfile,
+    signin,
+    registerUser,
+    getLogin,
+    signout,
+    getProfile,
+    updateProfile,
 } = require("./controllers/accountController");
-const { startTrip, trackTrip } = require("./controllers/tripController");
 const {
-  addCar,
-  getOwnerCars,
-  getCar,
-  getCarRides,
+    addCar,
+    getOwnerCars,
+    getCar,
+    getCarRides,
 } = require("./controllers/carController");
 
 const {
-  getUsersAdmin,
-  getCarsAdmin,
+    getUsersAdmin,
+    getCarsAdmin,
 } = require("./controllers/adminController");
 const {
-  getUserRides,
-  getRideDetails,
+    startRide, trackRide,
+    getUserRides,
+    getRideDetails,
 } = require("./controllers/ridesController");
 
 const router = express.Router();
@@ -49,9 +49,7 @@ router.route("/getcar").get(checkAuth, getCar);
 router.route("/getcarrides").get(checkAuth, getCarRides);
 router.route("/getuserrides").get(checkAuth, getUserRides);
 router.route("/getRideDetails").get(checkAuth, getRideDetails);
-
-router.route("/starttrip").post(startTrip);
-
-router.route("/tracktrip/:id").get(trackTrip);
+router.route("/startRide").post(startRide);
+router.route("/trackRide/:id").get(trackRide);
 
 module.exports = router;

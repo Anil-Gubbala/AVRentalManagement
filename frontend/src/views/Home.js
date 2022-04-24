@@ -90,10 +90,8 @@ function Home() {
     const carId = e.target.getAttribute("carId");
     const car = dummyCars.filter((c)=> c.id === carId)[0];
 
-    const url = 'http://localhost:4000/startTrip'
-
     axios
-        .post(url, {
+        .post("startRide", {
            ...rideDetails,
           make: car.brand.toLowerCase(),
           model: car.model.toLowerCase()

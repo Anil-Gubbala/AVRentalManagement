@@ -7,6 +7,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import App from "./App";
 import store from "./reducers/store";
+import axios from "axios";
+
+const backendServer = 'http://localhost:4000';
+axios.defaults.baseURL = backendServer
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
