@@ -50,9 +50,9 @@ const RideHistory = () => {
     setRedirectToDetails(true);
   };
 
-  if (role !== "0") {
-    return <Navigate to={redirectHome()} />;
-  }
+  // if (role !== "0") {
+  //   return <Navigate to={redirectHome()} />;
+  // }
 
   if (redirectToDetails) {
     return <Navigate to={"/ridedetails?id=" + selectedRide} />;
@@ -120,7 +120,7 @@ const RideHistory = () => {
                       variant="dark"
                       onClick={viewRideDetails}
                     >
-                      Book Ride
+                      View Ride
                     </Button>
                   </td>
                 </tr>

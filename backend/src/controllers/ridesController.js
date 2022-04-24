@@ -7,7 +7,6 @@ const sendError = (res, status, code) => {
 };
 
 const getUserRides = (req, res) => {
-  // console.log(req.query[0]);
   let sql = `Select * from RideHistory where userId=?`;
   conn.query(sql, [req.user.email], (err, result) => {
     if (err) {
@@ -20,9 +19,9 @@ const getUserRides = (req, res) => {
 };
 
 const getRideDetails = (req, res) => {
-  // console.log(req.query[0]);
-  let sql = `Select * from RideHistory where userId=?`;
-  conn.query(sql, [req.user.email], (err, result) => {
+  const rideId = req.query.id;
+  let sql = `Select * from RideHistory where userId=? and RideHistory.id=?`;
+  conn.query(sql, [req.user.email, rideId], (err, result) => {
     if (err) {
       console.log(err);
       return;

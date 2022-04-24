@@ -13,7 +13,8 @@ const RideDetails = () => {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
-  const [redirToCar, setRedirToCar] = useState(false);
+
+  const [rideDetails, setRideDetails] = useState({});
 
   // if (role !== "0") {
   //   return <Navigate to={redirectHome()} />;
@@ -24,9 +25,9 @@ const RideDetails = () => {
   console.log(params.get("id"));
 
   const getRideDetails = () => {
-    get(`/getRideDetails`)
+    get(`/getRideDetails`, { id: params.get("id") })
       .then((response) => {
-        console.log(response);
+        setRideDetails(response[0]);
       })
       .catch((err) => {
         console.log(err);
