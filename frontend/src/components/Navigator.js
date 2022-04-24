@@ -40,7 +40,7 @@ function Navigator() {
   useEffect(() => {
     setSignedIn(isSignedIn());
     setRole(getRole());
-    console.log("entered change login state");
+    // console.log("entered change login state");
   }, [loginState]);
 
   const hideError = () => {

@@ -15,9 +15,9 @@ const RideDetails = () => {
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCar, setRedirToCar] = useState(false);
 
-  // if (role !== "1") {
-  //   return <Navigate to={redirectHome()} />;
-  // }
+  if (role !== "1") {
+    return <Navigate to={redirectHome()} />;
+  }
 
   return (
     <div>
