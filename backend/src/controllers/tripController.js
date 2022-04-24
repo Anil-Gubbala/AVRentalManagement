@@ -34,7 +34,7 @@ const startTrip = (req, res) => {
 
         });
 
-        return res.send(200, {message: 'spawned python process, check logs'});
+        return res.send(200, {message: 'spawned python process, check logs', tripId: tripId});
     } catch (error) {
         console.log(error)
         return res.status(400).send('Error while starting trip')
