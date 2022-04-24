@@ -38,29 +38,29 @@ const AddCar = () => {
 
   const [carDetails, setCarDetails] = useState(defaultValues);
 
-  const getCarDetails = () => {
-    get(`/getCar`, "ts07et9443")
-      .then((response) => {
-        console.log(response);
-        let details = {
-          number: response.regNumber,
-          make: response.make,
-          model: response.model,
-          color: response.color,
-          build: response.build,
-          status: response.status,
-          capacity: response.capacity,
-        };
-        setCarDetails(details);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const getCarDetails = () => {
+  //   get(`/getCar`, "ts07et9443")
+  //     .then((response) => {
+  //       console.log(response);
+  //       let details = {
+  //         number: response.regNumber,
+  //         make: response.make,
+  //         model: response.model,
+  //         color: response.color,
+  //         build: response.build,
+  //         status: response.status,
+  //         capacity: response.capacity,
+  //       };
+  //       setCarDetails(details);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
-  useEffect(() => {
-    getCarDetails();
-  }, []);
+  // useEffect(() => {
+  //   getCarDetails();
+  // }, []);
 
   //   if (role !== "1") {
   //     return <Navigate to={redirectHome()} />;

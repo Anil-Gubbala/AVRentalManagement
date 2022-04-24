@@ -13,6 +13,7 @@ function CarOwnerHome() {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCar, setRedirToCar] = useState(false);
+  const [redirToAddCar, setRedirToAddCar] = useState(false);
   const [redirToCarHistory, setRedirToCarHistory] = useState(false);
   const [carDetails, setCarDetails] = useState([]);
 
@@ -39,7 +40,7 @@ function CarOwnerHome() {
 
   const AddCar = (event) => {
     event.preventDefault();
-    setRedirToCar(true);
+    setRedirToAddCar(true);
   };
 
   const EditCar = (event) => {
@@ -54,14 +55,17 @@ function CarOwnerHome() {
     setRedirToCarHistory(true);
   };
 
+  let editCarPage = null;
+  if (redirToCar) editCarPage = <Navigate to={"/editcar?id=" + selectedCar} />;
   let addCarPage = null;
-  if (redirToCar) addCarPage = <Navigate to={"/editcar?id=" + selectedCar} />;
+  if (redirToAddCar) addCarPage = <Navigate to={"/addcar="} />;
   let rideDetailPage = null;
   if (redirToCarHistory)
     rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCar} />;
   return (
     <div>
       {addCarPage}
+      {editCarPage}
       {rideDetailPage}
       <Container>
         <h2 className="mb-4 text-center">Car Owner Home</h2>
