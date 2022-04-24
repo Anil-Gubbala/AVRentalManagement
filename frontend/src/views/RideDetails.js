@@ -16,6 +16,7 @@ const RideDetails = () => {
   const role = localStorage.getItem(REDUCER.ROLE);
 
   const [rideDetails, setRideDetails] = useState({});
+  const [billDetails, setBillDetails] = useState({});
 
   // if (role !== "0") {
   //   return <Navigate to={redirectHome()} />;
@@ -35,8 +36,19 @@ const RideDetails = () => {
       });
   };
 
+  const getBillDetails = () => {
+    get(`/bill`, { id: params.get("id") })
+      .then((response) => {
+        setBillDetails(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getRideDetails();
+    getBillDetails();
   }, []);
 
   if (params.get("id") === null) {
@@ -89,19 +101,16 @@ const RideDetails = () => {
                 <Table striped bordered hover>
                   <thead style={{ background: "#4B76B6", color: "white" }}>
                     <tr>
-                      <th>Charges</th>
-                      <th>Distance</th>
-                      <th>Price</th>
                       <th>Amount</th>
                       <th>Tax</th>
+                      <th>Card</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>@mdo</td>
-                      <td>@mdo</td>
-                      <td>Normal</td>
-                      <td>14.3</td>
+                      <td>{billDetails.amount}</td>
+                      <td>{billDetails.tax}</td>
+                      <td>{billDetails.card}</td>
                     </tr>
                     <tr>
                       <td
@@ -111,7 +120,7 @@ const RideDetails = () => {
                         Total Amount
                       </td>
 
-                      <td>$14.3</td>
+                      <td>{billDetails.total}</td>
                     </tr>
                   </tbody>
                 </Table>
