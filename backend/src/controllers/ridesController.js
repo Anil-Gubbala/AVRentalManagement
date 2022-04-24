@@ -39,9 +39,9 @@ const getRideDetails = (req, res) => {
     });
 };
 
-const startRide = (req, res) => {
+const startRide = async (req, res) => {
     console.log(req.body)
-    let {source, destination, make, model} = req.body;
+    let {carId, source, destination, make, model, color} = req.body;
     try {
         // Get trip info to give to python script
         // must match blueprint: https://carla.readthedocs.io/en/latest/bp_library/#vehicle
@@ -52,11 +52,13 @@ const startRide = (req, res) => {
         let pickup = '--source=' + capitalizeLocationName(source)
         // Pass in city string to change simulator ending coordinates
         let dest = '--dest=' + capitalizeLocationName(destination)
+        // Pass in color to use when creating the car
+        let colorArg = '--color=' + color;
         let tripId = v4();
         let argTrip = '--trip_id=' + tripId;
         console.log(argFilter, pickup, dest, argTrip);
 
-        const pythonProcess = spawn('python', ['C:\\Users\\poona\\IdeaProjects\\AVRentalManagement\\carla\\av_rental_client.py', argFilter, pickup, dest, argTrip, "--write_to_db=True", "--recording=True", "--recording_frequency=1"]);
+        const pythonProcess = spawn('python', ['C:\\Users\\poona\\IdeaProjects\\AVRentalManagement\\carla\\av_rental_client.py', argFilter, pickup, dest, argTrip, colorArg, "--write_to_db=True", "--recording=True", "--recording_frequency=1"]);
 
         pythonProcess.stdout.on('data', (data) => {
             // insert contents of file into collection as JSON object
@@ -65,7 +67,16 @@ const startRide = (req, res) => {
         });
         pythonProcess.stderr.on('data', data => {
             console.error(`stderr: ${data}`);
+        });
 
+        await db.collection("trips").insertOne({
+            trip_id: tripId,
+            car_id: carId,
+            status: "active",
+            start_time: new Date(),
+            user_id: req.user.email,
+            source: source,
+            destination: destination
         });
 
         return res.send(200, {message: 'spawned python process, check logs', tripId: tripId});
@@ -81,21 +92,23 @@ const trackRide = async function (req, res) {
 
     console.log("ID " + id);
     const query = {trip_id: id};
-    Promise.all([db.collection("gnssDetails").find(query)
-        .sort({timestamp: -1})
-        .limit(1)
-        .map((item) => {
-            // console.log("GNSS " + item);
-            return {
-                trip_id: item.trip_id,
-                distance: item.distance_to_dest,
-                x_coord: item.x || 'n/a',
-                y_coord: item.y || 'n/a',
-                latitude: item.latitude || 'n/a',
-                longitude: item.longitude || 'n/a',
-                timestamp: item.timestamp || 'n/a'
-            };
-        }).next(),
+    Promise.all([
+        db.collection("trips").findOne(query),
+        db.collection("gnssDetails").find(query)
+            .sort({timestamp: -1})
+            .limit(1)
+            .map((item) => {
+                // console.log("GNSS " + item);
+                return {
+                    trip_id: item.trip_id,
+                    distance_remaining: item.distance_to_dest,
+                    x_coord: item.x || 'n/a',
+                    y_coord: item.y || 'n/a',
+                    latitude: item.latitude || 'n/a',
+                    longitude: item.longitude || 'n/a',
+                    timestamp: item.timestamp || 'n/a'
+                };
+            }).next(),
         db.collection("cameraDetails").find(query)
             .sort({timestamp: -1})
             .limit(1)
@@ -113,7 +126,11 @@ const trackRide = async function (req, res) {
             }).next()
     ])
         .then((r) => {
-            res.send({...r[0], ...r[1], ...r[2]});
+            let result = {}
+            for (const v of r.values()) {
+                result = {...result, ...v}
+            }
+            res.send(result);
         })
         .catch(err => {
             console.error(`Failed to find latest trip documents: ${err}`);
