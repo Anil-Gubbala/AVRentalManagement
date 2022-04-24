@@ -11,7 +11,14 @@ const {
   getProfile,
   updateProfile,
 } = require("./controllers/accountController");
-const { addCar } = require("./controllers/carController");
+const { startTrip, trackTrip } = require("./controllers/tripController");
+const {
+  addCar,
+  getOwnerCars,
+  getCar,
+  getCarRides,
+  getUserRides,
+} = require("./controllers/carController");
 
 const {
   getUsersAdmin,
@@ -34,5 +41,13 @@ router.route("/getCarsAdmin").get(getCarsAdmin);
 router.route("/profile").get(checkAuth, getProfile);
 router.route("/profile").put(checkAuth, updateProfile);
 router.route("/addcar").post(checkAuth, addCar);
+router.route("/getownercars").get(checkAuth, getOwnerCars);
+router.route("/getcar").get(checkAuth, getCar);
+router.route("/getcarrides").get(checkAuth, getCarRides);
+router.route("/getuserrides").get(checkAuth, getUserRides);
+
+router.route("/starttrip").post(startTrip);
+
+router.route("/tracktrip/:id").get(trackTrip);
 
 module.exports = router;

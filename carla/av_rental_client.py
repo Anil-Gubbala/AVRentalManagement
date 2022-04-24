@@ -191,12 +191,12 @@ class World(object):
             # Pick the user defined pickup location
             # Set selected source point x and y to start AV at
             if args.source == 'San Jose':
-            	spawn_point.location.x=-77
-            	spawn_point.location.y=33.5
-            	# Change rotation to try avoid car face wrong direction and crash into things
-            	spawn_point.rotation.roll = 0.0
-            	spawn_point.rotation.pitch = 0.0
-            	print('picked pickup:', args.source)
+                spawn_point.location.x=-77
+                spawn_point.location.y=33.5
+                # Change rotation to try avoid car face wrong direction and crash into things
+                spawn_point.rotation.roll = 0.0
+                spawn_point.rotation.pitch = 0.0
+                print('picked pickup:', args.source)
             
             try:
                 self.player = self.world.spawn_actor(blueprint, spawn_point)
@@ -418,9 +418,9 @@ class HUD(object):
             sys.stdout.flush()
             self.json_data.append(jsonObj)
             self.datawriter.write_gnss_details(self.json_data)        
-	    
-	        # Write to file 1 json object which confirms car connected to simulator
-	        # don't change connection status if trip is already ended	        
+
+            # Write to file 1 json object which confirms car connected to simulator
+            # don't change connection status if trip is already ended
             if self.connection_json_data['connection_status'] != 'inactive':
                if not self.wrote_connection_details:
                    self.connection_json_data = {'trip_id':self.trip_id, 'timestamp':1, 'connection_status': 'connected'}
@@ -963,7 +963,7 @@ def game_loop(args):
             spawn_point.location.y=80.0
         '''
         print('picked dropoff:', args.dest)
-        	
+
 
         destination = spawn_point.location
         agent.set_destination(destination)
@@ -1107,7 +1107,7 @@ def main():
         '--dest',
         help='city string which is converted to simulator ending location')
     # Add trip ID argument
-    argparser.add_argument("--trip_id", type=int,
+    argparser.add_argument("--trip_id", type=str,
                            help="trip ID")
 
     args = argparser.parse_args()
