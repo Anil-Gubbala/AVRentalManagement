@@ -72,7 +72,12 @@ function CarOwnerHome() {
         </div>
         <div>
           <Table striped bordered hover>
-            <thead style={{ background: "#000000", color: "white" }}>
+            <thead
+              style={{
+                background: "#000000",
+                color: "white",
+              }}
+            >
               <tr>
                 <th>Number</th>
                 <th>Make</th>

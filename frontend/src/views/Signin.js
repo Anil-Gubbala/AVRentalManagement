@@ -138,11 +138,11 @@ function Signin() {
                     <Button
                       type="submit"
                       onClick={login}
-                      variant="dark"
                       style={{
                         marginBottom: "8px",
                         padding: "10px",
                         width: "100%",
+                        background: "#0A2FB6",
                       }}
                     >
                       Login

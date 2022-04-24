@@ -381,10 +381,11 @@ function Signup() {
                 <Button
                   type="submit"
                   onClick={register}
-                  variant="dark"
                   style={{
                     marginBottom: "8px",
                     padding: "10px",
+                    background: "#0A2FB6",
+                    width: "100%",
                   }}
                 >
                   Signup
