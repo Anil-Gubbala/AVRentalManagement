@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -30,3 +32,7 @@
   padding: 40px 16px;
 }
 
+.form-floating{
+  margin-bottom: 8px;
+  margin-top: 8px;
+}

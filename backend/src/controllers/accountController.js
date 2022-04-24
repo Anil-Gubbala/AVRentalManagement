@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../configuration");
 const saltRounds = 10;
 
+const sendError = (res, status, code) => {
+  res.status(status).send({ err: code });
+};
+
 const getLogin = (req, res) => {
   if (req.user) {
     res.send({ loggedIn: true, user: req.user });
@@ -32,10 +36,7 @@ const signin = (req, res) => {
             });
             res.status(200).send({ token: `JWT ${token}`, user: userInfo });
           } else {
-            res.writeHead(401, {
-              "Content-Type": "text/plain",
-            });
-            res.end("UnSuccessful Login");
+            res.status(500).send({ err: "Incorrect Password" });
           }
         });
       } else {
@@ -86,16 +87,62 @@ const registerUser = (req, res) => {
         ],
         (err, result) => {
           if (err) {
-            console.log(err);
-            throw err;
+            sendError(res, 404, err.code);
+          } else {
+            res.status(200).send({ success: true });
           }
-          res.writeHead(200, {
-            "Content-Type": "text/plain",
-          });
-          res.send();
         }
       );
     }
+  });
+};
+
+const updateProfile = (req, res) => {
+  const {
+    firstName,
+    lastName,
+    address,
+    city,
+    state,
+    country,
+    zipcode,
+    phone,
+    gender,
+  } = req.body.userDetails;
+  const email = req.user.email;
+  var sql =
+    "UPDATE User SET firstName = ?, lastName = ?,address =? ,city =? , state =? ,country=?, zipcode =?, phone =?, gender =? WHERE email = ?;";
+  conn.query(
+    sql,
+    [
+      firstName,
+      lastName,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      phone,
+      gender,
+      email,
+    ],
+    (err, result) => {
+      if (err) {
+        sendError(res, 500, err.code);
+      }
+      res.send();
+    }
+  );
+};
+
+const getProfile = (req, res) => {
+  const email = req.user.email;
+  conn.query("select * from User where email = ?", [email], (err, result) => {
+    if (err) {
+      sendError(res, 500, err.code);
+      return;
+    }
+    res.send(result[0]);
   });
 };
 
@@ -108,4 +155,11 @@ const signout = (req, res) => {
   }
 };
 
-module.exports = { signin, registerUser, signout, getLogin };
+module.exports = {
+  signin,
+  registerUser,
+  signout,
+  getLogin,
+  getProfile,
+  updateProfile,
+};

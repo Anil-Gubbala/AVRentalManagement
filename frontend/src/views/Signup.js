@@ -95,7 +95,7 @@ function Signup() {
     <div>
       <Container>
         <h2 className="mb-4 text-center">Account Registration</h2>
-        <Form>
+        <Form style={{ maxWidth: "600px", margin: "auto" }}>
           <div className="row">
             <Form.Group className="col">
               <Form.Label>First Name</Form.Label>
@@ -304,7 +304,6 @@ function Signup() {
               <Form.Control
                 as="select"
                 default="0"
-                value={userDetails?.gender}
                 onChange={(e) => {
                   setUserDetails({ ...userDetails, gender: e.target.value });
                 }}
@@ -320,7 +319,6 @@ function Signup() {
               <Form.Control
                 as="select"
                 default="0"
-                value={userDetails?.role}
                 onChange={(e) => {
                   setUserDetails({ ...userDetails, role: e.target.value });
                 }}

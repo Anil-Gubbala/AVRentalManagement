@@ -1,5 +1,27 @@
-import { REDUCER } from './consts';
+import { REDUCER } from "./consts";
 
-export const isAdmin = () => JSON.parse(localStorage.getItem(REDUCER.ISADMIN));
+export const getRole = () => localStorage.getItem(REDUCER.ROLE);
 
-export const isSignedIn = () => JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
+export const isAdmin = () => {
+  if (isSignedIn() && getRole() === "2") {
+    return true;
+  }
+  return false;
+};
+
+export const isUser = () => {
+  if (isSignedIn() && getRole() === "0") {
+    return true;
+  }
+  return false;
+};
+
+export const isCarOwner = () => {
+  if (isSignedIn() && getRole() === "2") {
+    return true;
+  }
+  return false;
+};
+
+export const isSignedIn = () =>
+  JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));

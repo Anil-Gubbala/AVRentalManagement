@@ -8,7 +8,10 @@ const {
   registerUser,
   getLogin,
   signout,
+  getProfile,
+  updateProfile,
 } = require("./controllers/accountController");
+const { addCar } = require("./controllers/carController");
 
 const {
   getUsersAdmin,
@@ -20,7 +23,7 @@ const router = express.Router();
 // demo for auth calls
 router.route("/demoCall").post(checkAuth, demoCall);
 
-// demo for without auth calls
+// Need to add checkAuth if login is required for your functions to work.
 router.route("/signinData").post(signin);
 router.route("/register").post(registerUser);
 router.route("/getLogin").get(checkAuth, getLogin);
@@ -28,5 +31,8 @@ router.route("/signout").get(checkAuth, signout);
 
 router.route("/getUsersAdmin").get(getUsersAdmin);
 router.route("/getCarsAdmin").get(getCarsAdmin);
+router.route("/profile").get(checkAuth, getProfile);
+router.route("/profile").put(checkAuth, updateProfile);
+router.route("/addcar").post(checkAuth, addCar);
 
 module.exports = router;

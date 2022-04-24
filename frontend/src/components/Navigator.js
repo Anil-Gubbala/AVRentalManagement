@@ -8,24 +8,29 @@ import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
 import { REDUCER } from "../utils/consts";
 import { get } from "../utils/serverCall";
-import { isAdmin, isSignedIn } from "../utils/checkSignin";
+import { getRole, isSignedIn } from "../utils/checkSignin";
+import { redirectHome } from "../utils/redirector";
 
 function Navigator() {
   const loginState = useSelector((state) => state.loginReducer);
   const errorState = useSelector((state) => state.errorReducer);
+  const messageState = useSelector((state) => state.messageReducer);
 
   const [signedIn, setSignedIn] = useState(isSignedIn());
-  const [admin, setAdmin] = useState(isAdmin());
-  const [showAlert, setShowAlert] = useState(false);
+  const [role, setRole] = useState("0");
+  // const [admin, setAdmin] = useState(isAdmin());
+  const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (signedIn) {
       get(`/getLogin`).then((response) => {
         if (response.loggedIn === true) {
+          setRole(getRole());
         } else {
           setSignedIn(false);
-          setAdmin(false);
           localStorage.clear();
         }
       });
@@ -34,23 +39,37 @@ function Navigator() {
 
   useEffect(() => {
     setSignedIn(isSignedIn());
-    setAdmin(isAdmin());
+    setRole(getRole());
     console.log("entered change login state");
   }, [loginState]);
 
-  const hideAlert = () => {
+  const hideError = () => {
     setTimeout(() => {
-      setShowAlert(false);
+      setShowError(false);
+    }, 3000);
+  };
+
+  const hideMessage = () => {
+    setTimeout(() => {
+      setShowMessage(false);
     }, 3000);
   };
 
   useEffect(() => {
     if (errorState[REDUCER.ERR_MSG] !== "") {
       setErrorMsg(errorState[REDUCER.ERR_MSG]);
-      setShowAlert(true);
-      hideAlert();
+      setShowError(true);
+      hideError();
     }
   }, [errorState]);
+
+  useEffect(() => {
+    if (messageState[REDUCER.MESSAGE] !== "") {
+      setMessage(messageState[REDUCER.MESSAGE]);
+      setShowMessage(true);
+      hideMessage();
+    }
+  }, [messageState]);
 
   return (
     <div>
@@ -59,51 +78,69 @@ function Navigator() {
           <Navbar bg="dark" variant="dark">
             <Container>
               <Navbar.Brand>Group13</Navbar.Brand>
-              {!admin && (
+              {/* {!admin && (
                 <Nav className="me-auto">
                   <Link to="/home" className="nav-link">
-                    HOME
-                  </Link>
-                </Nav>
-              )}
-              {signedIn && admin && (
-                <Nav className="me-auto">
-                  <Link to="/adminHome" className="nav-link">
-                    HOME
-                  </Link>
-                </Nav>
-              )}
-              {signedIn && admin && (
-                <Nav className="me-auto">
-                  <Link to="/adminNewFlight" className="nav-link">
-                    Add Flight
+                    Home
                   </Link>
                 </Nav>
               )}
 
+              {signedIn && admin && (
+                <Nav className="me-auto">
+                  <Link to="/adminHome" className="nav-link">
+                    Home
+                  </Link>
+                </Nav>
+              )} */}
+
+              <Nav className="me-auto">
+                <Link to={redirectHome()} className="nav-link">
+                  Home
+                </Link>
+              </Nav>
+
               {!signedIn && (
                 <Nav>
                   <Link to="/signin" className="nav-link">
-                    SIGN IN
+                    Sign In
                   </Link>
                 </Nav>
               )}
+
+              {signedIn && role === "0" && (
+                <Nav>
+                  <Link to="/ridehistory" className="nav-link">
+                    My Bookings
+                  </Link>
+                </Nav>
+              )}
+
               {signedIn && (
                 <Nav>
                   <Link to="/userProfile" className="nav-link">
-                    PROFILE
+                    Profile
                   </Link>
                   <Link to="/signout" className="nav-link">
-                    SIGN OUT
+                    Sign Out
                   </Link>
                 </Nav>
               )}
             </Container>
           </Navbar>
         </Row>
-        {showAlert && (
+        {showError && (
           <div style={{ position: "fixed", bottom: "10px", zIndex: "2" }}>
-            <Alert variant="danger">{errorMsg}</Alert>
+            <Alert variant="danger" dismissible="true">
+              {errorMsg}
+            </Alert>
+          </div>
+        )}
+        {showMessage && (
+          <div style={{ position: "fixed", bottom: "10px", zIndex: "2" }}>
+            <Alert variant="success" dismissible="true">
+              {message}
+            </Alert>
           </div>
         )}
       </Container>
