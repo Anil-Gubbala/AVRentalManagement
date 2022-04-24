@@ -84,7 +84,7 @@ const getUserRides = (req, res) => {
   inner join User u on r.userid = u.email
   inner join Cars c on r.carid = c.id
   inner join Bill b on r.id=b.rideId
-  where RideHistory.userId=?
+  where r.userId=?
   `;
   conn.query(sql, [req.user.email], (err, result) => {
     if (err) {
