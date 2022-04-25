@@ -41,8 +41,6 @@ const RideDetails = () => {
   const downloadData = () => {
     const pdf = new jsPDF("portrait", "px", "a4", "false");
 
-    pdf.text(30, 110, "Name");
-
     pdf.autoTable({ html: "#table" });
     pdf.save("data.pdf");
   };

@@ -91,6 +91,7 @@ const CarRideHistory = () => {
             {carRideDetails.map((ride) => {
               return (
                 <>
+                  ride!==-null && (
                   <tr>
                     <td>{ride.source}</td>
                     <td>{ride.destination}</td>
@@ -124,6 +125,7 @@ const CarRideHistory = () => {
                       </Button>
                     </td>
                   </tr>
+                  )
                 </>
               );
             })}

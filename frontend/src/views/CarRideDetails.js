@@ -58,8 +58,6 @@ const CarRideDetails = () => {
   const downloadData = () => {
     const pdf = new jsPDF("portrait", "px", "a4", "false");
 
-    pdf.text(30, 110, "Name");
-
     pdf.autoTable({ html: "#tableCar" });
 
     pdf.save("invoice.pdf");
