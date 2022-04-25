@@ -60,7 +60,7 @@ router.route("/getRideDetails").get(checkAuth, getRideDetails);
 router.route("/bill").post(checkAuth, createInvoice);
 router.route("/bill").get(checkAuth, getInvoiceDetails);
 
-router.route("/startRide").post(startRide);
+router.route("/startRide").post(checkAuth, startRide);
 router.route("/trackRide/:id").get(trackRide);
 
 module.exports = router;

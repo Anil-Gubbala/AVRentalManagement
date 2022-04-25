@@ -6,7 +6,6 @@ import { displayError, displayMessage } from "../utils/messages";
 
 function UserProfile() {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
-
   const [invalid, setInvalid] = useState({
     password: false,
     firstName: false,
@@ -79,6 +78,7 @@ function UserProfile() {
 
   return (
     <div>
+      <h2 className="mb-4 text-center">Edit Profile</h2>
       <Form style={{ maxWidth: "600px", margin: "auto" }}>
         <div className="row">
           <Form.Group className="col">
@@ -366,7 +366,7 @@ function UserProfile() {
         <br />
         <div>
           <Button type="submit" onClick={updateProfile} variant="dark">
-            Update Profile
+            Update
           </Button>
         </div>
       </Form>

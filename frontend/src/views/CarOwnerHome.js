@@ -58,7 +58,7 @@ function CarOwnerHome() {
   let editCarPage = null;
   if (redirToCar) editCarPage = <Navigate to={"/editcar?id=" + selectedCar} />;
   let addCarPage = null;
-  if (redirToAddCar) addCarPage = <Navigate to={"/addcar="} />;
+  if (redirToAddCar) addCarPage = <Navigate to={"/addcar"} />;
   let rideDetailPage = null;
   if (redirToCarHistory)
     rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCar} />;
