@@ -91,41 +91,41 @@ const CarRideHistory = () => {
             {carRideDetails.map((ride) => {
               return (
                 <>
-                  ride!==-null && (
-                  <tr>
-                    <td>{ride.source}</td>
-                    <td>{ride.destination}</td>
-                    <td>{ride.userId}</td>
-                    <td>{ride.startTime}</td>
-                    <td>
-                      <div
-                        style={{
-                          background:
-                            ride.status == "Active"
-                              ? "rgb(212 100 121)"
-                              : "#9fd5a5",
-                          borderRadius: "15px",
-                          textAlign: "center",
-                          display: "inherit",
-                          padding: "10px",
-                          paddingLeft: "20px",
-                          paddingRight: "20px",
-                        }}
-                      >
-                        {ride.status}
-                      </div>
-                    </td>
-                    <td>
-                      <Button
-                        data={ride.id}
-                        variant="dark"
-                        onClick={viewRideDetails}
-                      >
-                        View Ride
-                      </Button>
-                    </td>
-                  </tr>
-                  )
+                  {ride !== -null && (
+                    <tr>
+                      <td>{ride.source}</td>
+                      <td>{ride.destination}</td>
+                      <td>{ride.userId}</td>
+                      <td>{ride.startTime}</td>
+                      <td>
+                        <div
+                          style={{
+                            background:
+                              ride.status == "Active"
+                                ? "rgb(212 100 121)"
+                                : "#9fd5a5",
+                            borderRadius: "15px",
+                            textAlign: "center",
+                            display: "inherit",
+                            padding: "10px",
+                            paddingLeft: "20px",
+                            paddingRight: "20px",
+                          }}
+                        >
+                          {ride.status}
+                        </div>
+                      </td>
+                      <td>
+                        <Button
+                          data={ride.id}
+                          variant="dark"
+                          onClick={viewRideDetails}
+                        >
+                          View Ride
+                        </Button>
+                      </td>
+                    </tr>
+                  )}
                 </>
               );
             })}
