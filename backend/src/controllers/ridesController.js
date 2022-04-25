@@ -125,11 +125,14 @@ const startRide = async (req, res) => {
         await db.collection("trips").insertOne({
             trip_id: tripId,
             car_id: carId,
-            status: "active",
+            trip_status: "active",
             start_time: new Date(),
             user_id: req.user.email,
             source: source,
-            destination: destination
+            destination: destination,
+            make,
+            model,
+            color,
         });
 
         return res.send(200, {message: 'spawned python process, check logs', tripId: tripId});
@@ -139,6 +142,15 @@ const startRide = async (req, res) => {
     }
 };
 
+const getCar = async (cardId) => {
+    if (!cardId) return {};
+    let sql = `Select *
+               from Cars
+               where Cars.id = ?`;
+    const result = await conn.query(sql, [cardId]);
+    console.log(result);
+    return {car: result};
+}
 
 const trackRide = async function (req, res) {
     let id = req.params.id
@@ -176,7 +188,7 @@ const trackRide = async function (req, res) {
                 return {
                     trip_status: item.connection_status || 'inactive'
                 }
-            }).next()
+            }).next(),
     ])
         .then((r) => {
             let result = {}
