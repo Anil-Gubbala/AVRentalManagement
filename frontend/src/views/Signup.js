@@ -91,7 +91,7 @@ function Signup() {
           return;
         }
       }
-      post(`/register`, {
+      post(`/user`, {
         userDetails,
       })
         .then((response) => {

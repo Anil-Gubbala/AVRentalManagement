@@ -128,6 +128,7 @@ const RideHistory = () => {
             })}
           </tbody>
         </Table>
+        {userRideDetails.length === 0 && <h2> No rides booked. </h2>}
       </Container>
     </div>
   );

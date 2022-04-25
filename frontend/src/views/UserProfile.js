@@ -51,7 +51,7 @@ function UserProfile() {
   }
 
   const getUserDetails = () => {
-    get(`/profile`)
+    get(`/user`)
       .then((response) => {
         setUserDetails(response);
       })
@@ -68,7 +68,7 @@ function UserProfile() {
       }
     }
     e.preventDefault();
-    put("/profile", { userDetails }).then(() => {
+    put("/user", { userDetails }).then(() => {
       displayMessage("Profile details updated");
     });
   };

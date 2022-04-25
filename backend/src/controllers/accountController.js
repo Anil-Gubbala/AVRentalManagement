@@ -16,9 +16,9 @@ const getLogin = (req, res) => {
   }
 };
 const signin = (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const role = req.body.role;
+  const email = req.query.email;
+  const password = req.query.password;
+  const role = req.query.role;
   conn.query(
     "SELECT password FROM User WHERE email = ? and role=?;",
     [email, role],
