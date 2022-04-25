@@ -4,7 +4,7 @@ import axios from "axios";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
 import { Button, FloatingLabel, Form, Table, Image } from "react-bootstrap";
-import { StaticGoogleMap, Marker } from "react-static-google-map";
+// import { StaticGoogleMap, Marker } from "react-static-google-map";
 import { get, post } from "../utils/serverCall";
 import { displayError } from "../utils/messages";
 
@@ -67,14 +67,14 @@ function Home() {
   const googleMap = () => {
     return (
       <>
-        <StaticGoogleMap
+        {/* <StaticGoogleMap
           as={(props) => (
             <Image
               {...props}
               style={{
                 flex: 1,
-                height: "92vh",
-                width: "100%",
+                height: "500px",
+                width: "500px",
               }}
               fluid
             />
@@ -100,7 +100,7 @@ function Home() {
             color="green"
             label="S"
           />
-        </StaticGoogleMap>
+        </StaticGoogleMap> */}
       </>
     );
   };
@@ -189,66 +189,63 @@ function Home() {
   return (
     <div>
       <div className="row">
-        <div className="col-md-5">
-          <Form style={{ maxWidth: "600px", margin: "auto" }}>
-            <div className="row">
-              <Form.Group className="col">
-                <FloatingLabel label="Source">
-                  <Form.Control
-                    as="select"
-                    default="-1"
-                    onChange={(e) => {
-                      setRideDetails({
-                        ...rideDetails,
-                        source: e.target.value,
-                      });
-                    }}
-                  >
-                    <option value="-1">Select Source</option>
-                    <option value="San Jose">San Jose</option>
-                    <option value="Santa Clara">Santa Clara</option>
-                    <option value="Sacramento">Sacramento</option>
-                    <option value="San Francisco">San Francisco</option>
-                  </Form.Control>
-                </FloatingLabel>
-              </Form.Group>
-            </div>
-            <div className="row">
-              <Form.Group className="col">
-                <FloatingLabel label="Destination">
-                  <Form.Control
-                    as="select"
-                    onChange={(e) => {
-                      setRideDetails({
-                        ...rideDetails,
-                        destination: e.target.value,
-                      });
-                    }}
-                  >
-                    <option value="-1">Select Destination</option>
-                    <option value="San Jose">San Jose</option>
-                    <option value="Santa Clara">Santa Clara</option>
-                    <option value="Sacramento">Sacramento</option>
-                    <option value="San Francisco">San Francisco</option>
-                  </Form.Control>
-                </FloatingLabel>
-              </Form.Group>
-            </div>
-            <br />
+        <Form style={{ maxWidth: "600px", margin: "auto" }}>
+          <div className="row">
+            <Form.Group className="col">
+              <FloatingLabel label="Source">
+                <Form.Control
+                  as="select"
+                  default="-1"
+                  onChange={(e) => {
+                    setRideDetails({
+                      ...rideDetails,
+                      source: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="-1">Select Source</option>
+                  <option value="San Jose">San Jose</option>
+                  <option value="Santa Clara">Santa Clara</option>
+                  <option value="Sacramento">Sacramento</option>
+                  <option value="San Francisco">San Francisco</option>
+                </Form.Control>
+              </FloatingLabel>
+            </Form.Group>
+          </div>
+          <div className="row">
+            <Form.Group className="col">
+              <FloatingLabel label="Destination">
+                <Form.Control
+                  as="select"
+                  onChange={(e) => {
+                    setRideDetails({
+                      ...rideDetails,
+                      destination: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="-1">Select Destination</option>
+                  <option value="San Jose">San Jose</option>
+                  <option value="Santa Clara">Santa Clara</option>
+                  <option value="Sacramento">Sacramento</option>
+                  <option value="San Francisco">San Francisco</option>
+                </Form.Control>
+              </FloatingLabel>
+            </Form.Group>
+          </div>
+          <br />
 
-            <div>
-              <Button
-                type="submit"
-                onClick={checkAvailability}
-                variant="dark"
-                style={{ marginBottom: "8px" }}
-              >
-                Check Availability
-              </Button>
-            </div>
-          </Form>
-        </div>
-        <div className="col-md-5">{googleMap()}</div>
+          <div>
+            <Button
+              type="submit"
+              onClick={checkAvailability}
+              variant="dark"
+              style={{ marginBottom: "8px" }}
+            >
+              Check Availability
+            </Button>
+          </div>
+        </Form>
       </div>
       <div className="row">
         <Table

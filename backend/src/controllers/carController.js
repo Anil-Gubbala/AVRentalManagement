@@ -49,6 +49,25 @@ const getOwnerCars = (req, res) => {
   });
 };
 
+const updateCar = (req, res) => {
+  let { number, model, make, color, build, status, capacity } =
+    req.body.carDetails;
+  let sql =
+    "Update Cars set model=?,make=?,color=?,build=?,status=?,capacity=? where regNumber=?";
+  conn.query(
+    sql,
+    [model, make, color, build, status, capacity, number],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(result);
+      res.send(result);
+    }
+  );
+};
+
 const getCar = (req, res) => {
   console.log(req.query[0]);
   let sql = "Select * from Cars where Cars.ownerId=? and Cars.regNumber=?";
@@ -81,7 +100,9 @@ const getAvailableCars = async (req, res) => {
 };
 
 const getCarRides = (req, res) => {
+  console.log("Inserver-paramValue" + req.query[0]);
   const query = { car_id: req.query[0] };
+
   const rides = Promise.all([
     db
       .collection("trips")
@@ -129,4 +150,5 @@ module.exports = {
   getCar,
   getCarRides,
   getAvailableCars,
+  updateCar,
 };

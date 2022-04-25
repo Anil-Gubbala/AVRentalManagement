@@ -15,16 +15,22 @@ const CarRideHistory = () => {
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCarHome, setRedirToCarHome] = useState(false);
   const [carRideDetails, setCarRideDetails] = useState([]);
+  const [redirectToDetails, setRedirectToDetails] = useState(false);
+  const [selectedRide, setSelectedRide] = useState("");
 
   // if (role !== "1") {
   //   return <Navigate to={redirectHome()} />;
   // }
 
+  const windowUrl = window.location.search;
+  const params = new URLSearchParams(windowUrl);
+  // console.log(params.get("id"));
+
   const getCarDetails = () => {
-    get(`/getCarRides`, "ts07et9443")
+    get(`/getcarrides`, params.get("id"))
       .then((response) => {
         console.log(response);
-        // setCarRideDetails(response);
+        setCarRideDetails(response);
       })
       .catch((err) => {
         console.log(err);
@@ -39,6 +45,15 @@ const CarRideHistory = () => {
     event.preventDefault();
     setRedirToCarHome(true);
   };
+
+  const viewRideDetails = (e) => {
+    setSelectedRide(e.target.getAttribute("data"));
+    setRedirectToDetails(true);
+  };
+
+  if (redirectToDetails) {
+    return <Navigate to={"/carridedetails?id=" + selectedRide} />;
+  }
 
   let ad = null;
   if (redirToCarHome) ad = <Navigate to="/carownerhome" />;
@@ -65,29 +80,29 @@ const CarRideHistory = () => {
             <tr>
               <th>Origin</th>
               <th>Destination</th>
-              <th>Customer Name</th>
-              <th>Date</th>
-              <th>Fare</th>
+              <th>Customer Id</th>
+              <th>Start Time</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
+
           <tbody>
             {carRideDetails.map((ride) => {
               return (
                 <>
                   <tr>
-                    <td>{ride.origin}</td>
+                    <td>{ride.source}</td>
                     <td>{ride.destination}</td>
-                    <td>{ride.customerName}</td>
-                    <td>{ride.date}</td>
-                    <td>{ride.fare}</td>
+                    <td>{ride.userId}</td>
+                    <td>{ride.startTime}</td>
                     <td>
                       <div
                         style={{
                           background:
-                            ride.status == "Normal"
-                              ? "#9fd5a5"
-                              : "rgb(212 100 121)",
+                            ride.status == "Active"
+                              ? "rgb(212 100 121)"
+                              : "#9fd5a5",
                           borderRadius: "15px",
                           textAlign: "center",
                           display: "inherit",
@@ -95,7 +110,18 @@ const CarRideHistory = () => {
                           paddingLeft: "20px",
                           paddingRight: "20px",
                         }}
-                      ></div>
+                      >
+                        {ride.status}
+                      </div>
+                    </td>
+                    <td>
+                      <Button
+                        data={ride.id}
+                        variant="dark"
+                        onClick={viewRideDetails}
+                      >
+                        View Ride
+                      </Button>
                     </td>
                   </tr>
                 </>

@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
-import { post, get } from "../utils/serverCall";
+import { post, get, put } from "../utils/serverCall";
 import { Button, FloatingLabel, Table } from "react-bootstrap";
 
 const EditCar = () => {
@@ -84,13 +84,13 @@ const EditCar = () => {
       );
     } else {
       console.log(carDetails);
-      post(`/addcar`, {
+      put(`/updatecar`, {
         carDetails,
       })
         .then((response) => {
-          console.log(`Car Added Successfully`);
+          console.log(`Car Updated Successfully`);
           console.log(response);
-          setMessage(`Car Added Successfully`);
+          setMessage(`Car Updated Successfully`);
           setRedirToCarHome(true);
         })
         .catch((error) => {

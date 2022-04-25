@@ -19,6 +19,8 @@ function CarOwnerHome() {
 
   const [selectedCar, setSelectedCar] = useState([]);
 
+  const [selectedCarId, setSelectedCarId] = useState([]);
+
   // if (role !== "1") {
   //   return <Navigate to={redirectHome()} />;
   // }
@@ -51,7 +53,9 @@ function CarOwnerHome() {
 
   const RideHistory = (event) => {
     event.preventDefault();
+    // console.log(event.target);
     setSelectedCar(event.target.getAttribute("data"));
+    setSelectedCar(event.target.getAttribute("carid"));
     setRedirToCarHistory(true);
   };
 
@@ -61,7 +65,7 @@ function CarOwnerHome() {
   if (redirToAddCar) addCarPage = <Navigate to={"/addcar"} />;
   let rideDetailPage = null;
   if (redirToCarHistory)
-    rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCar} />;
+    rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCarId} />;
   return (
     <div>
       {addCarPage}
@@ -120,6 +124,7 @@ function CarOwnerHome() {
                         variant="dark"
                         style={{ marginBottom: "8px", marginLeft: "20px" }}
                         data={car.regNumber}
+                        carid={car.id}
                       >
                         Ride History
                       </Button>
