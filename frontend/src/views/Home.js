@@ -82,7 +82,7 @@ function Home() {
           scale="2"
           size="750x400"
           className="img-fluid"
-          apiKey="AIzaSyAbnKCJ0aCWbcESy7TeN38ttrqEroPe9Yg"
+          apiKey=""
           zoom={14}
           center="37.32948626822242,-121.8761059820004"
           format="jpg"
