@@ -12,7 +12,7 @@ import { Col, Row, Button } from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const RideDetails = () => {
+const CarRideDetails = () => {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
@@ -28,50 +28,45 @@ const RideDetails = () => {
   const params = new URLSearchParams(windowUrl);
   console.log(params.get("id"));
 
-  const getRideDetails = () => {
-    get(`/getRideDetails`, { id: params.get("id") })
-      .then((response) => {
-        setRideDetails(response[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  //   const getRideDetails = () => {
+  //     get(`/getRideDetails`, { id: params.get("id") })
+  //       .then((response) => {
+  //         setRideDetails(response[0]);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   };
+
+  //   const getBillDetails = () => {
+  //     get(`/bill`, { id: params.get("id") })
+  //       .then((response) => {
+  //         setBillDetails(response);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   };
+
+  //   useEffect(() => {
+  //     getRideDetails();
+  //     getBillDetails();
+  //   }, []);
 
   const downloadData = () => {
     const pdf = new jsPDF("portrait", "px", "a4", "false");
 
     pdf.text(30, 110, "Name");
 
-    pdf.autoTable({ html: "#table" });
-    pdf.save("data.pdf");
+    pdf.autoTable({ html: "#tableCar" });
+    pdf.save("invoice.pdf");
   };
-
-  const getBillDetails = () => {
-    get(`/bill`, { id: params.get("id") })
-      .then((response) => {
-        setBillDetails(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  useEffect(() => {
-    getRideDetails();
-    getBillDetails();
-  }, []);
-
-  if (params.get("id") === null) {
-    return <Navigate to={redirectHome()} />;
-  }
 
   return (
     <div>
       <Container>
         <h2 className="mb-4 text-center">Ride Details</h2>
       </Container>
-
       <Container>
         <div style={{ textAlign: "right" }}>
           <Button
@@ -132,7 +127,7 @@ const RideDetails = () => {
                 <h2>Invoice</h2>
               </div>
               <div>
-                <Table striped bordered hover id="table">
+                <Table striped bordered hover id="tableCar">
                   <thead style={{ background: "#000000", color: "white" }}>
                     <tr>
                       <th style={{ width: "60% !important" }}>Charges</th>
@@ -165,6 +160,34 @@ const RideDetails = () => {
                     </tr>
                   </tbody>
                 </Table>
+
+                {/* <Table striped bordered hover>
+                  <thead style={{ background: "#4B76B6", color: "white" }}>
+                    <tr>
+                      <th>Amount</th>
+                      <th>Tax</th>
+                      <th>Card</th>
+                      <th>Card</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{billDetails.amount}</td>
+                      <td>{billDetails.tax}</td>
+                      <td>{billDetails.card}</td>
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={3}
+                        style={{ textAlign: "right", fontWeight: "bold" }}
+                      >
+                        Total Amount
+                      </td>
+
+                      <td>{billDetails.total}</td>
+                    </tr>
+                  </tbody>
+                </Table> */}
               </div>
             </div>
           </Col>
@@ -174,4 +197,4 @@ const RideDetails = () => {
   );
 };
 
-export default RideDetails;
+export default CarRideDetails;

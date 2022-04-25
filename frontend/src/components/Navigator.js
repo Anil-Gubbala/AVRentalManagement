@@ -102,6 +102,13 @@ function Navigator() {
 
               {!signedIn && (
                 <Nav>
+                  <Link to="/signup" className="nav-link">
+                    Sign Up
+                  </Link>
+                </Nav>
+              )}
+              {!signedIn && (
+                <Nav>
                   <Link to="/signin" className="nav-link">
                     Sign In
                   </Link>

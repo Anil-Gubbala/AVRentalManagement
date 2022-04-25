@@ -40,29 +40,29 @@ const AddCar = () => {
 
   const [carDetails, setCarDetails] = useState(defaultValues);
 
-  const getCarDetails = () => {
-    get(`/getCar`, "ts07et9443")
-      .then((response) => {
-        console.log(response);
-        let details = {
-          number: response.regNumber,
-          make: response.make,
-          model: response.model,
-          color: response.color,
-          build: response.build,
-          status: response.status,
-          capacity: response.capacity,
-        };
-        setCarDetails(details);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // const getCarDetails = () => {
+  //   get(`/getCar`, "ts07et9443")
+  //     .then((response) => {
+  //       console.log(response);
+  //       let details = {
+  //         number: response.regNumber,
+  //         make: response.make,
+  //         model: response.model,
+  //         color: response.color,
+  //         build: response.build,
+  //         status: response.status,
+  //         capacity: response.capacity,
+  //       };
+  //       setCarDetails(details);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
-  useEffect(() => {
-    getCarDetails();
-  }, []);
+  // useEffect(() => {
+  //   getCarDetails();
+  // }, []);
 
   //   if (role !== "1") {
   //     return <Navigate to={redirectHome()} />;
@@ -122,149 +122,156 @@ const AddCar = () => {
         <Form>
           <div className="row">
             <Form.Group className="col">
-              <Form.Label>Number</Form.Label>
-              <Form.Control
-                type="text"
-                helpertext={invalid.number ? "1-10 characters" : ""}
-                id="carNumber"
-                label="Number"
-                value={carDetails.number}
-                isInvalid={invalid.number}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 10 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, number: validation });
-                  setCarDetails({
-                    ...carDetails,
-                    number: e.target.value,
-                  });
-                }}
-              />
+              <FloatingLabel label="Number">
+                <Form.Control
+                  type="text"
+                  helpertext={invalid.number ? "1-10 characters" : ""}
+                  id="carNumber"
+                  label="Number"
+                  value={carDetails.number}
+                  isInvalid={invalid.number}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value.length > 10 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, number: validation });
+                    setCarDetails({
+                      ...carDetails,
+                      number: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
             </Form.Group>
 
             <Form.Group className="col">
-              <Form.Label>Make</Form.Label>
-              <Form.Control
-                type="text"
-                value={carDetails.make}
-                helpertext={invalid.make ? "1-10 characters" : ""}
-                id="carMake"
-                label="Make"
-                isInvalid={invalid.make}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 10 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, make: validation });
-                  setCarDetails({
-                    ...carDetails,
-                    make: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-          </div>
-
-          <div className="row">
-            <Form.Group className="col">
-              <Form.Label>Model</Form.Label>
-              <Form.Control
-                type="text"
-                value={carDetails.model}
-                helpertext={invalid.model ? "1-10 characters" : ""}
-                id="carModel"
-                label="Model"
-                isInvalid={invalid.model}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 10 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, model: validation });
-                  setCarDetails({
-                    ...carDetails,
-                    model: e.target.value,
-                  });
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group className="col">
-              <Form.Label>Color</Form.Label>
-              <Form.Control
-                type="text"
-                value={carDetails.color}
-                helpertext={invalid.color ? "1-10 characters" : ""}
-                id="carColor"
-                label="Color"
-                isInvalid={invalid.color}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value.length > 10 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, color: validation });
-                  setCarDetails({
-                    ...carDetails,
-                    color: e.target.value,
-                  });
-                }}
-              />
+              <FloatingLabel label="Make">
+                <Form.Control
+                  type="text"
+                  value={carDetails.make}
+                  helpertext={invalid.make ? "1-10 characters" : ""}
+                  id="carMake"
+                  label="Make"
+                  isInvalid={invalid.make}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value.length > 10 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, make: validation });
+                    setCarDetails({
+                      ...carDetails,
+                      make: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
             </Form.Group>
           </div>
 
           <div className="row">
             <Form.Group className="col">
-              <Form.Label>Build</Form.Label>
-              <Form.Control
-                as="select"
-                value={carDetails?.build}
-                onChange={(e) => {
-                  setCarDetails({ ...carDetails, build: e.target.value });
-                }}
-              >
-                <option value="SUV">SUV</option>
-                <option value="Hatchback">Hatchback</option>
-                <option value="Sedan">Sedan</option>
-              </Form.Control>
+              <FloatingLabel label="Model">
+                <Form.Control
+                  type="text"
+                  value={carDetails.model}
+                  helpertext={invalid.model ? "1-10 characters" : ""}
+                  id="carModel"
+                  label="Model"
+                  isInvalid={invalid.model}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value.length > 10 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, model: validation });
+                    setCarDetails({
+                      ...carDetails,
+                      model: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
             </Form.Group>
 
             <Form.Group className="col">
-              <Form.Label>Status</Form.Label>
-              <Form.Control
-                as="select"
-                default="Active"
-                value={carDetails?.status}
-                onChange={(e) => {
-                  setCarDetails({ ...carDetails, status: e.target.value });
-                }}
-              >
-                <option value="Active">Active</option>
-                <option value="InActive">InActive</option>
-                <option value="Busy">Busy</option>
-              </Form.Control>
+              <FloatingLabel label="Color">
+                <Form.Control
+                  type="text"
+                  value={carDetails.color}
+                  helpertext={invalid.color ? "1-10 characters" : ""}
+                  id="carColor"
+                  label="Color"
+                  isInvalid={invalid.color}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value.length > 10 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, color: validation });
+                    setCarDetails({
+                      ...carDetails,
+                      color: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
+            </Form.Group>
+          </div>
+
+          <div className="row">
+            <Form.Group className="col">
+              <FloatingLabel label="Build">
+                <Form.Control
+                  as="select"
+                  value={carDetails?.build}
+                  onChange={(e) => {
+                    setCarDetails({ ...carDetails, build: e.target.value });
+                  }}
+                >
+                  <option value="SUV">SUV</option>
+                  <option value="Hatchback">Hatchback</option>
+                  <option value="Sedan">Sedan</option>
+                </Form.Control>
+              </FloatingLabel>
+            </Form.Group>
+
+            <Form.Group className="col">
+              <FloatingLabel label="Status">
+                <Form.Control
+                  as="select"
+                  default="Active"
+                  value={carDetails?.status}
+                  onChange={(e) => {
+                    setCarDetails({ ...carDetails, status: e.target.value });
+                  }}
+                >
+                  <option value="Active">Active</option>
+                  <option value="InActive">InActive</option>
+                  <option value="Busy">Busy</option>
+                </Form.Control>
+              </FloatingLabel>
             </Form.Group>
           </div>
           <div>
             <Form.Group className="col">
-              <Form.Label>Capacity</Form.Label>
-              <Form.Control
-                type="number"
-                value={carDetails.capacity}
-                helpertext={invalid.capacity ? "Greater than 0" : ""}
-                id="carCapacity"
-                label="Capacity"
-                isInvalid={invalid.capacity}
-                onChange={(e) => {
-                  const validation = !!(
-                    e.target.value < 1 || e.target.value === ""
-                  );
-                  setInvalid({ ...invalid, capacity: validation });
-                  setCarDetails({
-                    ...carDetails,
-                    capacity: e.target.value,
-                  });
-                }}
-              />
+              <FloatingLabel label="Capacity">
+                <Form.Control
+                  type="number"
+                  value={carDetails.capacity}
+                  helpertext={invalid.capacity ? "Greater than 0" : ""}
+                  id="carCapacity"
+                  label="Capacity"
+                  isInvalid={invalid.capacity}
+                  onChange={(e) => {
+                    const validation = !!(
+                      e.target.value < 1 || e.target.value === ""
+                    );
+                    setInvalid({ ...invalid, capacity: validation });
+                    setCarDetails({
+                      ...carDetails,
+                      capacity: e.target.value,
+                    });
+                  }}
+                />
+              </FloatingLabel>
             </Form.Group>
           </div>
           <div style={{ marginTop: "20px" }}>

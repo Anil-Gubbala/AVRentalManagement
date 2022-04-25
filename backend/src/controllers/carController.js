@@ -1,6 +1,7 @@
 const conn = require("../utils/dbConnector");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../configuration");
+const { db } = require("../Database/mongo/mongo");
 
 const sendError = (res, status, code) => {
   res.status(status).send({ err: code });
@@ -61,21 +62,71 @@ const getCar = (req, res) => {
   });
 };
 
-const getCarRides = (req, res) => {
+const getAvailableCars = async (req, res) => {
   console.log(req.query[0]);
-  let sql = `Select * from RideHistory  r
-  inner join User u on r.userid = u.email
-  inner join Cars c on r.carid = c.id
-  inner join Bill b on r.id=b.rideId
-  where r.carId=?`;
-  conn.query(sql, [req.query[0]], (err, result) => {
+  const activeCarId = await db
+    .collection("trips")
+    .find({ trip_status: "active" })
+    .map((t) => t.carId)
+    .toArray();
+  let sql = "Select * from Cars where Cars.id NOT IN (?) AND Cars.status=?";
+  conn.query(sql, [activeCarId.join(","), "Active"], (err, result) => {
     if (err) {
       console.log(err);
       return;
     }
-    console.log(result);
-    res.send(result[0]);
+    // console.log(result);
+    res.send(result);
   });
 };
 
-module.exports = { addCar, getOwnerCars, getCar, getCarRides };
+const getCarRides = (req, res) => {
+  const query = { car_id: req.query[0] };
+  const rides = Promise.all([
+    db
+      .collection("trips")
+      .find(query)
+      .map((item) => {
+        return {
+          id: item.trip_id,
+          userId: item.user_id,
+          source: item.source,
+          destination: item.destination,
+          carId: item.car_id,
+          startTime: item.start_time,
+          status: item.status,
+        };
+      })
+      .next(),
+  ]);
+  rides
+    .then((r) => {
+      res.send(r);
+    })
+    .catch((err) => {
+      res.status(500).send("Error occured");
+    });
+  // console.log(req.query[0]);
+  // let sql = `Select *
+  //            from RideHistory r
+  //                     inner join User u on r.userid = u.email
+  //                     inner join Cars c on r.carid = c.id
+  //                     inner join Bill b on r.id = b.rideId
+  //            where r.carId = ?`;
+  // conn.query(sql, [req.query[0]], (err, result) => {
+  //     if (err) {
+  //         console.log(err);
+  //         return;
+  //     }
+  //     console.log(result);
+  //     res.send(result[0]);
+  // });
+};
+
+module.exports = {
+  addCar,
+  getOwnerCars,
+  getCar,
+  getCarRides,
+  getAvailableCars,
+};

@@ -39,6 +39,7 @@ import boto3
 import botocore
 import shutil
 import threading
+from datetime import datetime as timev2
 
 AWS_ACCESS_KEY_ID = 'AKIAVADRZAVEPKGTQVUW'
 AWS_SECRET_ACCESS_KEY = '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'
@@ -46,9 +47,9 @@ AWS_SECRET_ACCESS_KEY = 'tAh/JiZCKK3SNABj5PrRvsMbbWP29aTgiV0IeNWg'
 # Folder containing tracking info json files and images
 TRACKING_FOLDER_PATH = os.path.expanduser('~\SensorData')
 
-client = pymongo.MongoClient(("mongodb+srv://avrental:avrental@cluster0.1ktnd.mongodb.net/avrental?retryWrites=true&w=majority"))
+client = pymongo.MongoClient(
+    ("mongodb+srv://avrental:avrental@cluster0.1ktnd.mongodb.net/avrental?retryWrites=true&w=majority"))
 db = client.avrental
-
 
 # Setup s3 bucket access
 session = boto3.Session(
@@ -57,9 +58,8 @@ session = boto3.Session(
 )
 s3 = session.resource('s3', config=botocore.client.Config(max_pool_connections=50))
 
-bucket_name = 'avrental'       
+bucket_name = 'avrental'
 bucket = s3.Bucket(bucket_name)
-
 
 try:
     import pygame
@@ -100,6 +100,7 @@ from carla import ColorConverter as cc
 from agents.navigation.behavior_agent import BehaviorAgent  # pylint: disable=import-error
 from agents.navigation.basic_agent import BasicAgent  # pylint: disable=import-error
 
+
 # ==============================================================================
 # -- Global functions ----------------------------------------------------------
 # ==============================================================================
@@ -108,7 +109,9 @@ from agents.navigation.basic_agent import BasicAgent  # pylint: disable=import-e
 def find_weather_presets():
     """Method to find weather presets"""
     rgx = re.compile('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)')
+
     def name(x): return ' '.join(m.group(0) for m in rgx.finditer(x))
+
     presets = [x for x in dir(carla.WeatherParameters) if re.match('[A-Z].+', x)]
     return [(getattr(carla.WeatherParameters, x), name(x)) for x in presets]
 
@@ -158,7 +161,7 @@ class World(object):
         # Keep same camera config if the camera manager exists.
         cam_index = self.camera_manager.index if self.camera_manager is not None else 0
         cam_pos_id = self.camera_manager.transform_index if self.camera_manager is not None else 0
-        
+
         # Get trip ID
         self.hud.trip_id = args.trip_id
         print('trip ID:', args.trip_id)
@@ -167,6 +170,9 @@ class World(object):
         print('picked car:', self._actor_filter)
         blueprint.set_attribute('role_name', 'hero')
         if blueprint.has_attribute('color'):
+            # if args.color:
+            #     rgb = webcolors.name_to_rgb(args.color)
+            #     color = carla.Color(rgb.red, rgb.green, rgb.blue)
             color = random.choice(blueprint.get_attribute('color').recommended_values)
             blueprint.set_attribute('color', color)
 
@@ -187,17 +193,17 @@ class World(object):
             spawn_points = self.map.get_spawn_points()
             # spawn_point = random.choice(spawn_points) if spawn_points else carla.Transform()
             spawn_point = spawn_points[0] if spawn_points else carla.Transform()
-            
+
             # Pick the user defined pickup location
             # Set selected source point x and y to start AV at
             if args.source == 'San Jose':
-                spawn_point.location.x=-77
-                spawn_point.location.y=33.5
+                spawn_point.location.x = -77
+                spawn_point.location.y = 33.5
                 # Change rotation to try avoid car face wrong direction and crash into things
                 spawn_point.rotation.roll = 0.0
                 spawn_point.rotation.pitch = 0.0
                 print('picked pickup:', args.source)
-            
+
             try:
                 self.player = self.world.spawn_actor(blueprint, spawn_point)
             except RuntimeError as err:
@@ -213,7 +219,8 @@ class World(object):
         self.collision_sensor = CollisionSensor(self.player, self.hud, self.datawriter)
         self.lane_invasion_sensor = LaneInvasionSensor(self.player, self.hud, self.datawriter)
         self.gnss_sensor = GnssSensor(self.player)
-        self.camera_manager = CameraManager(self.player, self.hud, self.datawriter, args.recording, args.recording_frequency)
+        self.camera_manager = CameraManager(self.player, self.hud, self.datawriter, args.recording,
+                                            args.recording_frequency)
         self.camera_manager.transform_index = cam_pos_id
         self.camera_manager.set_sensor(cam_index, notify=False)
         actor_type = get_actor_display_name(self.player)
@@ -228,7 +235,7 @@ class World(object):
         self.player.get_world().set_weather(preset[0])
 
     def modify_vehicle_physics(self, actor):
-        #If actor is not a vehicle, we cannot use the physics control
+        # If actor is not a vehicle, we cannot use the physics control
         try:
             physics_control = actor.get_physics_control()
             physics_control.use_sweep_wheel_collision = True
@@ -286,6 +293,7 @@ class KeyboardControl(object):
         """Shortcut for quitting"""
         return (key == K_ESCAPE) or (key == K_q and pygame.key.get_mods() & KMOD_CTRL)
 
+
 # ==============================================================================
 # -- HUD -----------------------------------------------------------------------
 # ==============================================================================
@@ -314,7 +322,7 @@ class HUD(object):
         self._server_clock = pygame.time.Clock()
         self.datawriter = datawriter;
         self.wrote_connection_details = False
-        
+
         # Tracking data appended to this list, then written to local file / mongo.
         self.json_data = []
         # connection status is json object written to local file
@@ -332,8 +340,8 @@ class HUD(object):
         self.simulation_time = timestamp.elapsed_seconds
 
     def dist(self, l, transform):
-            return math.sqrt((l.x - transform.location.x)**2 + (l.y - transform.location.y)
-                             ** 2 + (l.z - transform.location.z)**2)
+        return math.sqrt((l.x - transform.location.x) ** 2 + (l.y - transform.location.y)
+                         ** 2 + (l.z - transform.location.z) ** 2)
 
     def tick(self, world, clock):
         """HUD method for every tick"""
@@ -361,7 +369,7 @@ class HUD(object):
             'Map:     % 20s' % world.map.name.split('/')[-1],
             'Simulation time: % 12s' % datetime.timedelta(seconds=int(self.simulation_time)),
             '',
-            'Speed:   % 15.0f km/h' % (3.6 * math.sqrt(vel.x**2 + vel.y**2 + vel.z**2)),
+            'Speed:   % 15.0f km/h' % (3.6 * math.sqrt(vel.x ** 2 + vel.y ** 2 + vel.z ** 2)),
             u'Heading:% 16.0f\N{DEGREE SIGN} % 2s' % (transform.rotation.yaw, heading),
             'Location:% 20s' % ('(% 5.1f, % 5.1f)' % (transform.location.x, transform.location.y)),
             'GNSS:% 24s' % ('(% 2.6f, % 3.6f)' % (world.gnss_sensor.lat, world.gnss_sensor.lon)),
@@ -397,38 +405,38 @@ class HUD(object):
                 break
             vehicle_type = get_actor_display_name(vehicle, truncate=22)
             self._info_text.append('% 4dm %s' % (dist, vehicle_type))
-        
+
         # Send timestamp and location to JSON file
         # which will have contents inserted into MongoDB collection
         jsonObj = {
-            'trip_id':self.trip_id,
-            'distance_to_dest':self.dist(self.agent_dest, transform),
-            'timestamp':int(self.simulation_time), 
-            'latitude':world.gnss_sensor.lat, 
-            'longitude':world.gnss_sensor.lon, 
-            'x':transform.location.x,
-            'y':transform.location.y,
-            'speed':(3.6 * math.sqrt(vel.x**2 + vel.y**2 + vel.z**2)),
-            'steering':control.steer
+            'trip_id': self.trip_id,
+            'distance_to_dest': self.dist(self.agent_dest, transform),
+            'timestamp': int(self.simulation_time),
+            'latitude': world.gnss_sensor.lat,
+            'longitude': world.gnss_sensor.lon,
+            'x': transform.location.x,
+            'y': transform.location.y,
+            'speed': (3.6 * math.sqrt(vel.x ** 2 + vel.y ** 2 + vel.z ** 2)),
+            'steering': control.steer
         }
         # don't add location if there's already an existing timestamp
-        if not any(obj['timestamp']==jsonObj['timestamp'] for obj in self.json_data):
-            #print('dumping data to json file')
+        if not any(obj['timestamp'] == jsonObj['timestamp'] for obj in self.json_data):
+            # print('dumping data to json file')
             # This flush is important. It will activate callback in node to do mongo insertion
             sys.stdout.flush()
             self.json_data.append(jsonObj)
-            self.datawriter.write_gnss_details(self.json_data)        
+            self.datawriter.write_gnss_details(self.json_data)
 
             # Write to file 1 json object which confirms car connected to simulator
             # don't change connection status if trip is already ended
             if self.connection_json_data['connection_status'] != 'inactive':
-               if not self.wrote_connection_details:
-                   self.connection_json_data = {'trip_id':self.trip_id, 'timestamp':1, 'connection_status': 'connected'}
-                   self.datawriter.write_connection_details([self.connection_json_data])
-                   self.wrote_connection_details = True
+                if not self.wrote_connection_details:
+                    self.connection_json_data = {'trip_id': self.trip_id, 'timestamp': 1,
+                                                 'connection_status': 'connected'}
+                    self.datawriter.write_connection_details([self.connection_json_data])
+                    self.wrote_connection_details = True
             else:
                 print("trip is already over, did not change connection status")
-         
 
     def toggle_info(self):
         """Toggle info on or off"""
@@ -482,6 +490,7 @@ class HUD(object):
         self._notifications.render(display)
         self.help.render(display)
 
+
 # ==============================================================================
 # -- FadingText ----------------------------------------------------------------
 # ==============================================================================
@@ -515,6 +524,7 @@ class FadingText(object):
     def render(self, display):
         """Render fading text method"""
         display.blit(self.surface, self.pos)
+
 
 # ==============================================================================
 # -- HelpText ------------------------------------------------------------------
@@ -551,22 +561,24 @@ class HelpText(object):
 
 class DataWriter(object):
     """ Class for writing the data."""
+
     def __init__(self, args):
         """Constructor for DataWriter"""
         self.write_to_db = args.write_to_db
 
     def write_data(self, file, data):
         if self.write_to_db:
-            #for item in data:
+            # for item in data:
             item = data[-1:][0]
-            #print(item)
-            dictitem=dict(item)
-            db[file].replace_one({"trip_id":dictitem["trip_id"], "timestamp": dictitem["timestamp"]}, dictitem, upsert= True)
-            #updates = []
-            #for item in data:
+            # print(item)
+            dictitem = dict(item)
+            db[file].replace_one({"trip_id": dictitem["trip_id"], "timestamp": dictitem["timestamp"]}, dictitem,
+                                 upsert=True)
+            # updates = []
+            # for item in data:
             #    dictitem=dict(item)
             #    updates.append(UpdateOne({"trip_id":dictitem["trip_id"], "timestamp": dictitem["timestamp"]}, {"$push" : dictitem}, upsert= True))
-            #db[file].bulk_write(updates)
+            # db[file].bulk_write(updates)
         if not self.write_to_db:
             # Write to file car inactive when simulator is ended
             with open(os.path.join(TRACKING_FOLDER_PATH, "%s.json" % file), 'w') as outfile:
@@ -578,11 +590,20 @@ class DataWriter(object):
     def write_connection_details(self, data):
         print("Writing to the connectionDetails")
         self.write_data("connectionDetails", data)
-    
+        if self.write_to_db:
+            # for item in data:
+            item = data[-1:][0]
+            # print(item)
+            dictitem = dict(item)
+            trip = {"trip_status": dictitem["connection_status"]}
+            if dictitem["connection_status"] == "inactive":
+                trip["end_time"] = timev2.now()
+            db["trips"].update_one({"trip_id": dictitem["trip_id"]}, { "$set": trip }, upsert=False)
+
     def write_gnss_details(self, data):
         print("Writing to the gnssDetails")
         self.write_data("gnssDetails", data)
-              
+
     def write_lane_invasion_details(self, data):
         print("Writing to the laneInvasionDetails")
         self.write_data("laneInvasionDetails", data)
@@ -594,6 +615,7 @@ class DataWriter(object):
     def write_camera_details(self, data):
         print("Writing to the cameraDetails")
         self.write_data("cameraDetails", data)
+
 
 # ==============================================================================
 # -- CollisionSensor -----------------------------------------------------------
@@ -616,7 +638,7 @@ class CollisionSensor(object):
         # self to avoid circular reference.
         weak_self = weakref.ref(self)
         self.sensor.listen(lambda event: CollisionSensor._on_collision(weak_self, event))
-        
+
         self.datawriter = datawriter;
         # json list which will hold collision info
         self.json_data = []
@@ -641,14 +663,14 @@ class CollisionSensor(object):
         self.history.append((event.frame, intensity))
         if len(self.history) > 4000:
             self.history.pop(0)
-            
+
         # Send timestamp and collision notification string to JSON file
         # which will have contents inserted into MongoDB collection
         # Timestamp is from hud due to not able to get timestamp from lane invasion sensor itself
         jsonObj = {
-            'trip_id':self.hud.trip_id,
-            'timestamp':int(self.hud.simulation_time), 
-            'collision':'Collision with %r' % actor_type
+            'trip_id': self.hud.trip_id,
+            'timestamp': int(self.hud.simulation_time),
+            'collision': 'Collision with %r' % actor_type
         }
         self.json_data.append(jsonObj)
         self.datawriter.write_collision_details(self.json_data);
@@ -675,7 +697,7 @@ class LaneInvasionSensor(object):
         # reference.
         weak_self = weakref.ref(self)
         self.sensor.listen(lambda event: LaneInvasionSensor._on_invasion(weak_self, event))
-        
+
         # json list which will hold lane invasion info
         self.json_data = []
 
@@ -688,14 +710,14 @@ class LaneInvasionSensor(object):
         lane_types = set(x.type for x in event.crossed_lane_markings)
         text = ['%r' % str(x).split()[-1] for x in lane_types]
         self.hud.notification('Crossed line %s' % ' and '.join(text))
-        
+
         # Send timestamp and collision notification string to JSON file
         # which will have contents inserted into MongoDB collection
         # Timestamp is from hud due to not able to get timestamp from lane invasion sensor itself
         jsonObj = {
-            'trip_id':self.hud.trip_id,
-            'timestamp':int(self.hud.simulation_time), 
-            'lane':'Crossed line %s' % ' and '.join(text)
+            'trip_id': self.hud.trip_id,
+            'timestamp': int(self.hud.simulation_time),
+            'lane': 'Crossed line %s' % ' and '.join(text)
         }
         self.json_data.append(jsonObj)
         self.datawriter.write_lane_invasion_details(self.json_data)
@@ -723,7 +745,7 @@ class GnssSensor(object):
         # self to avoid circular reference.
         weak_self = weakref.ref(self)
         self.sensor.listen(lambda event: GnssSensor._on_gnss_event(weak_self, event))
-        
+
     @staticmethod
     def _on_gnss_event(weak_self, event):
         """GNSS method"""
@@ -732,7 +754,6 @@ class GnssSensor(object):
             return
         self.lat = event.latitude
         self.lon = event.longitude
-        
 
 # ==============================================================================
 # -- CameraManager -------------------------------------------------------------
@@ -786,7 +807,7 @@ class CameraManager(object):
                 blp.set_attribute('range', '50')
             item.append(blp)
         self.index = None
-        
+
         self.timestamp_recorded = set({})
         # json list which will hold camera info
         self.json_data = []
@@ -800,7 +821,7 @@ class CameraManager(object):
         """Set a sensor"""
         index = index % len(self.sensors)
         needs_respawn = True if self.index is None else (
-            force_respawn or (self.sensors[index][0] != self.sensors[self.index][0]))
+                force_respawn or (self.sensors[index][0] != self.sensors[self.index][0]))
         if needs_respawn:
             if self.sensor is not None:
                 self.sensor.destroy()
@@ -861,30 +882,30 @@ class CameraManager(object):
             self.surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
         if self.recording and (t not in self.timestamp_recorded) and (t % self.recording_frequency == 0):
             self.timestamp_recorded.add(t)
-            
+
             def upload_image():
                 # img_name = '_out/%08d' % image.frame
                 img_name = '%08d' % image.frame
-                img_path  = os.path.join(TRACKING_FOLDER_PATH, 'Camera', img_name)
+                img_path = os.path.join(TRACKING_FOLDER_PATH, 'Camera', img_name)
                 image.save_to_disk(img_path)
                 # print('saved image ' + img_path)
-            
+
                 EXT = '.png'
                 # Upload local image to s3 bucket with public read access
                 # Place image in bucket folder named by trip ID
                 key_name = 'trip-' + str(self.hud.trip_id) + "/" + img_name + EXT
                 bucket.upload_file(img_path + EXT, key_name, ExtraArgs={'ACL': 'public-read'})
                 print('Uploading %s to Amazon S3 bucket %s' % \
-                   (img_path, bucket_name))
-            
+                      (img_path, bucket_name))
+
                 s3_url = 'https://' + bucket_name + '.s3.amazonaws.com/' + key_name
                 # Send timestamp and S3 URL to JSON file
                 # which will have contents inserted into MongoDB collection
                 jsonObj = {
-                    'trip_id':self.hud.trip_id,
-                    'timestamp':t, 
-                    'url':s3_url,
-                    'key':key_name
+                    'trip_id': self.hud.trip_id,
+                    'timestamp': t,
+                    'url': s3_url,
+                    'key': key_name
                 }
                 self.json_data.append(jsonObj)
                 self.datawriter.write_camera_details(self.json_data)
@@ -928,7 +949,7 @@ def game_loop(args):
         display = pygame.display.set_mode(
             (args.width, args.height),
             pygame.HWSURFACE | pygame.DOUBLEBUF)
-        
+
         datawriter = DataWriter(args);
         hud = HUD(args.width, args.height, datawriter)
         world = World(client.get_world(), hud, datawriter, args)
@@ -942,11 +963,11 @@ def game_loop(args):
         spawn_points = world.map.get_spawn_points()
         spawn_point = random.choice(spawn_points)
         if args.dest == 'Santa Clara':
-            spawn_point.location.x=-72.1
-            spawn_point.location.y=120.8
+            spawn_point.location.x = -72.1
+            spawn_point.location.y = 120.8
         elif args.source == 'Sacramento':
-            spawn_point.location.x=-54.5
-            spawn_point.location.y=-13.9
+            spawn_point.location.x = -54.5
+            spawn_point.location.y = -13.9
         # Tried more locations, but car did not stop close to the destinations
         '''
         elif args.source == 'San Francisco':
@@ -964,10 +985,9 @@ def game_loop(args):
         '''
         print('picked dropoff:', args.dest)
 
-
         destination = spawn_point.location
         agent.set_destination(destination)
-        
+
         # Add destination to hud
         hud.agent_dest = destination
 
@@ -1093,11 +1113,14 @@ def main():
         default=False,
         type=bool)
     argparser.add_argument(
-        '-rf','--recording_frequency',
+        '-rf', '--recording_frequency',
         help='Record frequecy for the camera images (default: 15)',
         default=15,
         type=int)
-        
+    argparser.add_argument(
+        '--color',
+        help='Cars color')
+
     # Add pickup location argument, named it source
     argparser.add_argument(
         '--source',

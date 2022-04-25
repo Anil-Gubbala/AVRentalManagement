@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Axios from "axios";
 import { bindActionCreators } from "redux";
 import { useDispatch } from "react-redux";
-import { post } from "../utils/serverCall";
+import { get, post } from "../utils/serverCall";
 import { actionCreators } from "../reducers/actionCreators";
 import { REDUCER } from "../utils/consts";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, FloatingLabel } from "react-bootstrap";
 import carLogin from "./../images/carLogin.jpeg";
 
 function Signin() {
@@ -31,7 +31,7 @@ function Signin() {
       password,
       role,
     };
-    post("/signinData", data)
+    get("/signin", data)
       .then((response) => {
         localStorage.setItem(REDUCER.TOKEN, response.token);
         localStorage.setItem(REDUCER.SIGNEDIN, true);
@@ -99,42 +99,51 @@ function Signin() {
                     >
                       Login to the account
                     </div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Email"
-                      onChange={(e) => {
-                        setemail(e.target.value);
-                      }}
-                    />
-                    <br />
-                    <input
-                      type="password"
-                      className="form-control"
-                      placeholder="Password"
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                    <br />
                     <Form.Group className="col">
-                      <Form.Label>Role</Form.Label>
-                      <Form.Control
-                        as="select"
-                        default="0"
-                        onChange={(e) => {
-                          setRole(e.target.value);
-                        }}
-                      >
-                        <option value="0" defaultChecked>
-                          Customer
-                        </option>
-                        <option value="1">Car Owner</option>
-                        <option value="2">Admin</option>
-                      </Form.Control>
+                      <FloatingLabel label="Email Address">
+                        <Form.Control
+                          required
+                          id="register-email-id"
+                          label="Email ID"
+                          type="text"
+                          onChange={(e) => {
+                            setemail(e.target.value);
+                          }}
+                        />
+                      </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="col">
+                      <FloatingLabel label="Password">
+                        <Form.Control
+                          required
+                          id="register-password"
+                          label="Password"
+                          type="password"
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                          }}
+                        />
+                      </FloatingLabel>
                     </Form.Group>
                     <br />
-
+                    <Form.Group className="col">
+                      <FloatingLabel label="Role">
+                        <Form.Control
+                          as="select"
+                          default="0"
+                          onChange={(e) => {
+                            setRole(e.target.value);
+                          }}
+                        >
+                          <option value="0" defaultChecked>
+                            Customer
+                          </option>
+                          <option value="1">Car Owner</option>
+                          <option value="2">Admin</option>
+                        </Form.Control>
+                      </FloatingLabel>
+                    </Form.Group>
+                    <br />
                     <Button
                       type="submit"
                       onClick={login}
@@ -151,9 +160,19 @@ function Signin() {
                     <p className="w-100 text-center">
                       &mdash; Haven't registered yet &mdash;
                     </p>
-                    <a href="Signup">
+                    <Link
+                      to="/signin"
+                      style={{
+                        fontSize: 16,
+                        textAlign: "center",
+                        display: "block",
+                      }}
+                    >
+                      Go to Login page
+                    </Link>
+                    {/* <a href="Signup">
                       <h4 style={{ textAlign: "center" }}>SignUp</h4>
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               </form>

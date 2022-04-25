@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 import { REDUCER } from "../utils/consts";
 import { redirectHome } from "../utils/redirector";
-import { Button, FloatingLabel, Form, Table } from "react-bootstrap";
+import { Button, FloatingLabel, Form, Table, Image } from "react-bootstrap";
+import { StaticGoogleMap, Marker } from "react-static-google-map";
 import { get, post } from "../utils/serverCall";
 import { displayError } from "../utils/messages";
 
@@ -20,32 +22,88 @@ function Home() {
 
   const [trackId, setTrackId] = useState("");
 
-  const dummyCars = [
-    {
-      id: "1",
-      model: "1",
-      type: "Economy",
-      time: "2",
-      fare: "20",
-      capacity: 4,
-    },
-    {
-      id: "2",
-      model: "1",
-      type: "Premium",
-      time: "2",
-      fare: "20",
-      capacity: 6,
-    },
-    {
-      id: "3",
-      model: "1",
-      type: "Ecofriendly",
-      time: "2",
-      fare: "20",
-      capacity: 4,
-    },
-  ];
+  // const dummyCars = [
+  //     {
+  //         id: "1",
+  //         model: "Prius",
+  //         brand: "Toyota",
+  //         type: "Economy",
+  //         time: "2",
+  //         fare: "20",
+  //         capacity: 4,
+  //     },
+  //     {
+  //         id: "2",
+  //         model: "Mustang",
+  //         brand: "Ford",
+  //         type: "Premium",
+  //         time: "2",
+  //         fare: "20",
+  //         capacity: 6,
+  //     },
+  //     {
+  //         id: "3",
+  //         model: "Model3",
+  //         brand: "Tesla",
+  //         type: "Ecofriendly",
+  //         time: "2",
+  //         fare: "18",
+  //         capacity: 4,
+  //     },
+  // ];
+
+  const latLng = {
+    ["San Jose"]: { lat: 37.338207, lng: -121.88633 },
+    ["Santa Clara"]: { lat: 37.354107, lng: -121.955238 },
+    ["Sacramento"]: { lat: 38.581573, lng: -121.4944 },
+    ["San Francisco"]: { lat: 37.774929, lng: -122.419418 },
+    ["-1"]: { lat: 20.593683, lng: 78.962883 },
+  };
+
+  const getLatLng = (name) => {
+    return latLng[name];
+  };
+
+  const googleMap = () => {
+    return (
+      <>
+        <StaticGoogleMap
+          as={(props) => (
+            <Image
+              {...props}
+              style={{
+                flex: 1,
+                height: "92vh",
+                width: "100%",
+              }}
+              fluid
+            />
+          )}
+          scale="2"
+          size="750x400"
+          className="img-fluid"
+          apiKey=""
+          zoom={14}
+          center="37.32948626822242,-121.8761059820004"
+          format="jpg"
+          mapId="e620ed351bce9b09"
+        >
+          <Marker
+            size="small"
+            location={getLatLng(rideDetails.destination)}
+            color="black"
+            label="S"
+          />
+          <Marker
+            size="small"
+            location={getLatLng(rideDetails.destination)}
+            color="green"
+            label="S"
+          />
+        </StaticGoogleMap>
+      </>
+    );
+  };
 
   const validate = () => {
     if (rideDetails.source === "-1") {
@@ -69,24 +127,47 @@ function Home() {
       return;
     }
 
-    //temp code
-    setAvailableCars(dummyCars);
+    axios
+      .get("getAvailableCars")
+      .then((result) => {
+        if (result.status === 200) {
+          console.log("Successfully retrieved Cars Data as " + result.data);
 
-    // get(`/checkAvailability`, { rideDetails })
-    //   .then((response) => {
-    //     //display list of vehicles from db
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+          setAvailableCars(result.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        displayError(error);
+      });
   };
 
   const bookRide = (e) => {
     // console.log(e.target.getAttribute("carId"));
     const carId = e.target.getAttribute("carId");
-    // temp code
-    setTrackId(carId);
-    setLoadTrackingPage(true);
+    const car = availableCars.filter(
+      (c) => c.id === carId || `${c.id}` === carId
+    )[0];
+
+    axios
+      .post("startRide", {
+        carId,
+        ...rideDetails,
+        make: car.make.toLowerCase(),
+        model: car.model.toLowerCase(),
+        color: car.color.toLowerCase(),
+      })
+      .then((result) => {
+        if (result.status === 200) {
+          console.log("Successfully started Trip id as " + result.data);
+          setTrackId(result.data.tripId);
+          setLoadTrackingPage(true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        displayError(error);
+      });
 
     // post("/bookRide", {
     //   ...rideDetails,
@@ -108,56 +189,66 @@ function Home() {
   return (
     <div>
       <div className="row">
-        <Form style={{ maxWidth: "600px", margin: "auto" }}>
-          <div className="row">
-            <Form.Group className="col">
-              <FloatingLabel label="Source">
-                <Form.Control
-                  as="select"
-                  default="-1"
-                  onChange={(e) => {
-                    setRideDetails({ ...rideDetails, source: e.target.value });
-                  }}
-                >
-                  <option value="-1">Select Source</option>
-                  <option value="0">San Jose</option>
-                  <option value="1">Santa Clara</option>
-                </Form.Control>
-              </FloatingLabel>
-            </Form.Group>
-          </div>
-          <div className="row">
-            <Form.Group className="col">
-              <FloatingLabel label="Destination">
-                <Form.Control
-                  as="select"
-                  onChange={(e) => {
-                    setRideDetails({
-                      ...rideDetails,
-                      destination: e.target.value,
-                    });
-                  }}
-                >
-                  <option value="-1">Select Destination</option>
-                  <option value="0">San Jose</option>
-                  <option value="1">Santa Clara</option>
-                </Form.Control>
-              </FloatingLabel>
-            </Form.Group>
-          </div>
-          <br />
+        <div className="col-md-5">
+          <Form style={{ maxWidth: "600px", margin: "auto" }}>
+            <div className="row">
+              <Form.Group className="col">
+                <FloatingLabel label="Source">
+                  <Form.Control
+                    as="select"
+                    default="-1"
+                    onChange={(e) => {
+                      setRideDetails({
+                        ...rideDetails,
+                        source: e.target.value,
+                      });
+                    }}
+                  >
+                    <option value="-1">Select Source</option>
+                    <option value="San Jose">San Jose</option>
+                    <option value="Santa Clara">Santa Clara</option>
+                    <option value="Sacramento">Sacramento</option>
+                    <option value="San Francisco">San Francisco</option>
+                  </Form.Control>
+                </FloatingLabel>
+              </Form.Group>
+            </div>
+            <div className="row">
+              <Form.Group className="col">
+                <FloatingLabel label="Destination">
+                  <Form.Control
+                    as="select"
+                    onChange={(e) => {
+                      setRideDetails({
+                        ...rideDetails,
+                        destination: e.target.value,
+                      });
+                    }}
+                  >
+                    <option value="-1">Select Destination</option>
+                    <option value="San Jose">San Jose</option>
+                    <option value="Santa Clara">Santa Clara</option>
+                    <option value="Sacramento">Sacramento</option>
+                    <option value="San Francisco">San Francisco</option>
+                  </Form.Control>
+                </FloatingLabel>
+              </Form.Group>
+            </div>
+            <br />
 
-          <div>
-            <Button
-              type="submit"
-              onClick={checkAvailability}
-              variant="dark"
-              style={{ marginBottom: "8px" }}
-            >
-              Check Availability
-            </Button>
-          </div>
-        </Form>
+            <div>
+              <Button
+                type="submit"
+                onClick={checkAvailability}
+                variant="dark"
+                style={{ marginBottom: "8px" }}
+              >
+                Check Availability
+              </Button>
+            </div>
+          </Form>
+        </div>
+        <div className="col-md-5">{googleMap()}</div>
       </div>
       <div className="row">
         <Table
@@ -169,11 +260,11 @@ function Home() {
         >
           <thead>
             <tr>
-              <th>Model</th>
+              <th>Make & Model</th>
               <th>Type</th>
+              <th>Color</th>
+              <th>Registration</th>
               <th>Capacity</th>
-              <th>Arrival Time</th>
-              <th>Fare</th>
               <th>Book</th>
             </tr>
           </thead>
@@ -181,11 +272,13 @@ function Home() {
             {availableCars.map((each) => {
               return (
                 <tr key={each.id}>
-                  <td>{each.model}</td>
-                  <td>{each.type}</td>
+                  <td>
+                    {each.make} {each.model}
+                  </td>
+                  <td>{each.build}</td>
+                  <td>{each.color}</td>
+                  <td>{each.regNumber}</td>
                   <td>{each.capacity}</td>
-                  <td>{each.time}</td>
-                  <td>{each.fare}</td>
                   <td>
                     <Button carId={each.id} variant="dark" onClick={bookRide}>
                       Book Ride
