@@ -161,14 +161,14 @@ function Signin() {
                       &mdash; Haven't registered yet &mdash;
                     </p>
                     <Link
-                      to="/signin"
+                      to="/signup"
                       style={{
                         fontSize: 16,
                         textAlign: "center",
                         display: "block",
                       }}
                     >
-                      Go to Login page
+                      Go to Sign up page
                     </Link>
                     {/* <a href="Signup">
                       <h4 style={{ textAlign: "center" }}>SignUp</h4>

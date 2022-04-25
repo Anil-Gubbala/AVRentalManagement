@@ -71,36 +71,38 @@ const RideHistory = () => {
           <tbody>
             {userRideDetails.map((ride) => {
               return (
-                <tr key={ride.id}>
-                  <td>{ride.id}</td>
-                  <td>{ride.startTime}</td>
-                  <td>{ride.source}</td>
-                  <td>{ride.destination}</td>
-                  <td>{ride.carId}</td>
-                  <td>
-                    <div
-                      style={{
-                        background:
-                          ride.status == "0" ? "#9fd5a5" : "rgb(212 100 121)",
-                        borderRadius: "15px",
-                        textAlign: "center",
-                        display: "inherit",
-                        padding: "10px",
-                        paddingLeft: "20px",
-                        paddingRight: "20px",
-                      }}
-                    ></div>
-                  </td>
-                  <td>
-                    <Button
-                      data={ride.id}
-                      variant="dark"
-                      onClick={viewRideDetails}
-                    >
-                      View Ride
-                    </Button>
-                  </td>
-                </tr>
+                ride !== null && (
+                  <tr key={ride.id}>
+                    <td>{ride.id}</td>
+                    <td>{ride.startTime}</td>
+                    <td>{ride.source}</td>
+                    <td>{ride.destination}</td>
+                    <td>{ride.carId}</td>
+                    <td>
+                      <div
+                        style={{
+                          background:
+                            ride.status == "0" ? "#9fd5a5" : "rgb(212 100 121)",
+                          borderRadius: "15px",
+                          textAlign: "center",
+                          display: "inherit",
+                          padding: "10px",
+                          paddingLeft: "20px",
+                          paddingRight: "20px",
+                        }}
+                      ></div>
+                    </td>
+                    <td>
+                      <Button
+                        data={ride.id}
+                        variant="dark"
+                        onClick={viewRideDetails}
+                      >
+                        View Ride
+                      </Button>
+                    </td>
+                  </tr>
+                )
               );
             })}
           </tbody>
