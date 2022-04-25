@@ -22,6 +22,8 @@ const {
 const {
   getUsersAdmin,
   getCarsAdmin,
+  updateStatus,
+  getTripDetails,
 } = require("./controllers/adminController");
 const {
   getUserRides,
@@ -41,6 +43,8 @@ router.route("/signout").get(checkAuth, signout);
 
 router.route("/getUsersAdmin").get(getUsersAdmin);
 router.route("/getCarsAdmin").get(getCarsAdmin);
+router.route("/updateStatus").post(updateStatus);
+router.route("/getTripDetails").get(getTripDetails);
 router.route("/profile").get(checkAuth, getProfile);
 router.route("/profile").put(checkAuth, updateProfile);
 router.route("/addcar").post(checkAuth, addCar);

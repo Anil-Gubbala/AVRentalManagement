@@ -16,15 +16,30 @@ import {
     Select,
     MenuItem,
   } from "@mui/material";
+  import { Pie, Bar } from "react-chartjs-2";
+  import { MDBContainer } from "mdbreact";
+  import Container from "react-bootstrap/esm/Container";
+  
+  import { Chart as ChartJS, CategoryScale,
+    LinearScale,
+    BarElement,
+    Title, ArcElement, Tooltip, Legend } from 'chart.js';
+ 
+  ChartJS.register(CategoryScale,
+    LinearScale,
+    BarElement,
+    Title, ArcElement, Tooltip, Legend);
 
 function Adminusers(){
-
 
     const [users, setUsers] = useState([]);
     const [toggleState, setToggleState] = useState(1);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [customer,setCustomer] = useState(0);
+    const [carowner, setCarowner] = useState(0);
+    const [admin, setAdmin] = useState(0);
 
     const [invalid, setInvalid] = useState({
         password: false,
@@ -44,16 +59,58 @@ function Adminusers(){
     useEffect(() => {
         get(`/getUsersAdmin`).then((response) => {
           setUsers(response);
+          setCustomer(response.filter(item => item.role == 0).length);
+          setCarowner(response.filter(item => item.role == 1).length);
+          setAdmin(response.filter(item => item.role == 2).length);
+
         });
 
       }, []);
 
+      const data = {
+        labels: ['Customer', 'Car Owner', 'Admin'],
+        datasets: [
+          {
+            label: 'Users',
+            data: [customer, carowner, admin],
+            backgroundColor: ["#83ce83", "#959595", "#f96a5d"],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Bar ChartC',
+          },
+        },
+      };
+    
 
     const { email, firstName, lastName, address, phone, role } = users;
     return (
         <div>
-
-        
+<div>
+      {" "}
+      <Container>
+       
+        <div style={{ margin: "20px", height: "400px", width: "400px" }}>
+        <h2 className="mb-4 text-center">Users</h2>
+          <MDBContainer>
+            <Pie
+              data={data}
+            />
+          </MDBContainer>
+        </div>
+      </Container>
+    </div>
+            <div style={{marginTop: "5rem"}}>
             <table id="booking" style={{ width: "100%" }} class="table table-bordered">
                 <thead>
                 <tr class=" table-dark">
@@ -265,7 +322,7 @@ function Adminusers(){
                   ))}
               </tbody>
             </table>
-        
+        </div>
     
 </div>
     )

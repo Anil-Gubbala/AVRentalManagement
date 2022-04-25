@@ -13,9 +13,11 @@ const AddCar = () => {
   const dispatch = useDispatch();
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
+  console.log(role);
 
   const [message, setMessage] = useState("");
   const [redirToCarHome, setRedirToCarHome] = useState(false);
+  const [redirToAdminHome, setRedirToAdminHome] = useState(false);
 
   const [invalid, setInvalid] = useState({
     number: false,
@@ -87,7 +89,12 @@ const AddCar = () => {
           console.log(`Car Added Successfully`);
           console.log(response);
           setMessage(`Car Added Successfully`);
+          if( role === 2){
+            setRedirToAdminHome(true);
+          }
+          else{
           setRedirToCarHome(true);
+          }
         })
         .catch((error) => {
           setMessage(error);
@@ -96,10 +103,16 @@ const AddCar = () => {
   };
   const Cancel = (event) => {
     event.preventDefault();
+    if( role === 2){
+      setRedirToAdminHome(true);
+    }
+    else{
     setRedirToCarHome(true);
+    }
   };
   let ad = null;
   if (redirToCarHome) ad = <Navigate to="/carownerhome" />;
+  if (redirToAdminHome) ad = <Navigate to="/home-admin" />;
   return (
     <div>
       {ad}

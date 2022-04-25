@@ -7,6 +7,7 @@ import { Container, Nav } from 'react-bootstrap'
 // import { AdminTrips } from '../admin/AdminTrips'
 import Adminusers  from '../Admin/AdminUsers'
 import Admincars  from '../Admin/AdminCars'
+import { margin } from '@mui/system'
 
 export function HomeAdmin () {
   const [ subPage, setSubPage ] = useState('users')
@@ -14,26 +15,28 @@ export function HomeAdmin () {
   const renderNavBar = () => {
     return (
       <Nav className='admin-nav-bar'>
+          <div style = {{backgroundColor: " rgb(13 202 240)", marginTop: "1rem"}}>
         <Nav.Item>
           <Nav.Link className='admin-navigation-item' onClick={() => setSubPage('users')}>
-            Users
+            <h5>Users</h5>
           </Nav.Link>
         </Nav.Item>
+        </div >
+        <div style = {{backgroundColor: " rgb(13 202 240)" , marginTop: "1rem"}}>
         <Nav.Item>
           <Nav.Link className='admin-navigation-item' onClick={() => setSubPage('cars')}>
-            Cars
+            <h5>Cars</h5>
           </Nav.Link>
         </Nav.Item>
+        </div>
+        <div style = {{backgroundColor: " rgb(13 202 240)", marginTop: "1rem"}}>
         <Nav.Item>
           <Nav.Link className='admin-navigation-item' onClick={() => setSubPage('trips')}>
-            Trips
+            <h5>Trips</h5>
           </Nav.Link>
         </Nav.Item>
-        <Nav.Item>
-          <Nav.Link className='admin-navigation-item' onClick={() => setSubPage('billings')}>
-            Billings
-          </Nav.Link>
-        </Nav.Item>
+        </div>
+       
       </Nav>
     )
   }

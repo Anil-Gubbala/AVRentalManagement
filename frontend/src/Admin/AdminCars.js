@@ -3,7 +3,9 @@ import Axios from "axios";
 import Table from 'react-bootstrap/Table'
 import { get, post } from "../utils/serverCall";
 import { MdModeEditOutline } from "react-icons/md";
+import Form from "react-bootstrap/Form";
 import { Link, Navigate } from "react-router-dom";
+import Popup from 'reactjs-popup';
 import {
     Box,
     Button,
@@ -16,12 +18,23 @@ import {
     Select,
     MenuItem,
   } from "@mui/material";
+
   import { Pie, Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 import Container from "react-bootstrap/esm/Container";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import AddCar from "../components/AddCar";
-ChartJS.register(ArcElement, Tooltip, Legend);
+
+import { Chart as ChartJS, CategoryScale,
+  LinearScale,
+  BarElement,
+  Title, ArcElement, Tooltip, Legend } from 'chart.js';
+
+
+ChartJS.register(CategoryScale,
+  LinearScale,
+  BarElement,
+  Title, ArcElement, Tooltip, Legend);
+
 
 function Admincars(){
 
@@ -29,31 +42,150 @@ function Admincars(){
     const [cars, setCars] = useState([]);
     const [active,setActive] = useState(0);
     const [repair, setRepair] = useState(0);
+    const [busy, setBusy] = useState(0);
+    const [suv,setSuv] = useState(0);
+    const [hatchback, setHatchback] = useState(0);
+    const [sedan, setSedan] = useState(0);
     const [toggleState, setToggleState] = useState(1);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [redirToCar, setRedirToCar] = useState(false);
+    const [carmakearray, setCarmakearray] = useState([]);
+    const [carcountarray, setCarCount] = useState([]);
+    const [carmake, setCarmake] = useState([]);
+    const carmakeobject = {make: "", count: ""};
+    const [carstatus, setStatus] = useState("");
+
+    const [graph, setGraph] = useState({
+        labels: [],
+        data: [],
+      });
+
+
+    const defaultValues = {
+        number: "",
+        make: "",
+        model: "",
+        color: "",
+        build: "SUV",
+        status: "Active",
+        capacity: "",
+      };
+    
+      const [carDetails, setCarDetails] = useState(defaultValues);
    
     useEffect(() => {
+        const e = [];
+        const f = [];
         get(`/getCarsAdmin`).then((response) => {
           setCars(response);
+          setActive(response.filter(item => item.status == "Active").length);
+        setRepair(response.filter(item => item.status === "Repair").length);
+        setBusy(response.filter(item => item.status === "Busy").length);
+        setSuv(response.filter(item => item.build == "SUV").length);
+        setHatchback(response.filter(item => item.build === "Hatchback").length);
+        setSedan(response.filter(item => item.build === "Sedan").length);
+
+                      
+let b = {};
+const d = [];
+
+
+
+
+response.forEach(el => {
+    b[el.make] = (b[el.make] || 0 ) + 1 ;
+    d.push({...carmakeobject, make: el.make, count:  b[el.make]});
+    e.push(...carmakearray, el.make);
+    f.push(...carcountarray,  b[el.make]);
+
+});
+setCarmake(d);
+setCarmakearray(e);
+setCarCount(f);
+console.log(e);
+console.log(f);
+console.log(d);
+setGraph({
+labels: e,
+data: f,
+});
         });
-       setActive(cars.filter(item => item.status == "Active").length);
-       setRepair(cars.filter(item => item.status === "Repair").length);
+      
       }, []);
       
+
+
+    
       const data = {
-        labels: ['Active', 'Repair'],
+        labels: ['Active', 'Repair', 'Busy'],
         datasets: [
           {
             label: 'Car Status',
-            data: [active, repair],
-            backgroundColor: ["#83ce83", "#959595"],
+            data: [active, repair, busy],
+            backgroundColor: ['#40C4FF', '#FF5252', '#00C853'],
             borderWidth: 1,
           },
         ],
       };
+
+      const type = {
+        labels: ['Sedan', 'SUV', 'Hatchback'],
+        datasets: [
+          {
+            label: 'Car Build',
+            data: [sedan, suv, hatchback],
+            backgroundColor: ['#d72e3d', '#249d3d', '#ffb90c'],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const car = {
+        labels: graph.labels,
+        datasets: [
+          {
+            label: 'Car Make',
+            data: graph.data,
+            backgroundColor: [
+                '#d72e3d', '#249d3d', '#ffb90c',
+                '#40C4FF', '#FF5252', '#00C853',
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+              ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Car Build',
+          },
+        },
+      };
+
+      // const updateCarStatus = async(id, status) => {
+      //     console.log(carstatus);
+      //   await post(`/updateStatus`, { status : status, id: id  }).then((result) => {
+      //     console.log(result);
+          
+      //  });
+      //   handleClose();
+      // };
 
     const { ownerId, regNumber, model, make, color, build, status, capacity } = cars;
 
@@ -63,11 +195,12 @@ function Admincars(){
       };
       let ad = null;
       console.log(redirToCar);
-      if (redirToCar) ad = <Navigate to="/addcar" />;
+      if (redirToCar) 
+      return(<Navigate to="/addcar" />);
 
     return (
-        
         <div>
+            <div className="d-flex flex-row">
                <div>
       {" "}
       <Container>
@@ -82,6 +215,36 @@ function Admincars(){
         </div>
       </Container>
     </div>
+      <div>
+      <Container>
+       
+        <div style={{ margin: "20px", height: "400px", width: "400px" }}>
+        <h2 className="mb-4 text-center">Car Build</h2>
+          <MDBContainer>
+            <Bar
+              data={type} options = {options}
+            />
+          </MDBContainer>
+        </div>
+      </Container>
+    
+    </div>
+    </div>
+    <div>
+      <Container>
+       
+        <div style={{ margin: "20px", height: "400px", width: "400px" }}>
+        <h2 className="mb-4 text-center">Car Make</h2>
+          <MDBContainer>
+            <Pie
+              data={car }
+            />
+          </MDBContainer>
+        </div>
+      </Container>
+   
+      </div>
+
     <div style={{ margin: "20px", textAlign: "right" }}>
           <button type="submit" onClick={AddCar}>
             <h4>Add Car</h4>
@@ -115,25 +278,30 @@ function Admincars(){
                       <td>{data.make}</td>
                       <td>{data.color}</td>
                       <td>{data.build}</td>
-                      <td>{data.status}</td>
+                      <td><Popup trigger={<button> < MdModeEditOutline/> Edit </button>} 
+     position="right center">
+      <div>{data.regNumber}</div>
+      <Form  className="mb-3 text-primary">
+      <Form.Group className="col">
+              <Form.Label>Status</Form.Label>
+              <Form.Control
+                as="select"
+                default= {data.status}
+                value={carDetails?.status}
+                onChange={(e) => {
+                  setCarDetails({ ...carDetails, status: e.target.value });
+                }}
+              >
+                <option value="Active">Active</option>
+                <option value="InActive">InActive</option>
+                <option value="Busy">Busy</option>
+              </Form.Control>
+            </Form.Group>
+      <button>Save</button>
+      </Form>
+    </Popup>{data.status} </td>
                       <td>{data.capacity}</td>
                       <td>
-                          <Button variant = "primary"  style={{
-            cursor: "pointer",
-            color: "#006080",
-            textDecoration: "underline",
-          }}
-                           onClick={handleOpen} >< MdModeEditOutline/>Edit</Button>
-                           <Modal
-          open={open}
-          // onClose={handleClose}
-        >
-          <Box >
-              
-            
-           
-          </Box>
-        </Modal>
 
                       </td>
                     </tr>
