@@ -19,7 +19,7 @@ import {
     MenuItem,
   } from "@mui/material";
 
-  import { Pie, Bar } from "react-chartjs-2";
+import { Pie, Bar } from "react-chartjs-2";
 import { MDBContainer } from "mdbreact";
 import Container from "react-bootstrap/esm/Container";
 import AddCar from "../components/AddCar";
@@ -81,7 +81,7 @@ function Admincars(){
         get(`/getCarsAdmin`).then((response) => {
           setCars(response);
           setActive(response.filter(item => item.status == "Active").length);
-        setRepair(response.filter(item => item.status === "Repair").length);
+        setRepair(response.filter(item => item.status === "InActive").length);
         setBusy(response.filter(item => item.status === "Busy").length);
         setSuv(response.filter(item => item.build == "SUV").length);
         setHatchback(response.filter(item => item.build === "Hatchback").length);
@@ -119,7 +119,7 @@ data: f,
 
     
       const data = {
-        labels: ['Active', 'Repair', 'Busy'],
+        labels: ['Active', 'InActive', 'Busy'],
         datasets: [
           {
             label: 'Car Status',
@@ -178,10 +178,12 @@ data: f,
         },
       };
 
-      // const updateCarStatus = async(id, status) => {
+      // const updateCarStatus = async(id) => {
+        
       //     console.log(carstatus);
-      //   await post(`/updateStatus`, { status : status, id: id  }).then((result) => {
+      //   await post(`/updateStatus`, { status : carstatus, id: id  }).then((result) => {
       //     console.log(result);
+      //     setOpen(false);
           
       //  });
       //   handleClose();
@@ -278,9 +280,8 @@ data: f,
                       <td>{data.make}</td>
                       <td>{data.color}</td>
                       <td>{data.build}</td>
-                      <td><Popup trigger={<button> < MdModeEditOutline/> Edit </button>} 
-     position="right center">
-      <div>{data.regNumber}</div>
+                      <td><button onClick ={(e) => setOpen(true)} > < MdModeEditOutline/> Edit </button>
+      {open ? (
       <Form  className="mb-3 text-primary">
       <Form.Group className="col">
               <Form.Label>Status</Form.Label>
@@ -289,7 +290,8 @@ data: f,
                 default= {data.status}
                 value={carDetails?.status}
                 onChange={(e) => {
-                  setCarDetails({ ...carDetails, status: e.target.value });
+                  // setCarDetails({ ...carDetails, status: e.target.value });
+                  setStatus(e.targetvalue);
                 }}
               >
                 <option value="Active">Active</option>
@@ -297,9 +299,9 @@ data: f,
                 <option value="Busy">Busy</option>
               </Form.Control>
             </Form.Group>
-      <button>Save</button>
-      </Form>
-    </Popup>{data.status} </td>
+      <button type = 'submit'>Save</button> 
+      </Form> ) : (
+   <div> {data.status}</div>)} </td>
                       <td>{data.capacity}</td>
                       <td>
 

@@ -47,4 +47,33 @@ const getUsersAdmin = (req, res) => {
     );
   };
 
-module.exports = { getUsersAdmin, getCarsAdmin, updateStatus, getTripDetails };
+  const getRides = (req, res) => {
+    const query = { user_id: "poonam273713@gmail.com" };
+    const rides = Promise.all([
+      db
+        .collection("trips")
+        .find(query)
+        .map((item) => {
+          return {
+            id: item.trip_id,
+            userId: item.user_id,
+            source: item.source,
+            destination: item.destination,
+            carId: item.car_id,
+            startTime: item.start_time,
+            status: item.status,
+          };
+        })
+        .next(),
+    ]);
+    rides
+      .then((r) => {
+        res.send(r);
+      })
+      .catch((err) => {
+        res.status(500).send("Error occured");
+      });
+
+    };
+
+module.exports = { getUsersAdmin, getCarsAdmin, updateStatus, getTripDetails, getRides };

@@ -54,7 +54,7 @@ function Signin() {
     return <Navigate to="/home" />;
   }
   if (isAdmin) {
-    return <Navigate to="/adminHome" />;
+    return <Navigate to="/home-admin" />;
   }
   if (isCarOwner) {
     return <Navigate to="/carOwnerHome" />;

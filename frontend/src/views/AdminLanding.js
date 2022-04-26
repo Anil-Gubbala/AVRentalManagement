@@ -7,6 +7,7 @@ import { Container, Nav } from 'react-bootstrap'
 // import { AdminTrips } from '../admin/AdminTrips'
 import Adminusers  from '../Admin/AdminUsers'
 import Admincars  from '../Admin/AdminCars'
+import AdminRides  from '../Admin/AdminTrips'
 import { margin } from '@mui/system'
 
 export function HomeAdmin () {
@@ -44,7 +45,7 @@ export function HomeAdmin () {
   const renderContent = subPage => {
     switch (subPage) {
       case 'trips':
-        // return <AdminTrips />
+         return <AdminRides />
       case 'cars':
          return <Admincars />
       case 'billings':

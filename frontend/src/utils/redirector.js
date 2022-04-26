@@ -12,6 +12,6 @@ export const redirectHome = () => {
     return "/carOwnerHome";
   }
   if (role === "2") {
-    return "/adminHome";
+    return "/home-admin";
   }
 };
