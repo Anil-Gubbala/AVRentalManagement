@@ -61,7 +61,7 @@ router.route("/getownercars").get(checkAuth, getOwnerCars);
 router.route("/getcar").get(checkAuth, getCar);
 router.route("/getcarrides").get(checkAuth, getCarRides);
 router.route("/getAvailableCars").get(getAvailableCars);
-router.route("/getuserrides").get(checkAuth, getUserRides);
+router.route("/getuserrides").get(getUserRides);
 
 router.route("/getRideDetails").get(checkAuth, getRideDetails);
 router.route("/bill").post(checkAuth, createInvoice);

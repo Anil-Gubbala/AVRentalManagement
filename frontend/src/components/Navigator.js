@@ -100,6 +100,16 @@ function Navigator() {
                 </Link>
               </Nav>
 
+              {signedIn && role === "1" && (
+                <>
+                  <Nav>
+                    <Link to="/carowneranalytics" className="nav-link">
+                      Analytics
+                    </Link>
+                  </Nav>
+                </>
+              )}
+
               {!signedIn && (
                 <Nav>
                   <Link to="/signup" className="nav-link">

@@ -16,6 +16,7 @@ import TrackRide from "./views/TrackRide";
 import CarRideHistory from "./views/CarRideHistory";
 import EditCar from "./views/EditCar";
 import CarRideDetails from "./views/CarRideDetails";
+import CarOwnerAnalytics from "./views/CarOwnerAnalytics";
 
 function App() {
   return (
@@ -35,6 +36,11 @@ function App() {
           <Route path="/userProfile" exact element={<UserProfile />}></Route>
           <Route path="/ridehistory" exact element={<RideHistory />}></Route>
           <Route path="/ridedetails" exact element={<RideDetails />}></Route>
+          <Route
+            path="/carowneranalytics"
+            exact
+            element={<CarOwnerAnalytics />}
+          ></Route>
           <Route
             path="/carridedetails"
             exact
