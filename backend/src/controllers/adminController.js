@@ -52,22 +52,24 @@ const getUsersAdmin = (req, res) => {
     const rides = Promise.all([
       db
         .collection("trips")
-        .find(query)
-        .map((item) => {
-          return {
-            id: item.trip_id,
-            userId: item.user_id,
-            source: item.source,
-            destination: item.destination,
-            carId: item.car_id,
-            startTime: item.start_time,
-            status: item.status,
-          };
-        })
-        .next(),
+        .find()
+        // .map((item) => {
+        //   return {
+        //     id: item.trip_id,
+        //     userId: item.user_id,
+        //     source: item.source,
+        //     destination: item.destination,
+        //     carId: item.car_id,
+        //     startTime: item.start_time,
+        //     status: item.status,
+        //   };
+        // })
+        //.next(),
     ]);
+    console.log(rides);
     rides
       .then((r) => {
+        console.log(r);
         res.send(r);
       })
       .catch((err) => {

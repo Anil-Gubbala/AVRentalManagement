@@ -432,7 +432,8 @@ class HUD(object):
             if self.connection_json_data['connection_status'] != 'inactive':
                 if not self.wrote_connection_details:
                     self.connection_json_data = {'trip_id': self.trip_id, 'timestamp': 1,
-                                                 'connection_status': 'connected'}
+                                                 'connection_status': 'connected',
+                                                 'distance': self.dist(self.agent_dest, transform)}
                     self.datawriter.write_connection_details([self.connection_json_data])
                     self.wrote_connection_details = True
             else:
@@ -598,7 +599,9 @@ class DataWriter(object):
             trip = {"trip_status": dictitem["connection_status"]}
             if dictitem["connection_status"] == "inactive":
                 trip["end_time"] = timev2.now()
-            db["trips"].update_one({"trip_id": dictitem["trip_id"]}, { "$set": trip }, upsert=False)
+            else:
+                trip['distance'] = dictitem["distance"]
+            db["trips"].update_one({"trip_id": dictitem["trip_id"]}, {"$set": trip}, upsert=False)
 
     def write_gnss_details(self, data):
         print("Writing to the gnssDetails")
@@ -676,6 +679,7 @@ class CollisionSensor(object):
         self.datawriter.write_collision_details(self.json_data);
         sys.stdout.flush()
 
+
 # ==============================================================================
 # -- LaneInvasionSensor --------------------------------------------------------
 # ==============================================================================
@@ -723,6 +727,7 @@ class LaneInvasionSensor(object):
         self.datawriter.write_lane_invasion_details(self.json_data)
         sys.stdout.flush()
 
+
 # ==============================================================================
 # -- GnssSensor --------------------------------------------------------
 # ==============================================================================
@@ -754,6 +759,7 @@ class GnssSensor(object):
             return
         self.lat = event.latitude
         self.lon = event.longitude
+
 
 # ==============================================================================
 # -- CameraManager -------------------------------------------------------------
@@ -913,6 +919,7 @@ class CameraManager(object):
             threading.Thread(target=upload_image).start()
             sys.stdout.flush()
 
+
 # ==============================================================================
 # -- Game Loop ---------------------------------------------------------
 # ==============================================================================
@@ -1030,9 +1037,9 @@ def game_loop(args):
             traffic_manager.set_synchronous_mode(True)
 
             world.destroy()
-            
+
         # Write to file car inactive when simulator is ended
-        hud.connection_json_data = {'trip_id':args.trip_id, 'timestamp':1, 'connection_status': 'inactive'}
+        hud.connection_json_data = {'trip_id': args.trip_id, 'timestamp': 1, 'connection_status': 'inactive'}
         datawriter.write_connection_details([hud.connection_json_data])
         # Flush to have node read inactive status
         sys.stdout.flush()
@@ -1143,7 +1150,7 @@ def main():
     logging.info('listening to server %s:%s', args.host, args.port)
 
     print(__doc__)
-    
+
     # Remove existing local tracking info folder and create new empty one, 
     # if it contains files and images from prior runs of script
     if os.path.isdir(TRACKING_FOLDER_PATH):
@@ -1152,7 +1159,7 @@ def main():
             shutil.rmtree(TRACKING_FOLDER_PATH)
             os.mkdir(TRACKING_FOLDER_PATH)
             print("Deleted tracking directory and made new one")
-        else:    
+        else:
             print("Directory is empty")
 
     try:
@@ -1160,8 +1167,9 @@ def main():
 
     except KeyboardInterrupt:
         print('\nCancelled by user. Bye!')
-        
-        DataWriter(args).write_connection_details([{'trip_id': args.trip_id, 'timestamp':1, 'connection_status': 'inactive'}]);
+
+        DataWriter(args).write_connection_details(
+            [{'trip_id': args.trip_id, 'timestamp': 1, 'connection_status': 'inactive'}]);
         print('Car is now INACTIVE')
 
         # Flush to have node read inactive status

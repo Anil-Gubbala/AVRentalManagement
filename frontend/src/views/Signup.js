@@ -5,7 +5,7 @@ import Container from "react-bootstrap/esm/Container";
 import { Form, Button, FloatingLabel } from "react-bootstrap";
 import { post } from "../utils/serverCall";
 import carLogin from "./../images/carLogin.jpeg";
-import { displayError } from "../utils/messages";
+import { displayError, displayMessage } from "../utils/messages";
 
 function Signup() {
   Axios.defaults.withCredentials = true;
@@ -96,7 +96,7 @@ function Signup() {
       })
         .then((response) => {
           console.log(response);
-          displayError(`Registration Successful`);
+          displayMessage(`Registration Successful`);
           setRegisterd(true);
         })
         .catch((error) => {

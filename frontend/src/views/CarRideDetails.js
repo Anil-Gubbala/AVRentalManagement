@@ -28,37 +28,38 @@ const CarRideDetails = () => {
   const params = new URLSearchParams(windowUrl);
   console.log(params.get("id"));
 
-  //   const getRideDetails = () => {
-  //     get(`/getRideDetails`, { id: params.get("id") })
-  //       .then((response) => {
-  //         setRideDetails(response[0]);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   };
+  const getRideDetails = () => {
+    get(`/getRideDetails`, { id: params.get("id") })
+      .then((response) => {
+        console.log(response);
+        setRideDetails(response[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getBillDetails = () => {
+    get(`/bill`, { id: params.get("id") })
+      .then((response) => {
+        console.log("Bill details");
+        console.log(response);
+        setBillDetails(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  //   const getBillDetails = () => {
-  //     get(`/bill`, { id: params.get("id") })
-  //       .then((response) => {
-  //         setBillDetails(response);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   };
-
-  //   useEffect(() => {
-  //     getRideDetails();
-  //     getBillDetails();
-  //   }, []);
+  useEffect(() => {
+    getRideDetails();
+    getBillDetails();
+  }, []);
 
   const downloadData = () => {
     const pdf = new jsPDF("portrait", "px", "a4", "false");
 
-    pdf.text(30, 110, "Name");
-
     pdf.autoTable({ html: "#tableCar" });
+
     pdf.save("invoice.pdf");
   };
 
@@ -98,27 +99,33 @@ const CarRideDetails = () => {
             </Row>
             <Row>
               <Col>
-                <h6>Ride ID:</h6>
+                <h6>Ride ID</h6>
               </Col>
               <Col>{rideDetails.id}</Col>
             </Row>
             <Row>
               <Col>
-                <h6>Origin:</h6>
+                <h6>Origin</h6>
               </Col>
               <Col>{rideDetails.source}</Col>
             </Row>
             <Row>
               <Col>
-                <h6>Destination:</h6>
+                <h6>Destination</h6>
               </Col>
               <Col>{rideDetails.destination}</Col>
             </Row>
             <Row>
               <Col>
-                <h6>Car Reg Number:</h6>
+                <h6>User Id</h6>
               </Col>
-              <Col>{rideDetails.carId}</Col>
+              <Col>{rideDetails.userId}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6>Start Time</h6>
+              </Col>
+              <Col>{rideDetails.startTime}</Col>
             </Row>
           </Col>
           <Col>
@@ -139,14 +146,17 @@ const CarRideDetails = () => {
                     <tr>
                       <td>Base Fare</td>
 
-                      <td>{billDetails.card}</td>
-                      <td>{billDetails.amount}</td>
+                      {/* <td>{billDetails.card}</td>
+                      <td>{billDetails.amount}</td> */}
+                      <td>Card</td>
+                      <td>$ 35</td>
                     </tr>
                     <tr>
                       <td>Tax</td>
 
                       <td>-</td>
-                      <td>{billDetails.tax}</td>
+                      {/* <td>{billDetails.tax}</td> */}
+                      <td>$ 6.7</td>
                     </tr>
                     <tr>
                       <td
@@ -156,7 +166,8 @@ const CarRideDetails = () => {
                         Total Amount
                       </td>
 
-                      <td>{billDetails.total}</td>
+                      {/* <td>{billDetails.total}</td> */}
+                      <td>$ 41.7</td>
                     </tr>
                   </tbody>
                 </Table>

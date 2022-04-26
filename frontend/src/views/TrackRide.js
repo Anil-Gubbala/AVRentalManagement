@@ -48,7 +48,7 @@ function TrackRide() {
     }, []);
 
     const trackRide = () => {
-        if(rideStatus > 3){
+        if (rideStatus > 3) {
             // console.log("Ride completed, hence not tracking");
             return;
         }
@@ -130,11 +130,28 @@ function TrackRide() {
             </Container>
             <Container style={{marginTop: "32px"}}>
                 <Row>
-                    <h2>Ride Tracking</h2>
+                    <h2>Ride Details</h2>
                 </Row>
                 <Row>
                     <Col>Ride ID: </Col>
                     <Col>{rideDetails.trip_id}</Col>
+                </Row>
+                <Row>
+                    <Col>Distance: </Col>
+                    <Col>{rideDetails.distance || 'n/a'}</Col>
+                </Row>
+                {rideDetails.make && <Row>
+                    <Col>Car (make & model): </Col>
+                    <Col>{`${rideDetails.make || ''} ${rideDetails.model || ''}`}</Col>
+                </Row>}
+                <Row>
+                    <Col>Source: </Col>
+                    <Col>{rideDetails.source}</Col>
+                    <Col>Destination: </Col>
+                    <Col>{rideDetails.destination}</Col>
+                </Row>
+                <Row>
+                    <h2>Ride Tracking</h2>
                 </Row>
                 <Row>
                     <Col>Time elapsed (seconds): </Col>
@@ -150,7 +167,7 @@ function TrackRide() {
                 </Row>
                 <Row>
                     <Col>Distance remaining: </Col>
-                    <Col>{rideStatus > 3 ? 0 : rideDetails.distance}</Col>
+                    <Col>{rideStatus > 3 ? 0 : rideDetails.distance_remaining}</Col>
                 </Row>
                 <Row>
                     <Col>Latest snapshot: </Col>
