@@ -48,33 +48,28 @@ const getUsersAdmin = (req, res) => {
   };
 
   const getRides = (req, res) => {
-    const query = { user_id: "poonam273713@gmail.com" };
     const rides = Promise.all([
       db
         .collection("trips")
         .find()
-        // .map((item) => {
-        //   return {
-        //     id: item.trip_id,
-        //     userId: item.user_id,
-        //     source: item.source,
-        //     destination: item.destination,
-        //     carId: item.car_id,
-        //     startTime: item.start_time,
-        //     status: item.status,
-        //   };
-        // })
-        //.next(),
+        .toArray(function (err, result) {
+          if (err) throw err;
+          else
+            res.send(
+              result.map((item) => {
+                return {
+                  id: item.trip_id,
+                  userId: item.user_id,
+                  source: item.source,
+                  destination: item.destination,
+                  carId: item.car_id,
+                  startTime: item.start_time,
+                  status: item.status,
+                };
+              })
+            );
+        }),
     ]);
-    console.log(rides);
-    rides
-      .then((r) => {
-        console.log(r);
-        res.send(r);
-      })
-      .catch((err) => {
-        res.status(500).send("Error occured");
-      });
 
     };
 

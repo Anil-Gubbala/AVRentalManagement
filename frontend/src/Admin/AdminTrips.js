@@ -59,68 +59,11 @@ function AdminRides(){
     useEffect(() => {
         get(`/getRides`).then((response) => {
           setRides(response);
-        
 
         });
 
       }, []);
 
-      const ridehistory =  [
-        {
-            "id": "91eb8e63-9eb6-4914-9236-645ae5d9ad2d",
-            "userId": "poonam273713@gmail.com",
-            "source": "Santa Clara",
-            "destination": "San Francisco",
-            "carId": "46",
-            "startTime": "2022-04-24T22:16:57.816Z",
-            "status": "active"
-        },
-     {
-            "id": "79eb9e63-9eb6-4914-4356-645ae5d9ad2d",
-            "userId": "poonam273713@gmail.com",
-            "source": "Sunnyvale",
-            "destination": "San Francisco",
-            "carId": "46",
-            "startTime": "2022-04-24T10:20:57.123Z",
-            "status": "active"
-        },
-     {
-            "id": "87958e63-9eb6-4214-9236-645a579ad2d",
-            "userId": "poonam273713@gmail.com",
-            "source": "Santa Clara",
-            "destination": "San Francisco",
-            "carId": "46",
-            "startTime": "2022-04-24T3:23:57.542Z",
-            "status": "active"
-        },
-     {
-            "id": "762b8e63-9eb6-4314-9236-645ae5d9ad2d",
-            "userId": "user1@gmail.com",
-            "source": "Sunnyvale",
-            "destination": "San Francisco",
-            "carId": "36",
-            "startTime": "2022-04-24T02:32:57.435Z",
-            "status": "active"
-        },
-     {
-            "id": "91aa8e63-9eb6-4914-9236-645ae5d9ad2d",
-            "userId": "poonam273713@gmail.com",
-            "source": "Santa Clara",
-            "destination": "San Francisco",
-            "carId": "46",
-            "startTime": "2022-04-24T22:16:57.816Z",
-            "status": "active"
-        },
-     {
-            "id": "51eb8e63-9eb6-4914-9236-645ae5d9ad2d",
-            "userId": "user1@gmail.com",
-            "source": "Sunnyvale",
-            "destination": "San Francisco",
-            "carId": "36",
-            "startTime": "2022-04-24T22:16:57.816Z",
-            "status": "active"
-        },
-    ]
 
     const data = {
         labels: ['Sunnyvale', 'Santa Clara'],
@@ -195,7 +138,7 @@ function AdminRides(){
                 </tr>
                 </thead >
               <tbody >
-                {ridehistory
+                {rides
                   .map((data, index) => (
                     <tr key={data.user_id}>
                       <th scope="row">{index+1}</th>

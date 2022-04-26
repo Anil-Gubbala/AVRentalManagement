@@ -46,6 +46,9 @@ function Admincars(){
     const [suv,setSuv] = useState(0);
     const [hatchback, setHatchback] = useState(0);
     const [sedan, setSedan] = useState(0);
+    const [coupe,setCoupe] = useState(0);
+    const [convertible, setConvertible] = useState(0);
+    const [supermini, setSupermini] = useState(0);
     const [toggleState, setToggleState] = useState(1);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -86,6 +89,9 @@ function Admincars(){
         setSuv(response.filter(item => item.build == "SUV").length);
         setHatchback(response.filter(item => item.build === "Hatchback").length);
         setSedan(response.filter(item => item.build === "Sedan").length);
+        setCoupe(response.filter(item => item.build === "Coupe").length);
+        setConvertible(response.filter(item => item.build === "Convertible").length);
+        setSupermini(response.filter(item => item.build === "Super Mini").length);
 
                       
 let b = {};
@@ -131,12 +137,12 @@ data: f,
       };
 
       const type = {
-        labels: ['Sedan', 'SUV', 'Hatchback'],
+        labels: ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Convertible', 'Super Mini'],
         datasets: [
           {
             label: 'Car Build',
-            data: [sedan, suv, hatchback],
-            backgroundColor: ['#d72e3d', '#249d3d', '#ffb90c'],
+            data: [sedan, suv, hatchback, coupe, convertible, supermini],
+            backgroundColor: ['#d72e3d', '#249d3d', '#ffb90c', '#40C4FF', '#FF5252', '#00C853' ],
             borderWidth: 1,
           },
         ],
