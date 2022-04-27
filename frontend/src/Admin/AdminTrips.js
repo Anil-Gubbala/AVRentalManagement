@@ -32,6 +32,18 @@ import {
 
 function AdminRides(){
 
+  const [graph, setGraph] = useState({
+    labels: [],
+    data: [],
+  });
+  const [cargraph, setCarGraph] = useState({
+    labels: [],
+    data: [],
+  });
+  const [triparray, setTriparray] = useState([]);
+  const [tripcountarray, setTripCount] = useState([]);
+  const [cararray, setCararray] = useState([]);
+  const [carcountarray, setCarCount] = useState([]);
     const [rides, setRides] = useState([]);
     const [toggleState, setToggleState] = useState(1);
     const [open, setOpen] = React.useState(false);
@@ -41,51 +53,103 @@ function AdminRides(){
     const [carowner, setCarowner] = useState(0);
     const [admin, setAdmin] = useState(0);
 
-    const [invalid, setInvalid] = useState({
-        password: false,
-        firstName: false,
-        lastName: false,
-        email: false,
-        phone: false,
-        address: false,
-        city: false,
-        state: false,
-        country: false,
-        zipcode: false,
-        gender: false,
-        role: false,
-      });
        
     useEffect(() => {
+      const e = [];
+      const f = [];
+      const g = [];
+      const h = [];
         get(`/getRides`).then((response) => {
           setRides(response);
+
+var result = response.reduce( (acc, o) => (acc[o.userId] = (acc[o.userId] || 0)+1, acc), {} );
+var carcount = response.reduce( (acc, o) => (acc[o.carId] = (acc[o.carId] || 0)+1, acc), {} );
+Object.entries(result).forEach(([key, value]) => {
+  e.push(...triparray, `${key}`);
+  f.push(...tripcountarray, `${value}` );})
+
+  Object.entries(carcount).forEach(([key, value]) => {
+    g.push(...cararray, `${key}`);
+    h.push(...carcountarray, `${value}` );})
+
+ 
+setTriparray(e);
+setTripCount(f);
+setCararray(e);
+setCarCount(f);
+setCarGraph({
+  labels: g,
+  data: h,
+  });
+setGraph({
+  labels: e,
+  data: f,
+  });
 
         });
 
       }, []);
 
 
-    const data = {
-        labels: ['Sunnyvale', 'Santa Clara'],
+  
+
+      const trip = {
+        labels: graph.labels,
         datasets: [
           {
-            label: 'Source',
-            data: [3,3],
-            backgroundColor: ['#40C4FF', '#FF5252'],
+            label: 'Trip users',
+            data: graph.data,
+            backgroundColor: [
+                '#d72e3d', '#249d3d', '#ffb90c',
+                '#40C4FF', '#FF5252', '#00C853',
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+              ],
             borderWidth: 1,
           },
         ],
       };
-      const dest = {
-        labels: ['San Francisco'],
+
+      const car = {
+        labels: cargraph.labels,
         datasets: [
           {
-            label: 'Destination',
-            data: [3,3],
-            backgroundColor: ['#40C4FF'],
+            label: 'Trip Cars',
+            data: cargraph.data,
+            backgroundColor: [
+                '#d72e3d', '#249d3d', '#ffb90c',
+                '#40C4FF', '#FF5252', '#00C853',
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+              ],
             borderWidth: 1,
           },
         ],
+      };
+
+      const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Trip Users',
+          },
+        },
       };
 
 
@@ -94,34 +158,36 @@ function AdminRides(){
     return (
         <div>
             <div className="d-flex flex-row">
-        <div>
+
+      <div>
       {" "}
       <Container>
        
         <div style={{ margin: "20px", height: "400px", width: "400px" }}>
-        <h2 className="mb-4 text-center">Source</h2>
+        <h2 className="mb-4 text-center">Trip Users</h2>
           <MDBContainer>
-            <Pie
-              data={data}
+            <Bar
+              data={trip} options = {options}
             />
           </MDBContainer>
         </div>
       </Container>
       </div>
       <div>
-      {" "}
       <Container>
        
         <div style={{ margin: "20px", height: "400px", width: "400px" }}>
-        <h2 className="mb-4 text-center">Destination</h2>
+        <h2 className="mb-4 text-center">Trip Cars</h2>
           <MDBContainer>
-            <Pie
-              data={dest}
+            <Bar
+              data={car} options = {options}
             />
           </MDBContainer>
         </div>
       </Container>
-      </div>
+    
+    </div>
+
     </div>
             <div style={{marginTop: "5rem"}}>
             <table id="booking" style={{ width: "100%" }} class="table table-bordered">

@@ -94,25 +94,14 @@ function Admincars(){
         setSupermini(response.filter(item => item.build === "Super Mini").length);
 
                       
-let b = {};
-const d = [];
-
-
-
-
-response.forEach(el => {
-    b[el.make] = (b[el.make] || 0 ) + 1 ;
-    d.push({...carmakeobject, make: el.make, count:  b[el.make]});
-    e.push(...carmakearray, el.make);
-    f.push(...carcountarray,  b[el.make]);
-
-});
-setCarmake(d);
-setCarmakearray(e);
-setCarCount(f);
+var result = response.reduce( (acc, o) => (acc[o.make] = (acc[o.make] || 0)+1, acc), {} );
+Object.entries(result).forEach(([key, value]) => {
+  e.push(...carmakearray, `${key}`);
+  f.push(...carcountarray, `${value}` );})
 console.log(e);
 console.log(f);
-console.log(d);
+setCarmakearray(e);
+setCarCount(f);
 setGraph({
 labels: e,
 data: f,
@@ -253,11 +242,11 @@ data: f,
    
       </div>
 
-    <div style={{ margin: "20px", textAlign: "right" }}>
+    {/* <div style={{ margin: "20px", textAlign: "right" }}>
           <button type="submit" onClick={AddCar}>
             <h4>Add Car</h4>
           </button>
-        </div>
+        </div> */}
 
         <div style={{marginTop: "5rem"}}>
             <table id="booking" style={{ width: "100%" }} class="table table-bordered">
@@ -278,7 +267,7 @@ data: f,
               <tbody >
                 {cars
                   .map((data, index) => (
-                    <tr key={data.email}>
+                    <tr key={data.id}>
                       <th scope="row">{index+1}</th>
                       <td>{data.regNumber}</td>
                       <td>{data.ownerId}</td>
@@ -286,7 +275,7 @@ data: f,
                       <td>{data.make}</td>
                       <td>{data.color}</td>
                       <td>{data.build}</td>
-                      <td><button onClick ={(e) => setOpen(true)} > < MdModeEditOutline/> Edit </button>
+                      {/* <td><button onClick ={(e) => {console.log(e.target);setOpen(true);}} > < MdModeEditOutline/> Edit </button>
       {open ? (
       <Form  className="mb-3 text-primary">
       <Form.Group className="col">
@@ -307,7 +296,8 @@ data: f,
             </Form.Group>
       <button type = 'submit'>Save</button> 
       </Form> ) : (
-   <div> {data.status}</div>)} </td>
+   <div> {data.status}</div>)} </td> */}
+                      <td>{data.status}</td>
                       <td>{data.capacity}</td>
                       <td>
 
