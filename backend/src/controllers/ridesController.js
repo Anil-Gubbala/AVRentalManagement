@@ -74,7 +74,7 @@ const getRideDetails = (req, res) => {
       res.send(r);
     })
     .catch((err) => {
-      res.status(500).send("Error occured");
+      res.status(500).send("Error occurred");
     });
 
   //   let sql = `Select *
@@ -148,19 +148,9 @@ const startRide = async (req, res) => {
       tripId: tripId,
     });
   } catch (error) {
-    console.log(error);
+    console.log('error',error);
     return res.status(400).send("Error while starting trip");
   }
-};
-
-const getCar = async (cardId) => {
-  if (!cardId) return {};
-  let sql = `Select *
-               from Cars
-               where Cars.id = ?`;
-  const result = await conn.query(sql, [cardId]);
-  console.log(result);
-  return { car: result };
 };
 
 const trackRide = async function (req, res) {

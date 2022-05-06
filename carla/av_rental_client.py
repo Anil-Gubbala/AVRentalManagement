@@ -220,7 +220,7 @@ class World(object):
         self.lane_invasion_sensor = LaneInvasionSensor(self.player, self.hud, self.datawriter)
         self.gnss_sensor = GnssSensor(self.player)
         self.camera_manager = CameraManager(self.player, self.hud, self.datawriter, args.recording,
-                                            args.recording_frequency)
+                                            args.recording_frequency, args.trip_id)
         self.camera_manager.transform_index = cam_pos_id
         self.camera_manager.set_sensor(cam_index, notify=False)
         actor_type = get_actor_display_name(self.player)
@@ -769,8 +769,9 @@ class GnssSensor(object):
 class CameraManager(object):
     """ Class for camera management"""
 
-    def __init__(self, parent_actor, hud, datawriter, recording, recording_frequency):
+    def __init__(self, parent_actor, hud, datawriter, recording, recording_frequency, trip_id):
         """Constructor method"""
+        self.trip_id = trip_id
         self.sensor = None
         self.surface = None
         self._parent = parent_actor
@@ -891,7 +892,7 @@ class CameraManager(object):
 
             def upload_image():
                 # img_name = '_out/%08d' % image.frame
-                img_name = '%08d' % image.frame
+                img_name = '%s%08d' % (self.trip_id, image.frame)
                 img_path = os.path.join(TRACKING_FOLDER_PATH, 'Camera', img_name)
                 image.save_to_disk(img_path)
                 # print('saved image ' + img_path)
@@ -975,20 +976,32 @@ def game_loop(args):
         elif args.source == 'Sacramento':
             spawn_point.location.x = -54.5
             spawn_point.location.y = -13.9
+        elif args.source == 'San Francisco':
+            spawn_point.location.x = -72.1
+            spawn_point.location.y = 120.8
+        elif args.source == 'Cupertino':
+            spawn_point.location.x = -54.5
+            spawn_point.location.y = -13.9
+        elif args.source == 'Palo Alto':
+            spawn_point.location.x = -72.1
+            spawn_point.location.y = -13.9
+        elif args.source == 'Mountain View':
+            spawn_point.location.x = -54.5
+            spawn_point.location.y = -13.9
         # Tried more locations, but car did not stop close to the destinations
         '''
         elif args.source == 'San Francisco':
-            spawn_point.location.x=-50.0
-            spawn_point.location.y=141.8
+            spawn_point.location.x = -50.0
+            spawn_point.location.y = 141.8
         elif args.source == 'Cupertino':
-            spawn_point.location.x=-72.1
-            spawn_point.location.y=130.0
+            spawn_point.location.x = -72.1
+            spawn_point.location.y = 130.0
         elif args.source == 'Palo Alto':
-            spawn_point.location.x=-67.0
-            spawn_point.location.y=-68.7
+            spawn_point.location.x = -67.0
+            spawn_point.location.y = -68.7
         elif args.source == 'Mountain View':
-            spawn_point.location.x=-72.1
-            spawn_point.location.y=80.0
+            spawn_point.location.x = -72.1
+            spawn_point.location.y = 80.0
         '''
         print('picked dropoff:', args.dest)
 
@@ -1153,7 +1166,7 @@ def main():
 
     # Remove existing local tracking info folder and create new empty one, 
     # if it contains files and images from prior runs of script
-    if os.path.isdir(TRACKING_FOLDER_PATH):
+    if (not args.write_to_db) and os.path.isdir(TRACKING_FOLDER_PATH):
         if os.listdir(TRACKING_FOLDER_PATH):
             print("Directory is not empty")
             shutil.rmtree(TRACKING_FOLDER_PATH)

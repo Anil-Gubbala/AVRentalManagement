@@ -26,7 +26,7 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 
-function TrackRide() {
+function TrackRide(props) {
     const defaultValues = {};
 
     const {Step} = Steps;
@@ -37,7 +37,7 @@ function TrackRide() {
 
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
-    const tripId = params.get("id");
+    const tripId = props.id || params.get("id");
     // console.log(tripId);
 
     useEffect(() => {
@@ -70,7 +70,7 @@ function TrackRide() {
     };
 
     return (
-        <div style={{maxWidth: "800px", margin: "auto"}}>
+        <div style={{ margin: "auto"}}>
             <Container>
                 <h2>Ride Progress</h2>
                 <Steps>
