@@ -44,7 +44,7 @@ const getOwnerCars = (req, res) => {
       console.log(err);
       return;
     }
-    console.log(result);
+    // console.log(result);
     res.send(result);
   });
 };
@@ -76,7 +76,7 @@ const getCar = (req, res) => {
       console.log(err);
       return;
     }
-    console.log(result);
+    // console.log(result);
     res.send(result[0]);
   });
 };
@@ -96,6 +96,48 @@ const getAvailableCars = async (req, res) => {
     }
     // console.log(result);
     res.send(result);
+  });
+};
+
+const getOwnerCarRides = (req, res) => {
+  let carIdList = [];
+  let carIdModel = [];
+  let sql = "Select id,model from Cars where Cars.ownerId=? ";
+  conn.query(sql, [req.user.email], (err, result) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    carIdList = result.map((r) => r.id.toString());
+    console.log(carIdList);
+    carIdModel = result;
+
+    const query = { car_id: { $in: [...carIdList] } };
+    const rides = Promise.all([
+      db
+        .collection("trips")
+        .find(query)
+        .toArray(function (err, result) {
+          if (err) throw err;
+          else {
+            res.send({
+              carIds: carIdModel,
+              rides: result.map((item) => {
+                return {
+                  id: item.trip_id,
+                  userId: item.user_id,
+                  source: item.source,
+                  destination: item.destination,
+                  carId: item.car_id,
+                  startTime: item.start_time,
+                  status: item.status,
+                };
+              }),
+            });
+          }
+        }),
+    ]);
   });
 };
 
@@ -151,4 +193,5 @@ module.exports = {
   getCarRides,
   getAvailableCars,
   updateCar,
+  getOwnerCarRides,
 };

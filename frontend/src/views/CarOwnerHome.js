@@ -53,9 +53,8 @@ function CarOwnerHome() {
 
   const RideHistory = (event) => {
     event.preventDefault();
-    // console.log(event.target);
-    setSelectedCar(event.target.getAttribute("data"));
-    setSelectedCar(event.target.getAttribute("carid"));
+    console.log(event.target.getAttribute("carid"));
+    setSelectedCarId(event.target.getAttribute("carid"));
     setRedirToCarHistory(true);
   };
 
@@ -65,7 +64,9 @@ function CarOwnerHome() {
   if (redirToAddCar) addCarPage = <Navigate to={"/addcar"} />;
   let rideDetailPage = null;
   if (redirToCarHistory)
-    rideDetailPage = <Navigate to={"/carridehistory?id=" + selectedCarId} />;
+    rideDetailPage = (
+      <Navigate to={"/carridehistory?id=" + selectedCarId.toString()} />
+    );
   return (
     <div>
       {addCarPage}
