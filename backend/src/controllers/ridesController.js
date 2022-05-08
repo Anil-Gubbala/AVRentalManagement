@@ -170,7 +170,16 @@ const trackRide = async function (req, res) {
                 };
             })
             .next(),
-        db.collection("trips").findOne(query),
+        db.collection("trips").findOne(query)
+            .then(
+                (item) => {
+                    return {
+                        ...item,
+                        charges: item.end_time? item.distance * 0.1 + (new Date(item.end_time) - new Date(item.start_time)) * 0.03 / 1000 : -1
+                    }
+                }
+            )
+        ,
         db
             .collection("gnssDetails")
             .find(query)
@@ -180,7 +189,7 @@ const trackRide = async function (req, res) {
                 // console.log("GNSS " + item);
                 return {
                     trip_id: item.trip_id,
-                    distance_remaining: item.distance_remaining ||  item.distance_to_dest,
+                    distance_remaining: item.distance_remaining || item.distance_to_dest,
                     x_coord: item.x || "n/a",
                     y_coord: item.y || "n/a",
                     latitude: item.latitude || "n/a",
@@ -199,6 +208,32 @@ const trackRide = async function (req, res) {
                 return {camera_url: item.url || ""};
             })
             .next(),
+        db
+            .collection("laneInvasionDetails")
+            .find(query)
+            .sort({timestamp: -1})
+            .limit(1)
+            .map((item) => {
+                // console.log(item)
+                return {lane: item.lane || "n/a"};
+            })
+            .toArray().then(items => {
+            if (items.length === 0) return {}
+            else return items[0]
+        }),
+        db
+            .collection("collisionDetails")
+            .find(query)
+            .sort({timestamp: -1})
+            .limit(1)
+            .map((item) => {
+                // console.log(item)
+                return {collision: item.collision || "n/a"};
+            })
+            .toArray().then(items => {
+            if (items.length === 0) return {}
+            else return items[0]
+        }),
     ])
         .then((r) => {
             let result = {};
@@ -207,6 +242,7 @@ const trackRide = async function (req, res) {
             }
             res.send(result);
         })
+
         .catch((err) => {
             console.error(`Failed to find latest trip documents: ${err}`);
             res.status(500).send("Error occured");

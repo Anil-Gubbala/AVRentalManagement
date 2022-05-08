@@ -42,6 +42,7 @@ import botocore
 import shutil
 import threading
 from datetime import datetime as timev2
+from datetime import timezone
 
 AWS_ACCESS_KEY_ID = 'AKIAVADRZAVEPKGTQVUW'
 AWS_SECRET_ACCESS_KEY = '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'
@@ -348,7 +349,7 @@ class HUD(object):
         self._show_info = True
         self._info_text = []
         self._server_clock = pygame.time.Clock()
-        self.datawriter = datawriter;
+        self.datawriter = datawriter
         self.wrote_connection_details = False
 
         # Tracking data appended to this list, then written to local file / mongo.
@@ -627,7 +628,7 @@ class DataWriter(object):
             dictitem = dict(item)
             trip = {}
             if dictitem["connection_status"] == "inactive":
-                trip["end_time"] = timev2.now()
+                trip["end_time"] = timev2.now(timezone.utc)
                 trip["progress"] = "Reached destination"
                 trip["trip_status"] = dictitem["connection_status"]
             else:

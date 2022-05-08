@@ -138,6 +138,10 @@ function TrackRide(props) {
                     <Col>Distance: </Col>
                     <Col>{rideDetails.distance || 'n/a'}</Col>
                 </Row>
+                <Row>
+                    <Col>Charge: </Col>
+                    <Col>{rideDetails.charges === -1 ? 'Trip in progress' : '$'+Math.round(rideDetails.charges * 100) / 100}</Col>
+                </Row>
                 {rideDetails.make && <Row>
                     <Col>Car (make & model): </Col>
                     <Col>{`${rideDetails.make || ''} ${rideDetails.model || ''}`}</Col>
@@ -170,6 +174,14 @@ function TrackRide(props) {
                 <Row>
                     <Col>{`Distance remaining: ${rideStatus < 1 ? ' to pickup ' : 'to next destination'}`}</Col>
                     <Col>{rideStatus > 2 ? 0 : rideDetails.distance_remaining}</Col>
+                </Row>
+                <Row>
+                    <Col>Collision: </Col>
+                    <Col>{rideDetails.collision || 'n/a'}</Col>
+                </Row>
+                <Row>
+                    <Col>Lane Invasion: </Col>
+                    <Col>{rideDetails.lane || 'n/a'}</Col>
                 </Row>
                 <Row>
                     <Col>Latest snapshot: </Col>
