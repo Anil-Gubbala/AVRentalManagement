@@ -18,6 +18,7 @@ const {
   getCarRides,
   getAvailableCars,
   updateCar,
+  getOwnerCarRides,
 } = require("./controllers/carController");
 
 const {
@@ -72,5 +73,8 @@ router.route("/bill").get(checkAuth, getInvoiceDetails);
 router.route("/startRide").post(checkAuth, startRide);
 router.route("/trackRide/:id").get(trackRide);
 router.route("/updatecar").put(checkAuth, updateCar);
+router.route("/getownerrides").get(checkAuth, getOwnerCarRides);
+
+getOwnerCarRides;
 
 module.exports = router;

@@ -14,6 +14,7 @@ const CarRideHistory = () => {
   const isSignedIn = JSON.parse(localStorage.getItem(REDUCER.SIGNEDIN));
   const role = localStorage.getItem(REDUCER.ROLE);
   const [redirToCarHome, setRedirToCarHome] = useState(false);
+
   const [carRideDetails, setCarRideDetails] = useState([]);
   const [redirectToDetails, setRedirectToDetails] = useState(false);
   const [selectedRide, setSelectedRide] = useState("");
@@ -24,10 +25,12 @@ const CarRideHistory = () => {
 
   const windowUrl = window.location.search;
   const params = new URLSearchParams(windowUrl);
-  // console.log(params.get("id"));
+  console.log(params.get("carid"));
 
   const getCarDetails = () => {
-    get(`/getcarrides`, params.get("id"))
+    console.log("********");
+    console.log(params.get("carid"));
+    get(`/getcarrides`, params.get("carid"))
       .then((response) => {
         console.log(response);
         setCarRideDetails(response);
@@ -91,7 +94,7 @@ const CarRideHistory = () => {
             {carRideDetails.map((ride) => {
               return (
                 <>
-                  {ride !== -null && (
+                  {ride !== null && (
                     <tr>
                       <td>{ride.source}</td>
                       <td>{ride.destination}</td>
@@ -131,7 +134,9 @@ const CarRideHistory = () => {
             })}
           </tbody>
         </Table>
-        {carRideDetails.length === 0 && <h2> No rides booked. </h2>}
+        {(carRideDetails.length === 0 || carRideDetails[0] == null) && (
+          <h2> No rides booked. </h2>
+        )}
       </Container>
     </div>
   );
