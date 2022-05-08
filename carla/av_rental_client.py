@@ -361,12 +361,16 @@ class HUD(object):
         # Location of destination, to calculate distance per timestamp
         self.agent_dest = None
 
+        self.start_time = -1
+
     def on_world_tick(self, timestamp):
         """Gets informations from the world at every tick"""
+        if self.start_time == -1:
+            self.start_time = timestamp.elapsed_seconds
         self._server_clock.tick()
         self.server_fps = self._server_clock.get_fps()
         self.frame = timestamp.frame_count
-        self.simulation_time = timestamp.elapsed_seconds
+        self.simulation_time = timestamp.elapsed_seconds - self.start_time
 
     def dist(self, l, transform):
         return l.distance(transform.location)
