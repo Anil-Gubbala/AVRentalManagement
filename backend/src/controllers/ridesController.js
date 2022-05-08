@@ -175,7 +175,7 @@ const trackRide = async function (req, res) {
                 (item) => {
                     return {
                         ...item,
-                        charges: item.end_time? item.distance * 0.1 + (new Date(item.end_time) - new Date(item.start_time)) * 0.03 / 1000 : -1
+                        charges: item.end_time ? item.distance * 0.1 + (new Date(item.end_time) - new Date(item.start_time)) * 0.03 / 1000 : -1
                     }
                 }
             )
@@ -215,7 +215,7 @@ const trackRide = async function (req, res) {
             .limit(1)
             .map((item) => {
                 // console.log(item)
-                return {lane: item.lane || "n/a"};
+                return {lane: item.lane || "n/a", invasion_timestamp: item.timestamp};
             })
             .toArray().then(items => {
             if (items.length === 0) return {}
@@ -228,7 +228,7 @@ const trackRide = async function (req, res) {
             .limit(1)
             .map((item) => {
                 // console.log(item)
-                return {collision: item.collision || "n/a"};
+                return {collision: item.collision || "n/a", collision_timestamp: item.timestamp};
             })
             .toArray().then(items => {
             if (items.length === 0) return {}

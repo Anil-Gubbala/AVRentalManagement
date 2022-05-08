@@ -140,7 +140,7 @@ function TrackRide(props) {
                 </Row>
                 <Row>
                     <Col>Charge: </Col>
-                    <Col>{rideDetails.charges === -1 ? 'Trip in progress' : '$'+Math.round(rideDetails.charges * 100) / 100}</Col>
+                    <Col>{rideDetails.charges === -1 ? 'Trip in progress' : '$' + Math.round(rideDetails.charges * 100) / 100}</Col>
                 </Row>
                 {rideDetails.make && <Row>
                     <Col>Car (make & model): </Col>
@@ -177,11 +177,11 @@ function TrackRide(props) {
                 </Row>
                 <Row>
                     <Col>Collision: </Col>
-                    <Col>{rideDetails.collision || 'n/a'}</Col>
+                    <Col>{rideDetails.collision ? rideDetails.collision + ' at ' + rideDetails.collision_timestamp : 'n/a'}</Col>
                 </Row>
                 <Row>
                     <Col>Lane Invasion: </Col>
-                    <Col>{rideDetails.lane || 'n/a'}</Col>
+                    <Col>{rideDetails.lane ? rideDetails.lane + ' at ' + rideDetails.invasion_timestamp : 'n/a'}</Col>
                 </Row>
                 <Row>
                     <Col>Latest snapshot: </Col>
