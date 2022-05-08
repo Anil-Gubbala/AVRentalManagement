@@ -20,6 +20,8 @@
 
 from __future__ import print_function
 
+import time
+
 import pymongo
 import argparse
 import collections
@@ -100,6 +102,20 @@ from carla import ColorConverter as cc
 from agents.navigation.behavior_agent import BehaviorAgent  # pylint: disable=import-error
 from agents.navigation.basic_agent import BasicAgent  # pylint: disable=import-error
 
+location_map = {
+    'Santa Clara': 9,  # (-113.4, -25.76)
+    'Sacramento': 113,  # Location(x=-9.175960, y=140.709900, z=0.600000)
+    'San Francisco': 20,  # Location(x=48.546078, y=140.975540, z=0.600001)
+    'Cupertino': 98,  # Location(x=109.502762, y=53.293152, z=0.600000)
+    'Palo Alto': 63,  # Location(x=109.956909, y=-27.333675, z=0.600000)
+    'Mountain View': 152,  # Location(x=57.568340, y=-67.849854, z=0.600000)
+    'San Jose': 109,  # l7: 109 ,# Location(x=-67.045288, y=-68.693169, z=0.600000)
+    # l8: 52  ,# Location(x=-17.105402, y=13.257457, z=0.600000)
+    # l9: 55  ,# Location(x=-3.973868, y=28.104216, z=0.600000)
+    # l10: 26 ,# Location(x=-52.073921, y=63.538094, z=0.600000)
+    # -80.3 , 133.7
+}
+
 
 # ==============================================================================
 # -- Global functions ----------------------------------------------------------
@@ -125,6 +141,11 @@ def get_actor_display_name(actor, truncate=250):
 # ==============================================================================
 # -- World ---------------------------------------------------------------
 # ==============================================================================
+
+def dist(l1, l2):
+    return l1.distance(l2)
+    # math.sqrt((l1.x - l2.x) ** 2 + (l1.y - l2.y) ** 2 + (l1.z - l2.z) ** 2)
+
 
 class World(object):
     """ Class representing the surrounding environment """
@@ -176,6 +197,7 @@ class World(object):
             color = random.choice(blueprint.get_attribute('color').recommended_values)
             blueprint.set_attribute('color', color)
 
+        i = 1
         # Spawn the player.
         if self.player is not None:
             spawn_point = self.player.get_transform()
@@ -183,6 +205,7 @@ class World(object):
             spawn_point.rotation.roll = 0.0
             spawn_point.rotation.pitch = 0.0
             self.destroy()
+            i = 1
             self.player = self.world.try_spawn_actor(blueprint, spawn_point)
             self.modify_vehicle_physics(self.player)
         while self.player is None:
@@ -191,8 +214,13 @@ class World(object):
                 print('Please add some Vehicle Spawn Point to your UE4 scene.')
                 sys.exit(1)
             spawn_points = self.map.get_spawn_points()
+            print('location_map[args.source] %s ' % location_map[args.source])
+            print('spawn points %d ' % len(spawn_points))
+            # source = spawn_points[location_map[args.source]]
             # spawn_point = random.choice(spawn_points) if spawn_points else carla.Transform()
-            spawn_point = spawn_points[0] if spawn_points else carla.Transform()
+            # spawn_points.sort(key=lambda s: dist(s.location, source.location))
+            spawn_point = spawn_points[i] if spawn_points else carla.Transform()
+            i = i + 1
 
             # Pick the user defined pickup location
             # Set selected source point x and y to start AV at
@@ -340,8 +368,9 @@ class HUD(object):
         self.simulation_time = timestamp.elapsed_seconds
 
     def dist(self, l, transform):
-        return math.sqrt((l.x - transform.location.x) ** 2 + (l.y - transform.location.y)
-                         ** 2 + (l.z - transform.location.z) ** 2)
+        return l.distance(transform.location)
+            #math.sqrt((l.x - transform.location.x) ** 2 + (l.y - transform.location.y)
+                         # ** 2 + (l.z - transform.location.z) ** 2)
 
     def tick(self, world, clock):
         """HUD method for every tick"""
@@ -433,7 +462,7 @@ class HUD(object):
                 if not self.wrote_connection_details:
                     self.connection_json_data = {'trip_id': self.trip_id, 'timestamp': 1,
                                                  'connection_status': 'connected',
-                                                 'distance': self.dist(self.agent_dest, transform)}
+                                                 'distance_remaining': self.dist(self.agent_dest, transform)}
                     self.datawriter.write_connection_details([self.connection_json_data])
                     self.wrote_connection_details = True
             else:
@@ -596,11 +625,13 @@ class DataWriter(object):
             item = data[-1:][0]
             # print(item)
             dictitem = dict(item)
-            trip = {"trip_status": dictitem["connection_status"]}
+            trip = {}
             if dictitem["connection_status"] == "inactive":
                 trip["end_time"] = timev2.now()
+                trip["progress"] = "Reached destination"
+                trip["trip_status"] = dictitem["connection_status"]
             else:
-                trip['distance'] = dictitem["distance"]
+                trip['distance_remaining'] = dictitem["distance_remaining"]
             db["trips"].update_one({"trip_id": dictitem["trip_id"]}, {"$set": trip}, upsert=False)
 
     def write_gnss_details(self, data):
@@ -887,7 +918,7 @@ class CameraManager(object):
             array = array[:, :, :3]
             array = array[:, :, ::-1]
             self.surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
-        if self.recording and (t not in self.timestamp_recorded) and (t % self.recording_frequency == 0):
+        if self.recording and (t not in self.timestamp_recorded) and (t % 15 == 0):
             self.timestamp_recorded.add(t)
 
             def upload_image():
@@ -935,6 +966,8 @@ def game_loop(args):
     pygame.init()
     pygame.font.init()
     world = None
+    waypoints = [args.source, args.dest]
+    dest_index = 0
 
     try:
         if args.seed:
@@ -944,6 +977,7 @@ def game_loop(args):
         client.set_timeout(4.0)
 
         traffic_manager = client.get_trafficmanager()
+        print(client.get_available_maps())
         sim_world = client.get_world()
 
         if args.sync:
@@ -963,31 +997,32 @@ def game_loop(args):
         world = World(client.get_world(), hud, datawriter, args)
         controller = KeyboardControl(world)
         if args.agent == "Basic":
-            agent = BasicAgent(world.player)
+            agent = BasicAgent(world.player, target_speed=60)
         else:
             agent = BehaviorAgent(world.player, behavior=args.behavior)
 
         # Set the agent destination
         spawn_points = world.map.get_spawn_points()
-        spawn_point = random.choice(spawn_points)
-        if args.dest == 'Santa Clara':
-            spawn_point.location.x = -72.1
-            spawn_point.location.y = 120.8
-        elif args.source == 'Sacramento':
-            spawn_point.location.x = -54.5
-            spawn_point.location.y = -13.9
-        elif args.source == 'San Francisco':
-            spawn_point.location.x = -72.1
-            spawn_point.location.y = 120.8
-        elif args.source == 'Cupertino':
-            spawn_point.location.x = -54.5
-            spawn_point.location.y = -13.9
-        elif args.source == 'Palo Alto':
-            spawn_point.location.x = -72.1
-            spawn_point.location.y = -13.9
-        elif args.source == 'Mountain View':
-            spawn_point.location.x = -54.5
-            spawn_point.location.y = -13.9
+        print(world.map.name)
+        # print("spawn points",spawn_points)
+        # if args.dest == 'Santa Clara':
+        #     spawn_point.location.x = -72.1
+        #     spawn_point.location.y = 120.8
+        # elif args.source == 'Sacramento':
+        #     spawn_point.location.x = -54.5
+        #     spawn_point.location.y = -13.9
+        # elif args.source == 'San Francisco':
+        #     spawn_point.location.x = -72.1
+        #     spawn_point.location.y = 120.8
+        # elif args.source == 'Cupertino':
+        #     spawn_point.location.x = -54.5
+        #     spawn_point.location.y = -13.9
+        # elif args.source == 'Palo Alto':
+        #     spawn_point.location.x = -72.1
+        #     spawn_point.location.y = -13.9
+        # elif args.source == 'Mountain View':
+        #     spawn_point.location.x = -54.5
+        #     spawn_point.location.y = -13.9
         # Tried more locations, but car did not stop close to the destinations
         '''
         elif args.source == 'San Francisco':
@@ -1005,40 +1040,97 @@ def game_loop(args):
         '''
         print('picked dropoff:', args.dest)
 
-        destination = spawn_point.location
+        start = spawn_points[location_map[waypoints[dest_index]]]
+        destination = start.location
+        print("destination = ", destination)
+        # -80.3 , 133.7
+        # transform = carla.Transform(carla.Location(x=-80.3, y=133.7), carla.Rotation(yaw=90))
+        # actor = world.spawn_actor(client.get_world.getblueprint, transform)
+
         agent.set_destination(destination)
 
-        # Add destination to hud
-        hud.agent_dest = destination
+        if args.write_to_db:
+            end = spawn_points[location_map[waypoints[dest_index + 1]]]
+            print("Start %s and End %s" % (start, end))
+            db["trips"].update_one({"trip_id": args.trip_id},
+                                   {"$set": {"trip_status": "pickup", "progress": "Going for Pickup",
+                                             "distance": dist(start.location, end.location),
+                                             "distance_remaining":
+                                                 dist(world.player.get_transform().location, destination)}},
+                                   upsert=False)
 
-        clock = pygame.time.Clock()
+            dest_index = dest_index + 1
 
-        while True:
-            clock.tick()
-            if args.sync:
-                world.world.tick()
-            else:
-                world.world.wait_for_tick()
-            if controller.parse_events():
-                return
+            # Add destination to hud
+            hud.agent_dest = destination
 
-            world.tick(clock)
-            world.render(display)
-            pygame.display.flip()
+            clock = pygame.time.Clock()
 
-            if agent.done():
-                if args.loop:
-                    agent.set_destination(random.choice(spawn_points).location)
-                    world.hud.notification("The target has been reached, searching for another target", seconds=4.0)
-                    print("The target has been reached, searching for another target")
+            for waypoint in world.map.get_spawn_points():
+                world.world.debug.draw_string(waypoint.location, 'o', draw_shadow=False,
+                                              color=carla.Color(r=255, g=255, b=255), life_time=0.2,
+                                              persistent_lines=True)
+            while True:
+                clock.tick()
+                if args.sync:
+                    world.world.tick()
                 else:
-                    print("The target has been reached, stopping the simulation")
-                    agent.emergency_stop()
-                    break
+                    world.world.wait_for_tick()
+                if controller.parse_events():
+                    return
 
-            control = agent.run_step()
-            control.manual_gear_shift = False
-            world.player.apply_control(control)
+                world.tick(clock)
+                world.render(display)
+                pygame.display.flip()
+
+                if agent.done():
+                    if dest_index < len(waypoints):
+                        world.hud.notification(
+                            ("Location %s has been reached, now moving to the next destination %s" % (
+                                waypoints[dest_index - 1], waypoints[dest_index])),
+                            seconds=15.0)
+                        print("Location %s has been reached, now moving to the next destination %s" % (
+                            waypoints[dest_index - 1], waypoints[dest_index]))
+
+                        if args.write_to_db:
+                            status = "active"
+                            if dest_index == 1:
+                                status = "pickedup"
+                            db["trips"].update_one({"trip_id": args.trip_id},
+                                                   {"$set": {"trip_status": status,
+                                                             "distance_remaining": 0,
+                                                             "progress": "Reached %s" % waypoints[dest_index - 1]}},
+                                                   upsert=False)
+                        time.sleep(10)
+
+                        destination = spawn_points[location_map[waypoints[dest_index]]].location
+                        if args.write_to_db:
+                            db["trips"].update_one({"trip_id": args.trip_id},
+                                                   {"$set": {"trip_status": "active",
+                                                             "distance_remaining":
+                                                                 dist(world.player.get_transform().location,
+                                                                      destination),
+                                                             "progress": "Heading to %s" % waypoints[dest_index]}},
+                                                   upsert=False)
+
+                        hud.agent_dest = destination
+                        agent.set_destination(destination)
+                        dest_index = dest_index + 1
+                    elif args.loop:
+                        agent.set_destination(random.choice(spawn_points).location)
+                        world.hud.notification("The target has been reached, searching for another target", seconds=4.0)
+                        print("The target has been reached, searching for another target")
+                    else:
+                        print("The final target has been reached, stopping the simulation")
+                        world.hud.notification(
+                            ("Final location %s has been reached, stopping now" % waypoints[:-1][0]),
+                            seconds=15.0)
+                        agent.emergency_stop()
+                        break
+
+                control = agent.run_step()
+                control.manual_gear_shift = False
+                world.player.apply_control(control)
 
     finally:
 
@@ -1052,7 +1144,8 @@ def game_loop(args):
             world.destroy()
 
         # Write to file car inactive when simulator is ended
-        hud.connection_json_data = {'trip_id': args.trip_id, 'timestamp': 1, 'connection_status': 'inactive'}
+        hud.connection_json_data = {'trip_id': args.trip_id, 'timestamp': 1, "distance_remaining": 0,
+                                    'connection_status': 'inactive'}
         datawriter.write_connection_details([hud.connection_json_data])
         # Flush to have node read inactive status
         sys.stdout.flush()
@@ -1182,7 +1275,7 @@ def main():
         print('\nCancelled by user. Bye!')
 
         DataWriter(args).write_connection_details(
-            [{'trip_id': args.trip_id, 'timestamp': 1, 'connection_status': 'inactive'}]);
+            [{'trip_id': args.trip_id, 'timestamp': 1, 'connection_status': 'inactive', 'distance_remaining': 0}]);
         print('Car is now INACTIVE')
 
         # Flush to have node read inactive status

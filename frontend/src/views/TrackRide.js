@@ -32,7 +32,7 @@ function TrackRide(props) {
     const {Step} = Steps;
     const [rideDetails, setRideDetails] = useState({});
 
-    const defaultRideStatus = 2; // 0:On the way;  1:Ready for pickup;  2:Started Ride;  3:Completed
+    const defaultRideStatus = -1; // 0:On the way;   1:Started Ride;  2:Completed
     const [rideStatus, setRideStatus] = useState(defaultRideStatus);
 
     const windowUrl = window.location.search;
@@ -60,7 +60,12 @@ function TrackRide(props) {
                         'Successfully retrieved Trip Data as ' + result.data,
                     )
                     setRideDetails({...result.data});
-                    setRideStatus(result.data.trip_status === "inactive" ? 4 : 3);
+                    let status = -1;
+                    if (result.data.trip_status === "inactive") status = 3;
+                    if (result.data.trip_status === "active") status = 2;
+                    if (result.data.trip_status === "pickedup") status = 1;
+                    if (result.data.trip_status === "pickup") status = 0;
+                    setRideStatus(status);
                 }
             })
             .catch((error) => {
@@ -70,41 +75,19 @@ function TrackRide(props) {
     };
 
     return (
-        <div style={{ margin: "auto"}}>
+        <div style={{margin: "auto"}}>
             <Container>
                 <h2>Ride Progress</h2>
                 <Steps>
                     <Step
-                        status={rideStatus === 0 ? "process" : "finish"}
+                        status={
+                            rideStatus < 0 ? "wait" : rideStatus === 0 ? "process" : "finish"
+                        }
                         title="On the Way for pickup"
                         icon={
-                            rideStatus === 0 ? <LoadingOutlined/> : <CheckCircleOutlined/>
-                        }
-                    />
-                    {/*<Step*/}
-                    {/*  status={*/}
-                    {/*    rideStatus < 1 ? "wait" : rideStatus === 1 ? "process" : "finish"*/}
-                    {/*  }*/}
-                    {/*  title="Ready for pickup"*/}
-                    {/*  icon={*/}
-                    {/*    rideStatus < 1 ? (*/}
-                    {/*      <ClockCircleOutlined />*/}
-                    {/*    ) : rideStatus === 1 ? (*/}
-                    {/*      <LoadingOutlined />*/}
-                    {/*    ) : (*/}
-                    {/*      <CheckCircleOutlined />*/}
-                    {/*    )*/}
-                    {/*  }*/}
-                    {/*/>*/}
-                    <Step
-                        status={
-                            rideStatus < 2 ? "wait" : rideStatus === 2 ? "process" : "finish"
-                        }
-                        title="Ride Started"
-                        icon={
-                            rideStatus < 2 ? (
+                            rideStatus < 0 ? (
                                 <ClockCircleOutlined/>
-                            ) : rideStatus === 2 ? (
+                            ) : rideStatus === 0 ? (
                                 <LoadingOutlined/>
                             ) : (
                                 <CheckCircleOutlined/>
@@ -113,13 +96,28 @@ function TrackRide(props) {
                     />
                     <Step
                         status={
-                            rideStatus < 3 ? "wait" : rideStatus === 3 ? "process" : "finish"
+                            rideStatus < 1 ? "wait" : rideStatus === 1 ? "process" : "finish"
                         }
-                        title="Ride Completed"
+                        title={`Ride Started ${rideStatus === 1 ? "(" + rideDetails.progress + ")" : ""}`}
                         icon={
-                            rideStatus < 3 ? (
+                            rideStatus < 1 ? (
                                 <ClockCircleOutlined/>
-                            ) : rideStatus === 3 ? (
+                            ) : rideStatus === 1 ? (
+                                <LoadingOutlined/>
+                            ) : (
+                                <CheckCircleOutlined/>
+                            )
+                        }
+                    />
+                    <Step
+                        status={
+                            rideStatus < 2 ? "wait" : rideStatus === 2 ? "process" : "finish"
+                        }
+                        title={`Ride Completed ${rideStatus === 2 ? "(" + rideDetails.progress + ")" : ""}`}
+                        icon={
+                            rideStatus < 2 ? (
+                                <ClockCircleOutlined/>
+                            ) : rideStatus === 2 ? (
                                 <LoadingOutlined/>
                             ) : (
                                 <CheckCircleOutlined/>
@@ -158,6 +156,10 @@ function TrackRide(props) {
                     <Col>{rideDetails.timestamp}</Col>
                 </Row>
                 <Row>
+                    <Col>Latest update: </Col>
+                    <Col>{rideDetails.progress}</Col>
+                </Row>
+                <Row>
                     <Col>Latitude: </Col>
                     <Col>{rideDetails.latitude}</Col>
                 </Row>
@@ -166,8 +168,8 @@ function TrackRide(props) {
                     <Col>{rideDetails.longitude}</Col>
                 </Row>
                 <Row>
-                    <Col>Distance remaining: </Col>
-                    <Col>{rideStatus > 3 ? 0 : rideDetails.distance_remaining}</Col>
+                    <Col>{`Distance remaining: ${rideStatus < 1 ? ' to pickup ' : 'to next destination'}`}</Col>
+                    <Col>{rideStatus > 2 ? 0 : rideDetails.distance_remaining}</Col>
                 </Row>
                 <Row>
                     <Col>Latest snapshot: </Col>
