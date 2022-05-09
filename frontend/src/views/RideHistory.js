@@ -82,7 +82,7 @@ const RideHistory = () => {
                       <div
                         style={{
                           background:
-                            ride.status == "0" ? "#9fd5a5" : "rgb(212 100 121)",
+                            ride.status == "inactive" ? "#9fd5a5" : "rgb(212 100 121)",
                           borderRadius: "15px",
                           textAlign: "center",
                           display: "inherit",
@@ -90,7 +90,8 @@ const RideHistory = () => {
                           paddingLeft: "20px",
                           paddingRight: "20px",
                         }}
-                      ></div>
+                        
+                      >{ride.status ==="inactive" ? "completed": "in progress"}</div>
                     </td>
                     <td>
                       <Button

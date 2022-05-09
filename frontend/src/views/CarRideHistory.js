@@ -115,7 +115,7 @@ const CarRideHistory = () => {
                             paddingRight: "20px",
                           }}
                         >
-                          {ride.status}
+                          {ride.status ==="inactive" ? "completed": "in progress"}
                         </div>
                       </td>
                       <td>

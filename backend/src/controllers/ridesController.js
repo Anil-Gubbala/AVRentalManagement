@@ -28,7 +28,7 @@ const getUserRides = (req, res) => {
                                 destination: item.destination,
                                 carId: item.car_id,
                                 startTime: item.start_time,
-                                status: item.status,
+                                status: item.trip_status,
                                 distance: item.distance,
                                 endTime: item.end_time,
                             };

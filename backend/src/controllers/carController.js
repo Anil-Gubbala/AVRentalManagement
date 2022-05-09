@@ -157,7 +157,7 @@ const getCarRides = (req, res) => {
                     destination: item.destination,
                     carId: item.car_id,
                     startTime: item.start_time,
-                    status: item.status,
+                    status: item.trip_status,
                 };
             })
             .next(),
