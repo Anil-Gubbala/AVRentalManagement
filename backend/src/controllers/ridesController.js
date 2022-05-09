@@ -27,8 +27,8 @@ async function run() {
         changeStream = collection.watch();
 
         // set up a listener when change events are emitted
-        changeStream.on("insert", next => {
-            // if(next.operationType === "insert"){
+        changeStream.on("change", next => {
+            if(next.operationType === "insert"){
                 const tripId = next.fullDocument.trip_id;
                 db.collection("trips").findOne({trip_id:tripId}).then((result)=>{
                     console.log(result);
@@ -49,6 +49,7 @@ async function run() {
                        ;
                       });
                 });
+            }
         });
 
         await simulateAsyncPause();
