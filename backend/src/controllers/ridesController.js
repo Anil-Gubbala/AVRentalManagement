@@ -3,8 +3,9 @@ const conn = require("../utils/dbConnector");
 const jwt = require("jsonwebtoken");
 const spawn = require("child_process").spawn;
 const {v4} = require("uuid");
-const {db} = require("../Database/mongo/mongo");
-const {MongoClient} = require("mongodb")
+const {db, mongoclient} = require("../Database/mongo/mongo");
+const {MongoClient} = require("mongodb");
+const { sendMail } = require("../utils/mail");
 
 const sendError = (res, status, code) => {
     res.status(status).send({err: code});
@@ -18,24 +19,39 @@ const simulateAsyncPause = () =>
 let changeStream;
 async function run() {
      try {
-         db.collection("collisionDetails");
-
+         await mongoclient.connect();
+        const db = mongoclient.db("avrental");
+        let collection =  db.collection("collisionDetails");
+        // console.log("watch")
         // open a Change Stream on the "haikus" collection
         changeStream = collection.watch();
 
         // set up a listener when change events are emitted
-        changeStream.on("change", next => {
-            // process any change event
-            console.log("received a change to the collection: \t", next);
+        changeStream.on("insert", next => {
+            // if(next.operationType === "insert"){
+                const tripId = next.fullDocument.trip_id;
+                db.collection("trips").findOne({trip_id:tripId}).then((result)=>{
+                    console.log(result);
+                    sendMail({
+                        to: result.user_id,
+                        subject: 'Ride Collision',
+                        text: 'Your trip with id: ' + result.trip_id + " has met with a collision. Please check tracking page for more details."
+                      });
+                      conn.query("select * from Cars where id = ?", [result.car_id], (err, sqlResult) => {
+                        if (err) {
+                           
+                        }
+                        sendMail({
+                            to: sqlResult[0].ownerId,
+                            subject: 'Car Collision',
+                            text: 'Your car  with Reg Number: ' + sqlResult[0].regNumber + " has met with a collision."
+                          });
+                       ;
+                      });
+                });
         });
 
         await simulateAsyncPause();
-
-        // await collection.insertOne({
-        //     title: "Record of a Shriveled Datum",
-        //     content: "No bytes, no problem. Just insert a document, in MongoDB",
-        // });
-
         await simulateAsyncPause();
         console.log("closed the change stream");
     } finally {
