@@ -32,7 +32,7 @@ const signin = (req, res) => {
               role: role,
             };
             const token = jwt.sign(userInfo, SECRET, {
-              expiresIn: 1008000,
+              expiresIn: "2 days",
             });
             res.status(200).send({ token: `JWT ${token}`, user: userInfo });
           } else {

@@ -56,6 +56,10 @@ const RideDetails = () => {
             });
     };
 
+    const roundBill = (bill) =>{
+      return '$' + Math.round(bill * 100) / 100
+    }
+
     useEffect(() => {
         getRideDetails();
         getBillDetails();
@@ -143,24 +147,24 @@ const RideDetails = () => {
                                     <tr>
                                         <td>Base Fare</td>
 
-                                        <td>{billDetails.card}</td>
-                                        <td>{billDetails.amount}</td>
-                                    </tr>
-                                    <tr>
+                                        <td>{billDetails.cardNumber}</td>
+                                        <td>{roundBill(rideDetails.base)}</td>
+                                      </tr>
+                                      <tr>
                                         <td>Tax</td>
 
                                         <td>-</td>
-                                        <td>{billDetails.tax}</td>
-                                    </tr>
-                                    <tr>
+                                        <td>{roundBill(rideDetails.tax)}</td>
+                                      </tr>
+                                      <tr>
                                         <td
-                                            colSpan={2}
-                                            style={{textAlign: "right", fontWeight: "bold"}}
+                                          colSpan={2}
+                                          style={{ textAlign: "right", fontWeight: "bold" }}
                                         >
-                                            Total Amount
+                                          Total Amount
                                         </td>
 
-                                        <td>{billDetails.total}</td>
+                                        <td>{roundBill(rideDetails.total)}</td>
                                     </tr>
                                     </tbody>
                                 </Table>

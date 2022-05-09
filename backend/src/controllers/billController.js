@@ -4,10 +4,25 @@ const sendError = (res, status, code) => {
   res.status(status).send({ err: code });
 };
 
+// const getInvoiceDetails = (req, res) => {
+//   const rideId = req.query.id;
+//   let sql = `Select * from Bill  where rideId = ?`;
+//   conn.query(sql, [rideId], (err, result) => {
+//     if (err) {
+//       console.log(err);
+//       return;
+//     }
+//     if(result.length === 0){
+      
+//     }
+//     res.send(result[0]);
+//   });
+// };
+
 const getInvoiceDetails = (req, res) => {
-  const rideId = req.query.id;
-  let sql = `Select * from Bill  where rideId = ?`;
-  conn.query(sql, [rideId], (err, result) => {
+  // const rideId = req.query.id;
+  let sql = `Select * from Cards where userId = ?`;
+  conn.query(sql, [req.user.email], (err, result) => {
     if (err) {
       console.log(err);
       return;
@@ -22,6 +37,7 @@ function randomIntFromInterval(min, max) {
 }
 
 const rndInt = randomIntFromInterval(1, 6);
+
 
 const createInvoice = (req, res) => {
   const rideId = req.query.id;
