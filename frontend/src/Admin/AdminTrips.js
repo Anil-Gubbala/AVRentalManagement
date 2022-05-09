@@ -81,6 +81,7 @@ function AdminRides(){
       const l = [];
         get(`/getRides`).then((response) => {
           setRides(response);
+          console.log(response);
 
 var result = response.reduce( (acc, o) => (acc[o.userId] = (acc[o.userId] || 0)+1, acc), {} );
 var carcount = response.reduce( (acc, o) => (acc[o.carId] = (acc[o.carId] || 0)+1, acc), {} );
@@ -323,6 +324,7 @@ setGraph({
             <th>Destination</th>
             <th>Start Time</th>
             <th>Status</th>
+            <th>Collision</th>
             <th>Details</th>
 
             </tr>
@@ -339,20 +341,8 @@ setGraph({
                       <td>{ride.source}</td>
                       <td>{ride.destination}</td>
                       <td>{ride.startTime}</td>
-                    <td>
-                      <div
-                        style={{
-                          background:
-                            ride.status == "active" ? "#9fd5a5" : "rgb(212 100 121)",
-                          borderRadius: "15px",
-                          textAlign: "center",
-                          display: "inherit",
-                          padding: "10px",
-                          paddingLeft: "20px",
-                          paddingRight: "20px",
-                        }}
-                      ></div>
-                    </td>
+                    <td>{ride.status}</td>
+                    <td>{ride.collision}</td>
                     <td>
                       <Button
                         data={ride.id}

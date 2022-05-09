@@ -42,7 +42,6 @@ function Admincars(){
     const [cars, setCars] = useState([]);
     const [active,setActive] = useState(0);
     const [repair, setRepair] = useState(0);
-    const [busy, setBusy] = useState(0);
     const [suv,setSuv] = useState(0);
     const [hatchback, setHatchback] = useState(0);
     const [sedan, setSedan] = useState(0);
@@ -84,8 +83,7 @@ function Admincars(){
         get(`/getCarsAdmin`).then((response) => {
           setCars(response);
           setActive(response.filter(item => item.status == "Active").length);
-        setRepair(response.filter(item => item.status === "InActive").length);
-        setBusy(response.filter(item => item.status === "Busy").length);
+        setRepair(response.filter(item => item.status === "Repair").length);
         setSuv(response.filter(item => item.build == "SUV").length);
         setHatchback(response.filter(item => item.build === "Hatchback").length);
         setSedan(response.filter(item => item.build === "Sedan").length);
@@ -113,12 +111,12 @@ data: f,
 
     
       const data = {
-        labels: ['Active', 'InActive', 'Busy'],
+        labels: ['Active', 'Repair'],
         datasets: [
           {
             label: 'Car Status',
-            data: [active, repair, busy],
-            backgroundColor: ['#40C4FF', '#FF5252', '#00C853'],
+            data: [active, repair],
+            backgroundColor: ['#40C4FF', '#FF5252'],
             borderWidth: 1,
           },
         ],
