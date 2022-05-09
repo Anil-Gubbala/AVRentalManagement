@@ -8,6 +8,7 @@ const db = require("./src/utils/dbConnector");
 const { CONFIG } = require("./configuration");
 const passport = require("passport");
 const { auth } = require("./src/utils/auth");
+const { sendMail } = require("./src/utils/mail");
 
 const app = express();
 
@@ -19,6 +20,13 @@ app.use(
     credentials: true,
   })
 );
+
+sendMail({
+  to: "anil08.nani@gmail.com",
+  subject: 'Server started',
+  text: 'hello'
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
