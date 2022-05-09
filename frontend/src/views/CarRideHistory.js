@@ -25,12 +25,9 @@ const CarRideHistory = () => {
 
   const windowUrl = window.location.search;
   const params = new URLSearchParams(windowUrl);
-  console.log(params.get("carid"));
 
   const getCarDetails = () => {
-    console.log("********");
-    console.log(params.get("carid"));
-    get(`/getcarrides`, params.get("carid"))
+    get(`/getcarrides`, params.get("id"))
       .then((response) => {
         console.log(response);
         setCarRideDetails(response);
@@ -85,7 +82,7 @@ const CarRideHistory = () => {
               <th>Destination</th>
               <th>Customer Id</th>
               <th>Start Time</th>
-              <th>Status</th>
+              {/* <th>Status</th> */}
               <th>Action</th>
             </tr>
           </thead>
@@ -100,7 +97,7 @@ const CarRideHistory = () => {
                       <td>{ride.destination}</td>
                       <td>{ride.userId}</td>
                       <td>{ride.startTime}</td>
-                      <td>
+                      {/* <td>
                         <div
                           style={{
                             background:
@@ -115,9 +112,11 @@ const CarRideHistory = () => {
                             paddingRight: "20px",
                           }}
                         >
-                          {ride.status ==="inactive" ? "completed": "in progress"}
+                          {ride.status === "inactive"
+                            ? "completed"
+                            : "in progress"}
                         </div>
-                      </td>
+                      </td> */}
                       <td>
                         <Button
                           data={ride.id}

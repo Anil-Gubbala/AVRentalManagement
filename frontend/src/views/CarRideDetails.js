@@ -117,6 +117,16 @@ const CarRideDetails = () => {
             </Row>
             <Row>
               <Col>
+                <h6>Distance</h6>
+              </Col>
+              <Col>
+                {rideDetails.distance
+                  ? rideDetails.distance.toFixed(2)
+                  : rideDetails.distance}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <h6>User Id</h6>
               </Col>
               <Col>{rideDetails.userId}</Col>
@@ -125,7 +135,13 @@ const CarRideDetails = () => {
               <Col>
                 <h6>Start Time</h6>
               </Col>
-              <Col>{rideDetails.startTime}</Col>
+              <Col>{new Date(rideDetails.startTime).toLocaleString()}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6>End Time</h6>
+              </Col>
+              <Col>{new Date(rideDetails.endTime).toLocaleString()}</Col>
             </Row>
           </Col>
           <Col>
@@ -149,14 +165,22 @@ const CarRideDetails = () => {
                       {/* <td>{billDetails.card}</td>
                       <td>{billDetails.amount}</td> */}
                       <td>Card</td>
-                      <td>$ 35</td>
+                      <td>
+                        {rideDetails.base
+                          ? rideDetails.base.toFixed(2)
+                          : rideDetails.base}
+                      </td>
                     </tr>
                     <tr>
                       <td>Tax</td>
 
                       <td>-</td>
                       {/* <td>{billDetails.tax}</td> */}
-                      <td>$ 6.7</td>
+                      <td>
+                        {rideDetails.tax
+                          ? rideDetails.tax.toFixed(1)
+                          : rideDetails.tax}
+                      </td>
                     </tr>
                     <tr>
                       <td
@@ -166,8 +190,12 @@ const CarRideDetails = () => {
                         Total Amount
                       </td>
 
-                      {/* <td>{billDetails.total}</td> */}
-                      <td>$ 41.7</td>
+                      <td>
+                        {rideDetails.total
+                          ? rideDetails.total.toFixed(1)
+                          : rideDetails.total}
+                      </td>
+                      {/* <td>$ 41.7</td> */}
                     </tr>
                   </tbody>
                 </Table>
