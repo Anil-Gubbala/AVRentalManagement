@@ -11,6 +11,16 @@ const sendError = (res, status, code) => {
     res.status(status).send({err: code});
 };
 
+const tax = 0.1;
+const getBaseFare = (distance, startTime, endTime) =>{
+    return endTime ?  (distance * 0.1 + (new Date(endTime) - new Date(startTime)) * 0.03 / 1000) : -1;
+}
+
+
+const generateBill = (distance, startTime, endTime) => {
+    return endTime ? (1+tax)*getBaseFare(distance,startTime,endTime) : -1;
+}
+
 const simulateAsyncPause = () =>
     new Promise(resolve => {
         setTimeout(() => resolve(), 1000);
@@ -21,12 +31,9 @@ async function run() {
      try {
          await mongoclient.connect();
         const db = mongoclient.db("avrental");
-        let collection =  db.collection("collisionDetails");
-        // console.log("watch")
-        // open a Change Stream on the "haikus" collection
-        changeStream = collection.watch();
-
-        // set up a listener when change events are emitted
+        // ------------ collision -------------
+        let collision =  db.collection("collisionDetails");
+        changeStream = collision.watch();
         changeStream.on("change", next => {
             if(next.operationType === "insert"){
                 const tripId = next.fullDocument.trip_id;
@@ -49,6 +56,27 @@ async function run() {
                        ;
                       });
                 });
+            }
+        });
+
+        // -----------------------------------Trips ----------------------------------
+        let trips =  db.collection("trips");
+        let tripsStream = trips.watch();
+        tripsStream.on("change", next => {
+            if(next.operationType === "update"){
+                console.log(next);
+                if(next.updateDescription.updatedFields.trip_status !== undefined){
+                    if(next.updateDescription.updatedFields.trip_status === "inactive") {
+                        db.collection("trips").findOne({_id:next.documentKey._id}).then((result)=>{
+                            console.log(result);
+                            sendMail({
+                                to: result.user_id,
+                                subject: 'Ride Completed',
+                                text: 'Your trip with id: ' + result.trip_id + " is completed successfully. Your ride charges are : $" + generateBill(result.distance,result.start_time, result.end_time) + " ."
+                              });
+                        });
+                    }
+                }
             }
         });
 
@@ -102,16 +130,6 @@ const getUserRides = (req, res) => {
     //     res.send(result);
     //   });
 };
-
-const tax = 0.1;
-const getBaseFare = (distance, startTime, endTime) =>{
-    return endTime ?  (distance * 0.1 + (new Date(endTime) - new Date(startTime)) * 0.03 / 1000) : -1;
-}
-
-
-const generateBill = (distance, startTime, endTime) => {
-    return endTime ? (1+tax)*getBaseFare(distance,startTime,endTime) : -1;
-}
 
 const getRideDetails = (req, res) => {
     const rideId = req.query.id;
