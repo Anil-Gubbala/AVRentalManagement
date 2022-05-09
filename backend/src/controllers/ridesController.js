@@ -4,10 +4,46 @@ const jwt = require("jsonwebtoken");
 const spawn = require("child_process").spawn;
 const {v4} = require("uuid");
 const {db} = require("../Database/mongo/mongo");
+const {MongoClient} = require("mongodb")
 
 const sendError = (res, status, code) => {
     res.status(status).send({err: code});
 };
+
+const simulateAsyncPause = () =>
+    new Promise(resolve => {
+        setTimeout(() => resolve(), 1000);
+    });
+
+let changeStream;
+async function run() {
+     try {
+         db.collection("collisionDetails");
+
+        // open a Change Stream on the "haikus" collection
+        changeStream = collection.watch();
+
+        // set up a listener when change events are emitted
+        changeStream.on("change", next => {
+            // process any change event
+            console.log("received a change to the collection: \t", next);
+        });
+
+        await simulateAsyncPause();
+
+        // await collection.insertOne({
+        //     title: "Record of a Shriveled Datum",
+        //     content: "No bytes, no problem. Just insert a document, in MongoDB",
+        // });
+
+        await simulateAsyncPause();
+        console.log("closed the change stream");
+    } finally {
+        //await client.close();
+    }
+}
+run().catch(console.dir);
+
 
 const getUserRides = (req, res) => {
     const query = {user_id: req.user.email};
