@@ -40,6 +40,8 @@ function Adminusers(){
     const [customer,setCustomer] = useState(0);
     const [carowner, setCarowner] = useState(0);
     const [admin, setAdmin] = useState(0);
+    const [selectedUser, setSelectedUser] = useState("");
+    const [redirectToDetails, setRedirectToDetails] = useState(false);
 
     const [invalid, setInvalid] = useState({
         password: false,
@@ -92,7 +94,10 @@ function Adminusers(){
         },
       };
     
-
+      const editUserDetails = (e) => {
+        setSelectedUser(e.target.getAttribute("data"));
+        setRedirectToDetails(true);
+      };
     const { email, firstName, lastName, address, phone, role } = users;
     return (
         <div>
@@ -110,37 +115,40 @@ function Adminusers(){
         </div>
       </Container>
     </div>
-            <div style={{marginTop: "5rem"}}>
-            <table id="booking" style={{ width: "100%" }} class="table table-bordered">
-                <thead>
+    <Container style={{marginTop: "5rem"}}>
+        <Table striped bordered hover id="table">
+        <thead>
                 <tr class=" table-dark">
-                  <th scope="col">S.No.</th>
-                  <th scope="col">Firstname</th>
-                  <th scope="col">Lastname</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Role</th>
-                  <th scope="col">Phone</th>
-                  <th scope="col">Address</th>
-                  <th scope="col"></th>
+                  <th>S.No.</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th></th>
                 </tr>
                 </thead >
-              <tbody >
-                {users
-                  .map((data, index) => (
-                    <tr key={data.email}>
-                      <th scope="row">{index+1}</th>
-                      <td>{data.firstName}</td>
+          <tbody>
+            {users.map((data,index) => {
+              return (
+                data !== null && (
+                  <tr key={data.email}>
+                    <th scope="row">{index+1}</th>
+                    <td>{data.firstName}</td>
                       <td>{data.lastName}</td>
                       <td>{data.email}</td>
                       <td>{data.role}</td>
                       <td>{data.phone}</td>
                       <td>{data.address}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-        </div>
-    
+                  </tr>
+                )
+              );
+            })}
+          </tbody>
+        </Table>
+        {users.length === 0 && <h2> No users. </h2>}
+      </Container>
 </div>
     )
 

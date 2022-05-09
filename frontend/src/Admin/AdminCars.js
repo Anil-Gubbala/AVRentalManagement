@@ -98,10 +98,9 @@ var result = response.reduce( (acc, o) => (acc[o.make] = (acc[o.make] || 0)+1, a
 Object.entries(result).forEach(([key, value]) => {
   e.push(...carmakearray, `${key}`);
   f.push(...carcountarray, `${value}` );})
-console.log(e);
-console.log(f);
 setCarmakearray(e);
 setCarCount(f);
+
 setGraph({
 labels: e,
 data: f,
@@ -242,12 +241,6 @@ data: f,
    
       </div>
 
-    {/* <div style={{ margin: "20px", textAlign: "right" }}>
-          <button type="submit" onClick={AddCar}>
-            <h4>Add Car</h4>
-          </button>
-        </div> */}
-
         <div style={{marginTop: "5rem"}}>
             <table id="booking" style={{ width: "100%" }} class="table table-bordered">
                 <thead>
@@ -275,28 +268,6 @@ data: f,
                       <td>{data.make}</td>
                       <td>{data.color}</td>
                       <td>{data.build}</td>
-                      {/* <td><button onClick ={(e) => {console.log(e.target);setOpen(true);}} > < MdModeEditOutline/> Edit </button>
-      {open ? (
-      <Form  className="mb-3 text-primary">
-      <Form.Group className="col">
-              <Form.Label>Status</Form.Label>
-              <Form.Control
-                as="select"
-                default= {data.status}
-                value={carDetails?.status}
-                onChange={(e) => {
-                  // setCarDetails({ ...carDetails, status: e.target.value });
-                  setStatus(e.targetvalue);
-                }}
-              >
-                <option value="Active">Active</option>
-                <option value="InActive">InActive</option>
-                <option value="Busy">Busy</option>
-              </Form.Control>
-            </Form.Group>
-      <button type = 'submit'>Save</button> 
-      </Form> ) : (
-   <div> {data.status}</div>)} </td> */}
                       <td>{data.status}</td>
                       <td>{data.capacity}</td>
                       <td>
