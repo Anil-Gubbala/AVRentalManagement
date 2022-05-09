@@ -103,6 +103,38 @@ from carla import ColorConverter as cc
 from agents.navigation.behavior_agent import BehaviorAgent  # pylint: disable=import-error
 from agents.navigation.basic_agent import BasicAgent  # pylint: disable=import-error
 
+# MYSQL = {
+#     "HOST": "sjsu281-13db.c0ibq89ybwlj.us-east-1.rds.amazonaws.com",
+#     "USER": "group13",
+#     PASSWORD: "Fountain1234",
+#     DATABASE: "281",
+#     PORT: 3306,
+# }
+import mysql.connector
+from mysql.connector import Error
+
+try:
+    mysql_conn = mysql.connector.connect(host='sjsu281-13db.c0ibq89ybwlj.us-east-1.rds.amazonaws.com',
+                                         database='281',
+                                         user='group13',
+                                         password='Fountain1234',
+                                         port=3306)
+    if mysql_conn.is_connected():
+        db_Info = mysql_conn.get_server_info()
+        print("Connected to MySQL Server version ", db_Info)
+        cursor = mysql_conn.cursor()
+        cursor.execute("select database();")
+        record = cursor.fetchone()
+        print("You're connected to database: ", record)
+
+except Error as e:
+    print("Error while connecting to MySQL", e)
+# # finally:
+#     if mysql_conn.is_connected():
+#         cursor.close()
+#         mysql_conn.close()
+#         print("MySQL connection is closed")
+
 location_map = {
     'Santa Clara': 9,  # (-113.4, -25.76)
     'Sacramento': 113,  # Location(x=-9.175960, y=140.709900, z=0.600000)
@@ -374,8 +406,8 @@ class HUD(object):
 
     def dist(self, l, transform):
         return l.distance(transform.location)
-            #math.sqrt((l.x - transform.location.x) ** 2 + (l.y - transform.location.y)
-                         # ** 2 + (l.z - transform.location.z) ** 2)
+        # math.sqrt((l.x - transform.location.x) ** 2 + (l.y - transform.location.y)
+        # ** 2 + (l.z - transform.location.z) ** 2)
 
     def tick(self, world, clock):
         """HUD method for every tick"""
@@ -600,6 +632,7 @@ class DataWriter(object):
     def __init__(self, args):
         """Constructor for DataWriter"""
         self.write_to_db = args.write_to_db
+        self.wrote_collision_details = False
 
     def write_data(self, file, data):
         if self.write_to_db:
@@ -647,9 +680,16 @@ class DataWriter(object):
         print("Writing to the laneInvasionDetails")
         self.write_data("laneInvasionDetails", data)
 
-    def write_collision_details(self, data):
+    def write_collision_details(self, data, trip_id):
+        if self.wrote_collision_details:
+            return
         print("Writing to the collisionDetails")
         self.write_data("collisionDetails", data)
+        trip = db['trips'].find_one({"trip_id": trip_id})
+        print(trip)
+        cursor.execute("""update Cars set Cars.status = %s where Cars.id =%s""", ("Repair", trip["car_id"]))
+        mysql_conn.commit()
+        self.wrote_collision_details = True
 
     def write_camera_details(self, data):
         print("Writing to the cameraDetails")
@@ -712,7 +752,7 @@ class CollisionSensor(object):
             'collision': 'Collision with %r' % actor_type
         }
         self.json_data.append(jsonObj)
-        self.datawriter.write_collision_details(self.json_data);
+        self.datawriter.write_collision_details(self.json_data, self.hud.trip_id)
         sys.stdout.flush()
 
 
@@ -1152,6 +1192,10 @@ def game_loop(args):
         hud.connection_json_data = {'trip_id': args.trip_id, 'timestamp': 1, "distance_remaining": 0,
                                     'connection_status': 'inactive'}
         datawriter.write_connection_details([hud.connection_json_data])
+        if mysql_conn.is_connected():
+            cursor.close()
+            mysql_conn.close()
+            print("MySQL connection is closed")
         # Flush to have node read inactive status
         sys.stdout.flush()
 
