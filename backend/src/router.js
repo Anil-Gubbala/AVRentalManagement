@@ -47,7 +47,7 @@ router.route("/demoCall").post(checkAuth, demoCall);
 // Need to add checkAuth if login is required for your functions to work.
 router.route("/signin").get(signin);
 router.route("/user").post(registerUser);
-router.route("/getLogin").get(checkAuth, getLogin);
+router.route("/getLogin").get(checkAuth,getLogin);
 router.route("/signout").get(checkAuth, signout);
 
 router.route("/getUsersAdmin").get(getUsersAdmin);

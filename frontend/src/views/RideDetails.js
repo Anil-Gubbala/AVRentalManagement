@@ -41,8 +41,12 @@ const RideDetails = () => {
 
     const downloadData = () => {
         const pdf = new jsPDF("portrait", "px", "a4", "false");
-
-        pdf.autoTable({html: "#table"});
+        // pdf.text("Hello world!", 10, 10);
+        // pdf.text("Hello world!", 10, 20);
+        // pdf.text("Hello");
+        pdf.text("Ride Details", 10, 10);
+        pdf.autoTable({html:"#rideData"});
+        pdf.autoTable({html: "#download"});
         pdf.save("data.pdf");
     };
 
@@ -55,6 +59,10 @@ const RideDetails = () => {
                 console.log(err);
             });
     };
+
+    const roundBill = (bill) =>{
+      return '$' + Math.round(bill * 100) / 100
+    }
 
     useEffect(() => {
         getRideDetails();
@@ -86,10 +94,10 @@ const RideDetails = () => {
                     </Button>
                 </div>
             </Container>
-
-            <Container style={{marginTop: "32px"}}>
+            <div id="downloadable">
+            <Container style={{marginTop: "32px"}} >
                 <Row>
-                    <Row
+                   {/* <Row
                         style={{
                             boxShadow: "0 0 8px black",
                             padding: "25px",
@@ -97,7 +105,7 @@ const RideDetails = () => {
                             position: "relative",
                         }}
                     >
-                        <Row>
+                         <Row>
                             <h2>Ride Details</h2>
                         </Row>
                         <Row>
@@ -123,15 +131,47 @@ const RideDetails = () => {
                                 <h6>Car Reg Number:</h6>
                             </Col>
                             <Col>{rideDetails.carId}</Col>
-                        </Row>
+                        </Row> */}
+                        <div>
+                            <div>
+                                <Table striped bordered hover id="rideData">
+                                    <thead style={{background: "#000000", color: "white"}}>
+                                    <tr>
+                                        <th style={{width: "60% !important"}}> Details</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>Ride ID : </td>
+                                        <td>{rideDetails.id}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Origin : </td>
+                                        <td>{rideDetails.source}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Destination : </td>
+                                        <td>{rideDetails.destination}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Car Number : </td>
+                                        <td>{rideDetails.carId}</td>
+                                      </tr>
+                                    </tbody>
+                                </Table>
+                            </div>
+                        </div>
                     </Row>
+                    
+
                     <Row>
                         <div>
                             <div>
                                 <h2>Invoice</h2>
                             </div>
                             <div>
-                                <Table striped bordered hover id="table">
+                                <Table striped bordered hover id="download">
                                     <thead style={{background: "#000000", color: "white"}}>
                                     <tr>
                                         <th style={{width: "60% !important"}}>Charges</th>
@@ -143,32 +183,33 @@ const RideDetails = () => {
                                     <tr>
                                         <td>Base Fare</td>
 
-                                        <td>{billDetails.card}</td>
-                                        <td>{billDetails.amount}</td>
-                                    </tr>
-                                    <tr>
+                                        <td>{billDetails.cardNumber}</td>
+                                        <td>{roundBill(rideDetails.base)}</td>
+                                      </tr>
+                                      <tr>
                                         <td>Tax</td>
 
                                         <td>-</td>
-                                        <td>{billDetails.tax}</td>
-                                    </tr>
-                                    <tr>
+                                        <td>{roundBill(rideDetails.tax)}</td>
+                                      </tr>
+                                      <tr>
                                         <td
-                                            colSpan={2}
-                                            style={{textAlign: "right", fontWeight: "bold"}}
+                                          colSpan={2}
+                                          style={{ textAlign: "right", fontWeight: "bold" }}
                                         >
-                                            Total Amount
+                                          Total Amount
                                         </td>
 
-                                        <td>{billDetails.total}</td>
+                                        <td>{roundBill(rideDetails.total)}</td>
                                     </tr>
                                     </tbody>
                                 </Table>
                             </div>
                         </div>
-                    </Row>
+                    {/* </Row> */}
                 </Row>
             </Container>
+            </div>
             <Container fluid={true}>
                 <TrackRide id={params.get("id")}></TrackRide>
             </Container>

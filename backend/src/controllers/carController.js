@@ -117,7 +117,7 @@ const getOwnerCarRides = (req, res) => {
         const rides = Promise.all([
             db
                 .collection("trips")
-                .find(query)
+                .find(query).sort({start_time:-1})
                 .toArray(function (err, result) {
                     if (err) throw err;
                     else {
@@ -157,7 +157,7 @@ const getCarRides = (req, res) => {
                     destination: item.destination,
                     carId: item.car_id,
                     startTime: item.start_time,
-                    status: item.status,
+                    status: item.trip_status,
                 };
             })
             .next(),

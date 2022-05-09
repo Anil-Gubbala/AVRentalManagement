@@ -2,6 +2,7 @@ const conn = require("../utils/dbConnector");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../configuration");
+const { transporter, sendMail } = require("../utils/mail");
 const saltRounds = 10;
 
 const sendError = (res, status, code) => {
@@ -32,7 +33,7 @@ const signin = (req, res) => {
               role: role,
             };
             const token = jwt.sign(userInfo, SECRET, {
-              expiresIn: 1008000,
+              expiresIn: "2 days",
             });
             res.status(200).send({ token: `JWT ${token}`, user: userInfo });
           } else {
@@ -103,6 +104,11 @@ const registerUser = (req, res) => {
                   if (err) {
                     sendError(res, 404, err.code);
                   } else {
+                    sendMail({
+                      to: email,
+                      subject: 'Registraion',
+                      text: 'Successfully registered in Group 13 Carla rental services'
+                    });
                     res.status(200).send({ success: true });
                   }
                 }

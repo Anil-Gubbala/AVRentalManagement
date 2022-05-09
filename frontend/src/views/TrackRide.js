@@ -38,6 +38,7 @@ function TrackRide(props) {
     const windowUrl = window.location.search;
     const params = new URLSearchParams(windowUrl);
     const tripId = props.id || params.get("id");
+    var tempRideStatus = -1;
     // console.log(tripId);
 
     useEffect(() => {
@@ -48,7 +49,7 @@ function TrackRide(props) {
     }, []);
 
     const trackRide = () => {
-        if (rideStatus > 3) {
+        if (tempRideStatus === 3) {
             // console.log("Ride completed, hence not tracking");
             return;
         }
@@ -66,6 +67,7 @@ function TrackRide(props) {
                     if (result.data.trip_status === "pickedup") status = 1;
                     if (result.data.trip_status === "pickup") status = 0;
                     setRideStatus(status);
+                    tempRideStatus = status;
                 }
             })
             .catch((error) => {

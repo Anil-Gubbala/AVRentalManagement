@@ -51,7 +51,7 @@ const getUserRides = (req, res) => {
     const rides = Promise.all([
         db
             .collection("trips")
-            .find(query)
+            .find(query).sort({start_time:-1}) 
             .toArray(function (err, result) {
                 if (err) throw err;
                 else
@@ -64,7 +64,9 @@ const getUserRides = (req, res) => {
                                 destination: item.destination,
                                 carId: item.car_id,
                                 startTime: item.start_time,
-                                status: item.status,
+                                status: item.trip_status,
+                                distance: item.distance,
+                                endTime: item.end_time,
                             };
                         })
                     );
@@ -84,6 +86,16 @@ const getUserRides = (req, res) => {
     //   });
 };
 
+const tax = 0.1;
+const getBaseFare = (distance, startTime, endTime) =>{
+    return endTime ?  (distance * 0.1 + (new Date(endTime) - new Date(startTime)) * 0.03 / 1000) : -1;
+}
+
+
+const generateBill = (distance, startTime, endTime) => {
+    return endTime ? (1+tax)*getBaseFare(distance,startTime,endTime) : -1;
+}
+
 const getRideDetails = (req, res) => {
     const rideId = req.query.id;
 
@@ -93,6 +105,7 @@ const getRideDetails = (req, res) => {
             .collection("trips")
             .find(query)
             .map((item) => {
+                const base =  getBaseFare(item.distance,item.start_time, item.end_time);
                 return {
                     id: item.trip_id,
                     userId: item.user_id,
@@ -101,6 +114,12 @@ const getRideDetails = (req, res) => {
                     carId: item.car_id,
                     startTime: item.start_time,
                     status: item.status,
+                    distance: item.distance,
+                    endTime: item.end_time,
+                    progress: item.progress,
+                    total: base*(1+tax),
+                    base: base,
+                    tax:base*tax,
                 };
             })
             .next(),
@@ -211,7 +230,7 @@ const trackRide = async function (req, res) {
                 (item) => {
                     return {
                         ...item,
-                        charges: item.end_time ? item.distance * 0.1 + (new Date(item.end_time) - new Date(item.start_time)) * 0.03 / 1000 : -1
+                        charges: item.end_time ? generateBill(item.distance,item.start_time, item.end_time) : -1
                     }
                 }
             )
