@@ -13,8 +13,33 @@ const getUsersAdmin = (req, res) => {
     });
   };
 
+  const deleteUserAdmin = (req, res) => {
+    console.log(req.body);
+    conn.query("DELETE FROM User where email=?", [req.body.data], (err, result) => {
+      if (err) {
+        sendError(res, 500, err.code);
+        return;
+      }
+      console.log(result);
+      res.send(result);
+    });
+  };
+
+  const deleteCarAdmin = (req, res) => {
+    console.log(req.body);
+    conn.query("DELETE FROM Cars where id=?", [req.body.data], (err, result) => {
+      if (err) {
+        sendError(res, 500, err.code);
+        return;
+      }
+      console.log(result);
+      res.send(result);
+    });
+  };
+
   const getCarsAdmin = (req, res) => {
-    conn.query("select * from Cars",  (err, result) => {
+   
+    conn.query("select * from Cars", (err, result) => {
       if (err) {
         sendError(res, 500, err.code);
         return;
@@ -48,29 +73,6 @@ const getUsersAdmin = (req, res) => {
   };
 
   const getRides = (req, res) => {
-    // const rides = Promise.all([
-    //   db
-    //     .collection("trips")
-    //     .find()
-    //     .toArray(function (err, result) {
-    //       if (err) throw err;
-    //       else
-    //         res.send(
-    //           result.map((item) => {
-    //             return {
-    //               id: item.trip_id,
-    //               userId: item.user_id,
-    //               source: item.source,
-    //               destination: item.destination,
-    //               carId: item.car_id,
-    //               startTime: item.start_time,
-    //               status: item.status,
-    //             };
-    //           })
-    //         );
-    //     }),
-    // ]);
-
     const rides1 = Promise.all([
       db.collection("trips").aggregate([{
         $lookup: {
@@ -103,4 +105,4 @@ const getUsersAdmin = (req, res) => {
 
     };
 
-module.exports = { getUsersAdmin, getCarsAdmin, updateStatus, getTripDetails, getRides };
+module.exports = { getUsersAdmin, getCarsAdmin, updateStatus, getTripDetails, getRides, deleteUserAdmin, deleteCarAdmin };

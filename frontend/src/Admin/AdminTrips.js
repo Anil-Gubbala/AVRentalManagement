@@ -295,9 +295,9 @@ setGraph({
      
     const { userId, tripId, carId, source, destination, startTime, status } = rides;
     return (
+      <div>
         <div>
             <div className="d-flex flex-row">
-
       <div>
       {" "}
       <Container>
@@ -328,8 +328,7 @@ setGraph({
     </div>
     <div className="d-flex flex-row">
     <div>
-      <Container>
-       
+      <Container>  
         <div style={{ margin: "20px", height: "400px", width: "400px" }}>
         <h2 className="mb-4 text-center">Source</h2>
           <MDBContainer>
@@ -353,10 +352,10 @@ setGraph({
         </div>
       </Container>
     </div>
-    <div className="d-flex flex-row">
+    </div>
+    <div className="d-flex flex-row"  style={{ margin: "20px" }} >
     <div>
       <Container>
-       
         <div style={{ margin: "20px", height: "400px", width: "400px" }}>
         <h2 className="mb-4 text-center">Collision Details</h2>
           <MDBContainer>
@@ -369,6 +368,7 @@ setGraph({
     </div>
     </div>
 </div>
+<div>
 <Container style = {{marginTop: "3rem"}}>
         <Table striped bordered hover id="table">
           <thead style={{ background: "#000000", color: "white" }}>
@@ -398,16 +398,23 @@ setGraph({
                       <td>{ride.source}</td>
                       <td>{ride.destination}</td>
                       <td>{ride.startTime}</td>
-                    <td>{ride.status}</td>
+                    <td><div
+                        style={{
+                          background:
+                            ride.status === "active" ? "rgb(212 100 121)" :  "#9fd5a5",
+                          borderRadius: "15px",
+                          textAlign: "center",
+                          display: "inherit",
+                          padding: "10px",
+                          paddingLeft: "20px",
+                          paddingRight: "20px",
+                        }}
+                        
+                      >{ride.status ==="active" ? "In progress": "Completed"}</div>
+                    </td>
                     <td>{ride.collision}</td>
                     <td>
-                      <Button
-                        data={ride.id}
-                        variant="dark"
-                        onClick={viewRideDetails}
-                      >
-                        View Ride
-                      </Button>
+                    <button type="button" class="btn btn-success"  data={ride.id} onClick={viewRideDetails}>View Ride</button>
                     </td>
                   </tr>
                 )
@@ -418,6 +425,7 @@ setGraph({
         {rides.length === 0 && <h2> No rides booked. </h2>}
       </Container>
     
+</div>
 </div>
     )
 

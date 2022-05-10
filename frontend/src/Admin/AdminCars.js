@@ -5,6 +5,7 @@ import { get, post } from "../utils/serverCall";
 import { MdModeEditOutline } from "react-icons/md";
 import Form from "react-bootstrap/Form";
 import { Link, Navigate } from "react-router-dom";
+import {MdDelete} from 'react-icons/md';
 import Popup from 'reactjs-popup';
 import {
     Box,
@@ -170,16 +171,14 @@ data: f,
         },
       };
 
-      // const updateCarStatus = async(id) => {
-        
-      //     console.log(carstatus);
-      //   await post(`/updateStatus`, { status : carstatus, id: id  }).then((result) => {
-      //     console.log(result);
-      //     setOpen(false);
-          
-      //  });
-      //   handleClose();
-      // };
+      const deleteCarDetails = (e) => {
+        post(`/deleteCar`, {data: e.target.getAttribute("data")})
+      .then((res) => {
+        console.log(res);
+        window.location.reload(true);
+      })
+      .catch((error) => {});
+      };
 
     const { ownerId, regNumber, model, make, color, build, status, capacity } = cars;
 
@@ -269,8 +268,10 @@ data: f,
                       <td>{data.status}</td>
                       <td>{data.capacity}</td>
                       <td>
-
-                      </td>
+                      <button type="button" class="btn btn-danger"  data={data.id}
+                        onClick={deleteCarDetails}><MdDelete/>
+                        Delete Car</button>
+                    </td>
                     </tr>
                   ))}
               </tbody>
