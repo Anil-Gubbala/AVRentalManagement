@@ -103,6 +103,16 @@ function Navigator() {
               {signedIn && role === "1" && (
                 <>
                   <Nav>
+                    <Link to="/status" className="nav-link">
+                      Status
+                    </Link>
+                  </Nav>
+                </>
+              )}
+
+              {signedIn && role === "1" && (
+                <>
+                  <Nav>
                     <Link to="/carowneranalytics" className="nav-link">
                       Analytics
                     </Link>
@@ -117,6 +127,7 @@ function Navigator() {
                   </Link>
                 </Nav>
               )}
+
               {!signedIn && (
                 <Nav>
                   <Link to="/signin" className="nav-link">

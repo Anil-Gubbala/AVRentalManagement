@@ -19,6 +19,8 @@ const {
   getAvailableCars,
   updateCar,
   getOwnerCarRides,
+  getRepairCars,
+  makeActive,
 } = require("./controllers/carController");
 
 const {
@@ -47,7 +49,7 @@ router.route("/demoCall").post(checkAuth, demoCall);
 // Need to add checkAuth if login is required for your functions to work.
 router.route("/signin").get(signin);
 router.route("/user").post(registerUser);
-router.route("/getLogin").get(checkAuth,getLogin);
+router.route("/getLogin").get(checkAuth, getLogin);
 router.route("/signout").get(checkAuth, signout);
 
 router.route("/getUsersAdmin").get(getUsersAdmin);
@@ -60,7 +62,11 @@ router.route("/profile").put(checkAuth, updateProfile);
 router.route("/user").get(checkAuth, getProfile);
 router.route("/user").put(checkAuth, updateProfile);
 router.route("/addcar").post(checkAuth, addCar);
+
 router.route("/getownercars").get(checkAuth, getOwnerCars);
+router.route("/repaircars").get(checkAuth, getRepairCars);
+router.route("/makeactive").post(checkAuth, makeActive);
+
 router.route("/getcar").get(checkAuth, getCar);
 router.route("/getcarrides").get(checkAuth, getCarRides);
 router.route("/getAvailableCars").get(getAvailableCars);
@@ -74,7 +80,5 @@ router.route("/startRide").post(checkAuth, startRide);
 router.route("/trackRide/:id").get(trackRide);
 router.route("/updatecar").put(checkAuth, updateCar);
 router.route("/getownerrides").get(checkAuth, getOwnerCarRides);
-
-getOwnerCarRides;
 
 module.exports = router;

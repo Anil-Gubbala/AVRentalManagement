@@ -17,6 +17,7 @@ import CarRideHistory from "./views/CarRideHistory";
 import EditCar from "./views/EditCar";
 import CarRideDetails from "./views/CarRideDetails";
 import CarOwnerAnalytics from "./views/CarOwnerAnalytics";
+import CarStatus from "./views/CarStatus";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
             exact
             element={<CarOwnerAnalytics />}
           ></Route>
+          <Route path="/status" exact element={<CarStatus />}></Route>
+
           <Route
             path="/carridedetails"
             exact

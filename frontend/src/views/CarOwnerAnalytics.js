@@ -31,6 +31,9 @@ const CarOwnerAnalytics = () => {
     datasets: [{}],
   });
 
+  const [barSource, setBarSource] = useState({
+    datasets: [{}],
+  });
   // if (role !== "1") {
   //   return <Navigate to={redirectHome()} />;
   // }
@@ -40,10 +43,51 @@ const CarOwnerAnalytics = () => {
       .then((response) => {
         console.log(response);
 
-        let carSubCat = [];
-        for (let car of response.carIds) {
-          if (!carSubCat.includes(car.make)) carSubCat.push(car.make);
+        // let makesSubCat = {};
+        // for (let car of response.carIds) {
+        //   if (!makesSubCat[car.make]) {
+        //     makesSubCat[car.make] = [car.id];
+        //   } else makesSubCat[car.make].push(car.id);
+        // }
+        // console.log(makesSubCat);
+        // // subCatCount = {};
+        // for (let make of makesSubCat) {
+        //   // subCatCount = response.rides.filter((e)=>make)
+        //   console.log(make);
+        // }
+
+        let sourceSubCat = {};
+        for (let car of response.rides) {
+          if (!sourceSubCat[car.source]) sourceSubCat[car.source] = 1;
+          else sourceSubCat[car.source] = sourceSubCat[car.source] + 1;
         }
+
+        setBarSource({
+          labels: Object.keys(sourceSubCat).map(
+            (label, index) => `${label}: ${Object.values(sourceSubCat)[index]}`
+          ),
+          datasets: [
+            {
+              label: "Distribution by Origin of ride",
+              backgroundColor: [
+                "rgb(25, 35, 46)",
+                "rgb(75, 205, 86)",
+                "rgb(105, 0, 86)",
+                "rgb(10, 200, 150)",
+                "rgb(255, 99, 132)",
+                "rgb(54, 162, 235)",
+                "rgb(255, 205, 86)",
+                "rgb(255, 05, 16)",
+                "rgb(255, 45, 196)",
+                "rgb(184, 162, 235)",
+                "rgb(5, 95, 0)",
+                "rgb(145, 145, 16)",
+                "rgb(80, 10, 6)",
+              ],
+              data: Object.values(sourceSubCat),
+            },
+          ],
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -53,7 +97,7 @@ const CarOwnerAnalytics = () => {
   const getCarDetails = () => {
     get(`/getownercars`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         let carSubCat = {};
         let carBuildSubCat = {};
         let carStatusSubCat = {};
@@ -269,8 +313,63 @@ const CarOwnerAnalytics = () => {
                 </TabPane>
               </Tabs>
             </TabPane>
-            <TabPane tab="Rides Distribution" key="2"></TabPane>
-            <TabPane tab="Monetary Distribution" key="3"></TabPane>
+            <TabPane tab="Rides Distribution" key="2">
+              <Tabs defaultActiveKey="1" centered>
+                <TabPane tab="Location" key="1" style={{}}>
+                  <div
+                    style={{
+                      height: "400px",
+                      width: "800px",
+                      marginTop: "5%",
+                    }}
+                  >
+                    <MDBContainer>
+                      <Bar
+                        data={barSource}
+                        options={{
+                          legend: { display: true, position: "right" },
+
+                          datalabels: {
+                            display: true,
+                            color: "white",
+                          },
+                          tooltips: {
+                            backgroundColor: "#aa6e7f",
+                          },
+                        }}
+                      />
+                    </MDBContainer>
+                  </div>
+                </TabPane>
+                {/* <TabPane tab="Make" key="2" style={{}}>
+                  <div
+                    style={{
+                      height: "400px",
+                      width: "800px",
+                      marginTop: "5%",
+                    }}
+                  >
+                    <MDBContainer>
+                      <Bar
+                        data={barSource}
+                        options={{
+                          legend: { display: true, position: "right" },
+
+                          datalabels: {
+                            display: true,
+                            color: "white",
+                          },
+                          tooltips: {
+                            backgroundColor: "#aa6e7f",
+                          },
+                        }}
+                      />
+                    </MDBContainer>
+                  </div>
+                </TabPane> */}
+              </Tabs>
+            </TabPane>
+            {/* <TabPane tab="Monetary Distribution" key="3"></TabPane> */}
           </Tabs>
         </>
       </Container>
