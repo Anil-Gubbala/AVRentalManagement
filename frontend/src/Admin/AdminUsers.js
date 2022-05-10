@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table'
 import { get, post } from "../utils/serverCall";
 import { MdModeEditOutline } from "react-icons/md";
 import { FloatingLabel, Form } from "react-bootstrap";
+import {MdDelete} from 'react-icons/md';
 import {
     Box,
     Button,
@@ -94,10 +95,16 @@ function Adminusers(){
         },
       };
     
-      const editUserDetails = (e) => {
-        setSelectedUser(e.target.getAttribute("data"));
-        setRedirectToDetails(true);
+      const deleteUserDetails = (e) => {
+        post(`/deleteUser`, {data: e.target.getAttribute("data")})
+      .then((res) => {
+        console.log(res);
+        window.location.reload(true);
+      })
+      .catch((error) => {});
       };
+
+
     const { email, firstName, lastName, address, phone, role } = users;
     return (
         <div>
@@ -141,6 +148,11 @@ function Adminusers(){
                       <td>{data.role}</td>
                       <td>{data.phone}</td>
                       <td>{data.address}</td>
+                      <td>
+                      <button type="button" class="btn btn-danger"  data={data.email}
+                        onClick={deleteUserDetails}><MdDelete/>
+                        Delete User</button>
+                    </td>
                   </tr>
                 )
               );
