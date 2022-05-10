@@ -145,7 +145,7 @@ function Adminusers(){
                     <td>{data.firstName}</td>
                       <td>{data.lastName}</td>
                       <td>{data.email}</td>
-                      <td>{data.role}</td>
+                      <td> {data.role == '0' ? "Customer" : data.role == '1' ? "Car Owner" : "Admin"}</td>
                       <td>{data.phone}</td>
                       <td>{data.address}</td>
                       <td>
