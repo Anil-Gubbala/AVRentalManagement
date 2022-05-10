@@ -53,6 +53,7 @@ function AdminRides(){
   const [tripcountarray, setTripCount] = useState([]);
   const [cararray, setCararray] = useState([]);
   const [carcountarray, setCarCount] = useState([]);
+  const [csnModels, setCsnModels] = useState([]);
   const [srcarray, setSrcarray] = useState([]);
   const [srccountarray, setSrcCount] = useState([]);
   const [dstarray, setDstarray] = useState([]);
@@ -79,6 +80,8 @@ function AdminRides(){
       const j = [];
       const k = [];
       const l = [];
+      let csncount = {};
+      
         get(`/getRides`).then((response) => {
           setRides(response);
           console.log(response);
@@ -87,6 +90,18 @@ var result = response.reduce( (acc, o) => (acc[o.userId] = (acc[o.userId] || 0)+
 var carcount = response.reduce( (acc, o) => (acc[o.carId] = (acc[o.carId] || 0)+1, acc), {} );
 var srccount = response.reduce( (acc, o) => (acc[o.source] = (acc[o.source] || 0)+1, acc), {} );
 var dstcount = response.reduce( (acc, o) => (acc[o.destination] = (acc[o.destination] || 0)+1, acc), {} );
+
+
+for (let item of response) {
+  if(item.collision.includes('None') == false){
+    console.log(item.carId);
+    if(!csncount[item.carId]){
+    csncount[item.carId] = 1;}
+    else{
+      csncount[item.carId] =  csncount[item.carId] +1;
+    }
+  }
+}
 Object.entries(result).forEach(([key, value]) => {
   e.push(...triparray, `${key}`);
   f.push(...tripcountarray, `${value}` );})
@@ -103,7 +118,9 @@ Object.entries(srccount).forEach(([key, value]) => {
 Object.entries(dstcount).forEach(([key, value]) => {
   k.push(...dstarray, `${key}`);
   l.push(...dstcountarray, `${value}` );})
-
+ 
+  setCsnModels(csncount);
+ 
  
 setTriparray(e);
 setTripCount(f);
@@ -143,6 +160,31 @@ setGraph({
           {
             label: 'Trip users',
             data: graph.data,
+            backgroundColor: [
+                '#d72e3d', '#249d3d', '#ffb90c',
+                '#40C4FF', '#FF5252', '#00C853',
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+              ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const csn = {
+        labels: Object.keys(csnModels).map(
+          (label, index) => `${label}: ${Object.values(csnModels)[index]}`
+        ),
+        datasets: [
+          {
+            label: 'Collision count',
+            data: Object.values(csnModels),
             backgroundColor: [
                 '#d72e3d', '#249d3d', '#ffb90c',
                 '#40C4FF', '#FF5252', '#00C853',
@@ -237,7 +279,7 @@ setGraph({
           },
           title: {
             display: true,
-            text: 'Trip Users',
+            text: '',
           },
         },
       };
@@ -310,6 +352,21 @@ setGraph({
           </MDBContainer>
         </div>
       </Container>
+    </div>
+    <div className="d-flex flex-row">
+    <div>
+      <Container>
+       
+        <div style={{ margin: "20px", height: "400px", width: "400px" }}>
+        <h2 className="mb-4 text-center">Collision Details</h2>
+          <MDBContainer>
+            <Pie
+              data={csn} options = {options}
+            />
+          </MDBContainer>
+        </div>
+      </Container>
+    </div>
     </div>
 </div>
 <Container style = {{marginTop: "3rem"}}>
