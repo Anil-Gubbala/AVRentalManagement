@@ -14,7 +14,7 @@
 
    Run this file as 
 
-   python av_rental_client.py  --source="Santa Clara" --dest="Sacramento"  --filter="vehicle.tesla.model3" --trip_id="1233238"   --write_to_db=True  --recording=True
+   python av_rental_client.py  --source="Santa Clara" --dest="Sacramento"  --filter="vehicle.tesla.model3" --trip_id="1233238"   --write_to_db=False  --recording=False --host=184.105.86.31
 
 """
 
@@ -148,6 +148,16 @@ location_map = {
     # l10: 26 ,# Location(x=-52.073921, y=63.538094, z=0.600000)
     # -80.3 , 133.7
 }
+
+COLORS = [
+    carla.Color(r=0, g=0, b=0),
+    carla.Color(r=255, g=0, b=0),
+    carla.Color(r=0, g=255, b=0),
+    carla.Color(r=0, g=0, b=255),
+    carla.Color(r=0, g=255, b=255),
+    carla.Color(r=255, g=0, b=255),
+    carla.Color(r=255, g=255, b=0),
+]
 
 
 # ==============================================================================
@@ -681,6 +691,8 @@ class DataWriter(object):
         self.write_data("laneInvasionDetails", data)
 
     def write_collision_details(self, data, trip_id):
+        if not self.write_to_db:
+            return
         if self.wrote_collision_details:
             return
         print("Writing to the collisionDetails")
@@ -963,7 +975,7 @@ class CameraManager(object):
             array = array[:, :, :3]
             array = array[:, :, ::-1]
             self.surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
-        if self.recording and (t not in self.timestamp_recorded) and (t % 15 == 0):
+        if self.recording and (t not in self.timestamp_recorded) and (t % 1 == 0):
             self.timestamp_recorded.add(t)
 
             def upload_image():
@@ -1017,6 +1029,8 @@ def game_loop(args):
     try:
         if args.seed:
             random.seed(args.seed)
+        else:
+            random.seed(int(time.time()))
 
         client = carla.Client(args.host, args.port)
         client.set_timeout(4.0)
@@ -1093,7 +1107,22 @@ def game_loop(args):
         # actor = world.spawn_actor(client.get_world.getblueprint, transform)
 
         agent.set_destination(destination)
-
+        # for w in spawn_points:
+        #     world.world.debug.draw_string(w.location, 'O', draw_shadow=False,
+        #                                   color=carla.Color(r=255, g=0, b=0), life_time=120.0,
+        #                                   persistent_lines=True)
+        x = 1
+        c = random.choice(COLORS)
+        lifetime = 150  # seconds
+        for w in waypoints:
+            s = 'drop'
+            if x == 1:
+                s = 'pickup'
+            world.world.debug.draw_string(spawn_points[location_map[w]].location, s, draw_shadow=False,
+                                          color=c,
+                                          life_time=lifetime,
+                                          persistent_lines=True)
+            x = x + 1
         if args.write_to_db:
             end = spawn_points[location_map[waypoints[dest_index + 1]]]
             print("Start %s and End %s" % (start, end))
@@ -1111,10 +1140,8 @@ def game_loop(args):
 
             clock = pygame.time.Clock()
 
-            for waypoint in world.map.get_spawn_points():
-                world.world.debug.draw_string(waypoint.location, 'o', draw_shadow=False,
-                                              color=carla.Color(r=255, g=255, b=255), life_time=0.2,
-                                              persistent_lines=True)
+            freq = 1
+            string_lifetime = time.time() + lifetime
             while True:
                 clock.tick()
                 if args.sync:
@@ -1124,6 +1151,13 @@ def game_loop(args):
                 if controller.parse_events():
                     return
 
+                if freq % 15 == 0:
+                    print('lifetime %d start %d end %d' % (
+                        string_lifetime - time.time(), time.time(), string_lifetime))
+                    world.world.debug.draw_string(world.player.get_transform().location, 'o', draw_shadow=False,
+                                                  color=c, life_time=string_lifetime - time.time(),
+                                                  persistent_lines=True)
+                freq = freq + 1
                 world.tick(clock)
                 world.render(display)
                 pygame.display.flip()
@@ -1276,8 +1310,8 @@ def main():
         type=bool)
     argparser.add_argument(
         '-rf', '--recording_frequency',
-        help='Record frequecy for the camera images (default: 15)',
-        default=15,
+        help='Record frequecy for the camera images (default: 1)',
+        default=1,
         type=int)
     argparser.add_argument(
         '--color',
