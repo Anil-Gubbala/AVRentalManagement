@@ -77,7 +77,7 @@ function Navigator() {
         <Row>
           <Navbar bg="dark" variant="dark">
             <Container>
-              <Navbar.Brand>Group13</Navbar.Brand>
+              <Navbar.Brand>{"Autonomous Car Rental Services"}</Navbar.Brand>
               {/* {!admin && (
                 <Nav className="me-auto">
                   <Link to="/home" className="nav-link">
